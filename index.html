@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Groupe Scolaire Le Miri — CMS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ══ VARIABLES GLOBALES (Fusionnées) ══ */
+:root{
+  /* Couleurs partagées */
+  --fo: #104F2D; /* Vert sapin profond */
+  --fo2: #0A361E; /* Vert très sombre */
+  --tr: #E85D04; /* Orange vif */
+  --tr2: #CC5204; /* Orange assombri */
+  --go: #F4A261; /* Or doux */
+  --go2: #FFB703; /* Jaune/Or éclatant */
+  --dk: #1A1A1A; /* Presque noir */
+  --md: #595959; /* Gris ardoise */
+  --lt: #9CA3AF;
+  --wh: #FFFFFF;
+  --rad: 6px;
+
+  /* Fonds Public */
+  --li: #FDFCF8; 
+  --cr: #F4F1E1; 
+  --cr2: #EBE6D3; 
+  --cr3: #D9D2BC; 
+
+  /* Fonds Admin (Mappés pour éviter les conflits) */
+  --bg: #F4F1E1;
+  --bg2: #FDFCF8;
+  --sidebar: 255px;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--li);color:var(--dk);font-family:'Open Sans', sans-serif;overflow-x:hidden;}
+
+/* ==========================================================================
+   STYLES PUBLICS
+   ========================================================================== */
+#public-site { display: block; animation: pgIn .35s ease; }
+@keyframes pgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* TOPBAR */
+.topbar{background:var(--fo);color:rgba(253,252,248,.8);font-size:.71rem;letter-spacing:.03em;padding:.4rem 2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;}
+.topbar-left{display:flex;align-items:center;gap:1.4rem;flex-shrink:0;}
+.topbar-right{display:flex;gap:1rem;flex-wrap:wrap;align-items:center;}
+.topbar a{color:var(--cr);text-decoration:none;font-weight:600;background:rgba(255,255,255,.1);padding:.22rem .7rem;border-radius:2px;transition:background .2s, color .2s;white-space:nowrap;font-size:.7rem;letter-spacing:.04em;text-transform:uppercase;}
+.topbar a:hover{background:rgba(255,255,255,.2); color:#fff;}
+
+/* NAV */
+nav{background:var(--wh);border-bottom:2px solid var(--dk);position:sticky;top:0;z-index:500;box-shadow:0 4px 12px rgba(16,79,45,.06);}
+.nav-inner{max-width:1340px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content: space-between;height:60px;}
+.nav-logo{display:flex;align-items:center;cursor:pointer;flex-shrink:0;padding-right:1.4rem;height:100%;}
+.nav-logo-img{height:46px;width:auto;max-width:160px;object-fit:contain;display:block;}
+.nav-logo-txt{display:none !important;}
+
+/* Menu Desktop */
+.nav-menu{display:flex;align-items:stretch;list-style:none;height:60px;flex:1;justify-content:center;}
+.nav-item{position:relative;display:flex;align-items:stretch;}
+.nav-link{display:flex;align-items:center;gap:.22rem;padding:0 .7rem;font-size:.72rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--dk);cursor:pointer;white-space:nowrap;border:none;background:none;font-family:'Open Sans', sans-serif;border-bottom:2.5px solid transparent;border-top:2.5px solid transparent;transition:color .18s,border-color .18s,background .18s;}
+.nav-link:hover,.nav-link.active{color:var(--tr);border-bottom-color:var(--tr);background:rgba(232,93,4,.05);}
+.nav-link svg{width:10px;height:10px;opacity:.5;transition:transform .2s;}
+.nav-item:hover .nav-link svg{transform:rotate(180deg);}
+
+/* Dropdown */
+.dropdown{position:absolute;top:calc(100% + 2px);left:0;min-width:210px;background:var(--wh);border:1.5px solid var(--dk);border-top:3px solid var(--tr);box-shadow:0 8px 24px rgba(16,79,45,.08);opacity:0;pointer-events:none;transform:translateY(-4px);transition:opacity .18s,transform .18s;z-index:700;}
+.nav-item:hover .dropdown{opacity:1;pointer-events:all;transform:translateY(0);}
+.dropdown a,.dropdown button{display:block;width:100%;text-align:left;padding:.6rem 1rem;font-size:.78rem;color:var(--dk);text-decoration:none;cursor:pointer;border:none;background:none;font-family:'Open Sans', sans-serif;border-bottom:1px solid rgba(26,26,26,.06);transition:all .12s;}
+.dropdown a:hover,.dropdown button:hover{background:var(--cr);color:var(--tr);padding-left:1.4rem;}
+
+/* CTA Nav */
+.nav-cta{background:var(--tr);color:#fff;padding:0 1.4rem;height:38px;font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;border:none;cursor:pointer;font-family:'Open Sans', sans-serif;white-space:nowrap;transition:background .18s;display:flex;align-items:center;border-radius:2px;}
+.nav-cta:hover{background:var(--tr2);}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:.4rem;flex-direction:column;gap:5px;margin-left:auto;}
+.hamburger span{display:block;width:24px;height:2px;background:var(--dk);}
+
+/* LAYOUT & UTILS */
+.page{max-width:1280px;margin:0 auto;padding:0 2rem;}
+.breadcrumb{background:var(--cr);border-bottom:1px solid var(--cr2);padding:.6rem 2rem;font-size:.75rem;color:var(--md);display:flex;gap:.5rem;align-items:center;}
+.breadcrumb a{color:var(--fo);cursor:pointer;font-weight:600;}
+.breadcrumb a:hover{color:var(--tr);}
+.page-banner{background:var(--fo);color:var(--cr);padding:3.5rem 2rem;background-image:linear-gradient(135deg,var(--fo2) 0%,var(--fo) 60%,#166534 100%);position:relative;overflow:hidden;}
+.page-banner .inner{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 2rem;}
+.page-banner h1{font-family:'Montserrat', sans-serif;font-size:2.8rem;font-weight:700;color:#fff;}
+.page-banner h1 em{color:var(--go2);font-style:italic;}
+.page-banner p{margin-top:.6rem;color:rgba(253,252,248,.8);font-size:.92rem;}
+
+.s-tag{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--tr);display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem;}
+.s-tag::before{content:'';width:24px;height:2px;background:var(--tr);}
+.s-h2{font-family:'Montserrat', sans-serif;font-size:clamp(2rem,3.5vw,3rem);font-weight:800;color:var(--dk);line-height:1.12;}
+.s-h2 em{color:var(--fo);font-style:italic;}
+.text-md{color:var(--md);font-size:.95rem;line-height:1.7;}
+.mb2{margin-bottom:2rem;}.mt2{margin-top:2rem;}.py4{padding:4rem 0;}
+
+.btn{display:inline-block;padding:.75rem 1.8rem;font-family:'Open Sans', sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;cursor:pointer;border:none;transition:all .2s;border-radius:2px;}
+.btn-fo{background:var(--fo);color:var(--wh);}
+.btn-fo:hover{background:var(--fo2);box-shadow:0 4px 12px rgba(16,79,45,.3);}
+.btn-tr{background:var(--tr);color:#fff;}
+.btn-tr:hover{background:var(--tr2);box-shadow:0 4px 12px rgba(232,93,4,.3);}
+.btn-outline{background:transparent;border:2px solid var(--fo);color:var(--fo);}
+.btn-outline:hover{background:var(--fo);color:var(--wh);}
+
+/* TICKER */
+.ticker{background:var(--dk);color:rgba(253,252,248,.8);padding:.4rem 0;overflow:hidden;}
+.ticker-track{display:flex;white-space:nowrap;animation:tick 40s linear infinite;}
+.ticker-track:hover{animation-play-state:paused;}
+.t-item{display:inline-flex;align-items:center;gap:.7rem;padding:0 2.5rem;font-size:.74rem; font-weight:600;}
+.t-dot{width:6px;height:6px;border-radius:50%;background:var(--go2);}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* HERO CAROUSEL */
+.hero{display:grid;grid-template-columns:1fr 1.2fr;height:calc(100vh - 120px);min-height:500px;border-bottom:3px solid var(--fo);}
+.hero-left{background:var(--li);padding:2rem 3rem;display:flex;flex-direction:column;justify-content:center;position:relative;border-right:3px solid var(--fo);}
+.hero-tag{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--tr);display:flex;align-items:center;gap:.6rem;margin-bottom:1.5rem;}
+.hero-tag::before{content:'';width:30px;height:2px;background:var(--tr);}
+.hero-title{font-family:'Montserrat', sans-serif;font-size:clamp(2.6rem,4vw,5rem);font-weight:800;line-height:1.05;color:var(--dk);margin-bottom:1.5rem;letter-spacing:-0.02em;}
+.hero-title em{font-style:italic;color:var(--fo);display:block;}
+.hero-desc{font-size:.95rem;line-height:1.8;color:var(--md);max-width:440px;margin-bottom:2.2rem;font-weight:500;}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;}
+
+.hero-right{position:relative;overflow:hidden;background:var(--cr);height:100%;}
+.carousel-track{display:flex;width:100%;height:100%;transition:transform .8s cubic-bezier(.77,0,.175,1);}
+.carousel-slide{flex:0 0 100%;width:100%;height:100%;position:relative;overflow:hidden;}
+.carousel-slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;}
+.carousel-slide::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(10,54,30,.85) 100%);z-index:1;}
+.slide-caption{position:absolute;bottom:0;left:0;right:0;padding:3rem 2rem 2.5rem;color:var(--wh);z-index:2;}
+.slide-caption-tag{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--go2);margin-bottom:.6rem;display:block;}
+.slide-caption-title{font-family:'Montserrat', sans-serif;font-size:1.35rem;font-weight:700;line-height:1.3;}
+
+.hero-year-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:3;background:var(--tr);color:var(--wh);padding:.8rem 1.2rem;text-align:center;border-radius:4px;}
+.hero-year-badge strong{display:block;font-family:'Montserrat', sans-serif;font-size:2rem;font-weight:800;line-height:1;}
+.hero-year-badge span{font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;opacity:.9;font-weight:600;}
+
+.carousel-dots{position:absolute;bottom:2.5rem;right:2.5rem;z-index:3;display:flex;gap:.5rem;}
+.carousel-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:all .3s;border:none;}
+.carousel-dot.active{background:var(--go2);transform:scale(1.4);}
+
+.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);z-index:3;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:var(--wh);width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.2rem;transition:all .2s;backdrop-filter:blur(4px);}
+.carousel-btn:hover{background:var(--go2);border-color:var(--go2);color:var(--fo2);transform:translateY(-50%) scale(1.05);}
+.carousel-btn.prev{left:1.5rem;}
+.carousel-btn.next{right:1.5rem;}
+
+/* STATS */
+.stats-strip{background:var(--fo);display:grid;grid-template-columns:repeat(4,1fr);border-bottom:4px solid var(--tr);}
+.stat-cell{padding:2.5rem 1.5rem;border-left:1px solid rgba(255,255,255,.1);text-align:center;}
+.stat-cell:first-child{border-left:none;}
+.stat-n{font-family:'Montserrat', sans-serif;font-size:3.2rem;font-weight:800;color:var(--go2);line-height:1;margin-bottom:.5rem;}
+.stat-l{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:rgba(253,252,248,.7);}
+
+/* INTRO */
+.intro{padding:6rem 0;}
+.intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start;}
+.intro-quote{font-family:'Montserrat', sans-serif;font-size:2.2rem;font-weight:700;line-height:1.4;color:var(--fo);position:relative;padding-left:2rem;border-left:5px solid var(--tr);}
+.intro-quote em{color:var(--go2);font-style:italic;}
+.feature-list{list-style:none;display:flex;flex-direction:column;gap:1rem;margin-top:1.8rem;}
+.feature-list li{display:flex;gap:1rem;align-items:flex-start;font-size:.95rem;color:var(--dk);line-height:1.6;font-weight:500;}
+.feature-list li::before{content:'→';color:var(--tr);font-weight:800;flex-shrink:0;margin-top:.05rem;font-size:1.1rem;}
+
+.director-card{display:flex;align-items:center;gap:1.5rem;background:var(--wh);border:1px solid var(--cr2);padding:1.5rem;border-radius:var(--rad);margin-top:2rem;box-shadow:0 4px 20px rgba(16,79,45,.06);max-width:480px;}
+.director-card .imgBx{width:85px;height:85px;flex-shrink:0;border-radius:50%;overflow:hidden;border:3px solid var(--go2);}
+.director-card .imgBx img{width:100%;height:100%;object-fit:cover;}
+.director-card .content h4{font-family:'Montserrat', sans-serif;font-size:1.4rem;font-weight:700;color:var(--dk);margin-bottom:0.2rem;}
+.director-card .content h6{font-size:0.8rem;color:var(--md);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.8rem;font-weight:600;}
+
+/* ACTUALITES CARDS */
+.news-section{padding:5rem 0;background:var(--cr);}
+.social-feed{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;margin-top:3rem;}
+.simple-news-card{background:var(--wh);border:1px solid var(--cr2);border-radius:var(--rad);overflow:hidden;cursor:pointer;transition:all .3s ease;display:flex;flex-direction:column;box-shadow:0 4px 12px rgba(16,79,45,.04);}
+.simple-news-card:hover{transform:translateY(-8px);box-shadow:0 16px 32px rgba(16,79,45,.1);border-color:var(--fo);}
+.sn-img-wrap{width:100%;height:220px;overflow:hidden;background:var(--cr2);}
+.sn-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease;}
+.simple-news-card:hover .sn-img-wrap img{transform:scale(1.08);}
+.sn-content{padding:1.8rem;display:flex;flex-direction:column;flex:1;}
+.sn-date{font-size:.75rem;font-weight:700;color:var(--tr);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.8rem;}
+.sn-title{font-family:'Montserrat', sans-serif;font-size:1.3rem;font-weight:700;color:var(--fo);line-height:1.35;margin-bottom:1rem;}
+.sn-text{font-size:.95rem;color:var(--md);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:1.5rem;}
+
+/* MODAL GALERIE */
+.modal-overlay{position:fixed;inset:0;z-index:100000;background:rgba(11,26,13,.9);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all .3s;padding:2rem;backdrop-filter:blur(5px);}
+.modal-overlay.open{opacity:1;visibility:visible;}
+.modal-box{background:var(--wh);border-radius:var(--rad);max-width:800px;width:100%;max-height:90vh;overflow-y:auto;position:relative;transform:translateY(20px);transition:all .3s ease;display:flex;flex-direction:column;box-shadow:0 20px 40px rgba(0,0,0,.4);}
+.modal-overlay.open .modal-box{transform:translateY(0);}
+.modal-close-btn{position:absolute;top:1rem;right:1rem;background:var(--fo);color:var(--wh);border:none;width:36px;height:36px;border-radius:50%;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;}
+.modal-box img{width:100%;height:auto;max-height:50vh;object-fit:contain;background:var(--dk);}
+.modal-info{padding:2rem;}
+.modal-title{font-family:'Montserrat', sans-serif;font-size:1.8rem;font-weight:800;color:var(--fo);margin-bottom:1rem;}
+.gallery-nav-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:var(--wh);width:50px;height:50px;border-radius:50%;font-size:1.5rem;cursor:pointer;z-index:100001;display:flex;align-items:center;justify-content:center;}
+.gallery-nav-btn:hover{background:var(--tr);border-color:var(--tr);}
+.gallery-nav-btn.prev{left:2rem;} .gallery-nav-btn.next{right:2rem;}
+
+/* INTERNAL PAGES */
+.admin-grid{display:grid;grid-template-columns:1fr 2.5fr;gap:4rem;padding:4rem 0;}
+.sidebar{background:var(--wh);border:1px solid var(--cr2);padding:2rem;border-radius:var(--rad);}
+.sidebar h3{font-family:'Montserrat', sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid var(--cr2);color:var(--fo);}
+.sidebar-links{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.sidebar-links button{width:100%;text-align:left;background:none;border:none;padding:.8rem 1.2rem;font-size:.95rem;cursor:pointer;font-weight:600;color:var(--dk);border-radius:4px;}
+.sidebar-links button:hover{background:var(--cr);color:var(--tr);}
+.sidebar-links button.active{background:var(--fo);color:var(--wh);}
+.content-box{background:var(--wh);border:1px solid var(--cr2);padding:3rem;border-radius:var(--rad);}
+.content-box h2{font-family:'Montserrat', sans-serif;font-size:2.2rem;font-weight:800;margin-bottom:1.5rem;padding-bottom:1.2rem;border-bottom:2px solid var(--cr2);color:var(--fo);}
+.content-box p{font-size:1rem;color:var(--md);line-height:1.8;margin-bottom:1.2rem;}
+.content-box ul{list-style:none;display:flex;flex-direction:column;gap:.8rem;margin:1.2rem 0;}
+.content-box ul li{display:flex;gap:1rem;align-items:flex-start;font-weight:500;}
+.content-box ul li::before{content:'■';color:var(--tr);font-size:.6rem;margin-top:.4rem;}
+
+.cycle-tabs{display:flex;gap:0;border-bottom:2px solid var(--cr3);margin-top:3rem;}
+.cycle-tab{padding:1rem 2.5rem;font-size:.9rem;font-weight:700;text-transform:uppercase;cursor:pointer;border:none;background:transparent;border-bottom:3px solid transparent;color:var(--md);margin-bottom:-2px;}
+.cycle-tab.active{color:var(--fo);border-bottom-color:var(--fo);background:rgba(16,79,45,.05);}
+.cycle-hero{display:grid;grid-template-columns:1.2fr 1fr;gap:4rem;align-items:center;margin-bottom:4rem;}
+.cycle-hero img{width:100%;border-radius:var(--rad);box-shadow:0 8px 24px rgba(26,26,26,.08);}
+
+.palmares-banner{display:flex;background:var(--wh);border:1px solid var(--cr2);border-radius:var(--rad);box-shadow:0 4px 12px rgba(26,26,26,.04);overflow:hidden;margin-top:2rem;}
+.palmares-content{padding:2.5rem;flex:1.2;}
+.palmares-score{font-family:'Montserrat', sans-serif;font-size:2.8rem;font-weight:800;color:var(--tr);line-height:1;margin-bottom:1.2rem;}
+.palmares-score small{font-size:1rem;color:var(--md);text-transform:uppercase;font-weight:700;display:inline-block;margin-left:.5rem;}
+.palmares-img-wrap{flex:1;background:var(--cr);position:relative;min-height:250px;}
+.palmares-img-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+
+.note-list{display:flex;flex-direction:column;gap:1rem;margin-top:2rem;}
+.note-item{background:var(--wh);border:1px solid var(--cr2);padding:1.2rem 1.8rem;display:flex;align-items:center;justify-content:space-between;border-radius:var(--rad);cursor:pointer;transition:all .2s;}
+.note-item:hover{border-color:var(--tr);background:var(--li);transform:translateX(5px);}
+.note-dot{width:10px;height:10px;border-radius:50%;background:var(--tr);flex-shrink:0;}
+.note-title{font-size:1rem;font-weight:600;}
+
+/* FOOTER */
+footer{background:var(--fo2);color:rgba(253,252,248,.7);}
+.foot-top{max-width:1280px;margin:0 auto;padding:4.5rem 2rem 3rem;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;border-bottom:1px solid rgba(255,255,255,.05);}
+.foot-brand-name{font-family:'Montserrat', sans-serif;font-size:1.8rem;font-weight:800;color:var(--wh);margin-bottom:.6rem;}
+.foot-brand-name em{color:var(--go2);font-style:italic;}
+.foot-col h4{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--wh);margin-bottom:1.5rem;}
+.foot-links{list-style:none;display:flex;flex-direction:column;gap:.7rem;}
+.foot-links a,.foot-links button{font-size:.85rem;color:rgba(253,252,248,.6);text-decoration:none;cursor:pointer;background:none;border:none;text-align:left;transition:color .2s;}
+.foot-links a:hover,.foot-links button:hover{color:var(--go2);}
+.foot-bottom{max-width:1280px;margin:0 auto;padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;}
+
+@media(max-width:1100px){
+  .admin-grid{grid-template-columns:1fr;}
+  .cycle-hero{grid-template-columns:1fr;}
+  .palmares-banner{flex-direction:column;}
+}
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr; height:auto; min-height:800px;}
+  .hero-left{border-right:none; border-bottom:3px solid var(--fo);}
+  .nav-menu,.nav-cta{display:none;}
+  .hamburger{display:flex;}
+  .stats-strip{grid-template-columns:1fr 1fr;}
+  .stat-cell:nth-child(3){border-left:none;}
+}
+
+/* ==========================================================================
+   STYLES ADMIN (Isolés)
+   ========================================================================== */
+#admin-container {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: var(--bg);
+  overflow-y: auto;
+}
+
+#admin-container #loginScreen{position:fixed;inset:0;z-index:9999;background:var(--fo2);display:flex;align-items:center;justify-content:center;}
+#admin-container .login-box{background:var(--wh);width:400px;padding:3rem;border-top:4px solid var(--tr);box-shadow:0 20px 60px rgba(0,0,0,.3);}
+#admin-container .login-logo{display:block;width:80px;height:80px;object-fit:contain;margin:0 auto 1.5rem;}
+#admin-container .login-box h1{font-family:'Montserrat',sans-serif;font-size:1.5rem;font-weight:800;color:var(--fo);text-align:center;margin-bottom:.3rem;}
+#admin-container .login-box p{text-align:center;color:var(--md);font-size:.82rem;margin-bottom:2rem;}
+#admin-container .lf{margin-bottom:1.2rem;}
+#admin-container .lf label{display:block;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--dk);margin-bottom:.4rem;}
+#admin-container .lf input{width:100%;padding:.8rem 1rem;border:1.5px solid var(--cr2);font-size:.9rem;outline:none;background:var(--bg2);}
+#admin-container .login-btn{width:100%;padding:.9rem;background:var(--fo);color:var(--wh);font-weight:700;text-transform:uppercase;border:none;cursor:pointer;}
+#admin-container .login-err{background:#FEE2E2;border:1px solid #FCA5A5;color:#DC2626;padding:.7rem 1rem;font-size:.82rem;margin-top:.8rem;display:none;text-align:center;}
+
+#admin-container #adminApp{display:none;min-height:100vh;}
+#admin-container .a-topbar{position:fixed;top:0;left:0;right:0;height:54px;background:var(--fo2);z-index:500;display:flex;align-items:center;justify-content:space-between;padding:0 1.4rem;border-bottom:2px solid var(--tr);}
+#admin-container .a-topbar-l{display:flex;align-items:center;gap:1rem;}
+#admin-container .a-topbar-l img{height:34px;object-fit:contain;}
+#admin-container .a-topbar-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.88rem;color:var(--wh);text-transform:uppercase;}
+#admin-container .a-topbar-title span{color:var(--go);}
+#admin-container .a-topbar-r{display:flex;align-items:center;gap:.8rem;}
+#admin-container .tbtn{background:rgba(255,255,255,.1);color:var(--wh);border:1px solid rgba(255,255,255,.2);padding:.38rem .9rem;font-size:.72rem;font-weight:700;text-transform:uppercase;cursor:pointer;}
+#admin-container .tbtn.danger{background:rgba(220,38,38,.2);border-color:rgba(220,38,38,.3);}
+
+#admin-container .a-layout{display:flex;margin-top:54px;min-height:calc(100vh - 54px);}
+#admin-container .a-sidebar{width:var(--sidebar);background:var(--wh);border-right:2px solid var(--cr);position:fixed;top:54px;left:0;bottom:0;overflow-y:auto;z-index:400;}
+#admin-container .sb-who{padding:1rem 1.3rem;border-bottom:1px solid var(--cr);}
+#admin-container .sb-section{font-size:.63rem;font-weight:700;text-transform:uppercase;color:var(--lt);padding:.7rem 1.3rem .3rem;}
+#admin-container .sb-btn{display:flex;align-items:center;gap:.7rem;padding:.62rem 1.3rem;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--md);border:none;background:none;width:100%;text-align:left;border-left:3px solid transparent;}
+#admin-container .sb-btn:hover{background:var(--bg);color:var(--tr);}
+#admin-container .sb-btn.active{background:rgba(16,79,45,.06);color:var(--fo);border-left-color:var(--fo);}
+
+#admin-container .a-main{margin-left:var(--sidebar);flex:1;padding:2rem;min-height:calc(100vh - 54px);}
+#admin-container .panel{display:none;} #admin-container .panel.active{display:block;}
+#admin-container .panel-hd{margin-bottom:1.8rem;padding-bottom:1.4rem;border-bottom:2px solid var(--cr);}
+#admin-container .panel-hd h2{font-family:'Montserrat',sans-serif;font-size:1.7rem;font-weight:800;color:var(--fo);margin-bottom:.25rem;}
+#admin-container .ac{background:var(--wh);border:1px solid var(--cr);padding:1.6rem;margin-bottom:1.4rem;}
+#admin-container .ac h3{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--fo);margin-bottom:1.1rem;padding-bottom:.7rem;border-bottom:1px solid var(--cr);}
+
+#admin-container .fg{margin-bottom:1.1rem;}
+#admin-container .fg label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--dk);margin-bottom:.4rem;}
+#admin-container .fg input,#admin-container .fg select,#admin-container .fg textarea{width:100%;background:var(--bg2);border:1.5px solid var(--cr2);padding:.7rem .9rem;outline:none;}
+#admin-container .fr{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+
+#admin-container .ig-tabs{display:flex;gap:0;margin-bottom:.6rem;}
+#admin-container .ig-tab{padding:.35rem .9rem;font-size:.72rem;font-weight:700;text-transform:uppercase;border:1.5px solid var(--cr2);background:var(--bg);cursor:pointer;}
+#admin-container .ig-tab.active{background:var(--fo);color:var(--wh);border-color:var(--fo);}
+#admin-container .ig-url,#admin-container .ig-file{display:none;}
+#admin-container .ig-url.show,#admin-container .ig-file.show{display:block;}
+#admin-container .ig-prev{width:110px;height:72px;object-fit:cover;border:1.5px solid var(--cr2);margin-top:.4rem;display:none;}
+#admin-container .ig-prev.show{display:block;}
+
+#admin-container .bp{background:var(--fo);color:var(--wh);padding:.65rem 1.5rem;font-weight:700;text-transform:uppercase;border:none;cursor:pointer;}
+#admin-container .bd{background:#DC2626;color:var(--wh);padding:.45rem .85rem;font-size:.72rem;font-weight:700;text-transform:uppercase;border:none;cursor:pointer;}
+#admin-container .be{background:var(--bg);color:var(--fo);border:1.5px solid var(--fo);padding:.45rem .85rem;font-size:.72rem;font-weight:700;text-transform:uppercase;cursor:pointer;}
+#admin-container .ba{background:var(--tr);color:var(--wh);padding:.6rem 1.3rem;font-weight:700;text-transform:uppercase;border:none;cursor:pointer;}
+
+#admin-container .ds-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:1rem;margin-bottom:1.8rem;}
+#admin-container .ds-cell{background:var(--wh);border:1px solid var(--cr);padding:1.4rem;border-top:3px solid var(--fo);}
+#admin-container .ds-n{font-family:'Montserrat',sans-serif;font-size:2.2rem;font-weight:800;color:var(--fo);line-height:1;margin-bottom:.35rem;}
+
+#admin-container .ilist{display:flex;flex-direction:column;gap:.7rem;margin-top:.8rem;}
+#admin-container .irow{background:var(--bg2);border:1px solid var(--cr);padding:.9rem 1.1rem;display:grid;align-items:center;gap:.9rem;}
+#admin-container .irow.wi{grid-template-columns:56px 1fr auto;}
+#admin-container .ithumb{width:56px;height:42px;object-fit:cover;border:1px solid var(--cr2);flex-shrink:0;background:var(--cr);}
+
+#admin-container .mb{position:fixed;inset:0;z-index:2000;background:rgba(10,54,30,.85);display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;visibility:hidden;transition:all .25s;}
+#admin-container .mb.open{opacity:1;visibility:visible;}
+#admin-container .mbox{background:var(--wh);width:100%;max-width:600px;max-height:90vh;overflow-y:auto;border-top:4px solid var(--tr);}
+#admin-container .mhead{padding:1.3rem 1.8rem;border-bottom:1px solid var(--cr);display:flex;justify-content:space-between;}
+#admin-container .mbody{padding:1.6rem 1.8rem;}
+#admin-container .mfoot{padding:1rem 1.8rem;border-top:1px solid var(--cr);display:flex;justify-content:flex-end;gap:.7rem;}
+
+#toast{position:fixed;bottom:1.8rem;right:1.8rem;z-index:9999999;background:var(--fo);color:var(--wh);padding:.9rem 1.6rem;font-weight:600;box-shadow:0 8px 24px rgba(16,79,45,.3);transform:translateY(16px);opacity:0;transition:all .3s;pointer-events:none;border-left:4px solid var(--go);}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast.error{background:#DC2626;border-left-color:#FCA5A5;}
+</style>
+</head>
+<body>
+
+<!-- ==========================================================================
+     APPLICATION PUBLIQUE
+     ========================================================================== -->
+<div id="public-site">
+  <div class="topbar">
+    <div class="topbar-left">
+      <span>📍 Bingerville, Abidjan 01</span>
+      <span id="top-tel">📞 +225 27 22 52 79 00</span>
+      <span id="top-email">✉ lemiri2015ac@gmail.com</span>
+    </div>
+    <div class="topbar-right">
+      <a href="https://www.expertpro-ci.net/accueilpreinscription.php" target="_blank">Inscription Nouvel Élève</a>
+      <a href="https://www.expertpro-ci.net/accueilpreinscription.php" target="_blank">Réinscription</a>
+    </div>
+  </div>
+
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-logo" onclick="go('accueil')">
+        <img class="nav-logo-img" src="https://static.wixstatic.com/media/568692_f9b4440e8b2e4586bd61ffab50a3f1d2~mv2.jpg" alt="Logo GSM">
+      </div>
+      <ul class="nav-menu">
+        <li class="nav-item"><button class="nav-link" onclick="go('accueil')" id="nav-accueil">Accueil</button></li>
+        <li class="nav-item">
+          <button class="nav-link" onclick="go('admin')">Administration <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></button>
+          <div class="dropdown">
+            <button onclick="go('admin','historique')">Historique / Le MIRI</button>
+            <button onclick="go('admin','reglement')">Règlement intérieur</button>
+            <button onclick="go('admin','organigramme')">Organigramme</button>
+            <button onclick="go('admin','notes-service')">Notes de service</button>
+            <button onclick="go('admin','liste-eleves')">Liste des élèves</button>
+          </div>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" onclick="go('groupe')">Groupe Scolaire <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></button>
+          <div class="dropdown">
+            <button onclick="go('groupe','maternelle')">Maternelle</button>
+            <button onclick="go('groupe','primaire')">Primaire</button>
+            <button onclick="go('groupe','secondaire')">Secondaire & Lycée</button>
+          </div>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" onclick="go('enseignants')">Enseignants</button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" onclick="go('parents')">Parents d'Élèves</button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" onclick="go('vie')">Vie Scolaire</button>
+        </li>
+        <li class="nav-item"><button class="nav-link" onclick="go('blog')">Événements</button></li>
+      </ul>
+      <button class="nav-cta" onclick="window.open('https://www.expertpro-ci.net/accueilpreinscription.php','_blank')">Inscription 2025-2026</button>
+    </div>
+  </nav>
+
+  <div class="ticker">
+    <div class="ticker-track" id="tickerTrack"></div>
+  </div>
+
+  <div id="root"></div>
+
+  <footer>
+    <div class="foot-top">
+      <div>
+        <div class="foot-brand-name" id="foot-name">Groupe Scolaire <em>Le Miri</em></div>
+        <p style="font-size:.85rem;line-height:1.7;max-width:280px;margin-top:.8rem;">Former les esprits qui construiront l'Afrique de demain. Excellence, rigueur et bienveillance.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Navigation</h4>
+        <ul class="foot-links">
+          <li><button onclick="go('accueil')">Accueil</button></li>
+          <li><button onclick="go('admin')">Administration</button></li>
+          <li><button onclick="go('groupe')">Groupe Scolaire</button></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Inscriptions</h4>
+        <ul class="foot-links">
+          <li><a href="https://www.expertpro-ci.net/accueilpreinscription.php" target="_blank">Nouvel élève</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Contact</h4>
+        <ul class="foot-links">
+          <li><span id="foot-tel"></span></li>
+          <li><span id="foot-email"></span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2025 Groupe Scolaire Le Miri — Tous droits réservés</span>
+      <a onclick="openAdmin()" style="cursor:pointer; opacity:0.6; font-weight:700;">⚙️ Accès CMS Administrateur</a>
+    </div>
+  </footer>
+</div>
+
+<!-- ==========================================================================
+     APPLICATION ADMIN / CMS
+     ========================================================================== -->
+<div id="admin-container">
+  
+  <div id="loginScreen">
+    <div class="login-box">
+      <img class="login-logo" src="https://static.wixstatic.com/media/568692_f9b4440e8b2e4586bd61ffab50a3f1d2~mv2.jpg" alt="Logo Le Miri">
+      <h1>CMS Le Miri</h1>
+      <p>Panneau d'administration en direct</p>
+      <div class="lf"><label>Identifiant</label><input type="text" id="loginUser" placeholder="admin" value="admin"></div>
+      <div class="lf"><label>Mot de passe</label><input type="password" id="loginPass" placeholder="lemiri2025" value="lemiri2025"></div>
+      <button class="login-btn" onclick="doLogin()">Accéder au panneau</button>
+      <div class="login-err" id="loginError">Identifiant ou mot de passe incorrect.</div>
+      <button onclick="closeAdmin()" style="background:none;border:none;color:var(--md);margin-top:1rem;width:100%;cursor:pointer;text-decoration:underline;">Retour au site</button>
+    </div>
+  </div>
+
+  <div id="adminApp">
+    <div class="a-topbar">
+      <div class="a-topbar-l">
+        <span class="a-topbar-title">Administration <span>Le Miri</span></span>
+      </div>
+      <div class="a-topbar-r">
+        <button class="tbtn" onclick="closeAdmin()">← Voir le site public</button>
+        <button class="tbtn danger" onclick="doLogout()">Déconnexion</button>
+      </div>
+    </div>
+
+    <div class="a-layout">
+      <aside class="a-sidebar">
+        <div class="sb-who">
+          <div style="font-size:.65rem;color:var(--lt);text-transform:uppercase;font-weight:700;">Connecté</div>
+          <div style="font-size:.88rem;font-weight:700;color:var(--fo);">Administrateur</div>
+        </div>
+        <div class="sb-section">Tableau de bord</div>
+        <button class="sb-btn active" onclick="showPanel('dashboard')" data-panel="dashboard">Vue Générale</button>
+        <div class="sb-section">Contenu du site</div>
+        <button class="sb-btn" onclick="showPanel('config')" data-panel="config">Paramètres / Contact</button>
+        <button class="sb-btn" onclick="showPanel('hero')" data-panel="hero">Carrousel Accueil</button>
+        <button class="sb-btn" onclick="showPanel('actualites')" data-panel="actualites">Actualités & Événements</button>
+        <button class="sb-btn" onclick="showPanel('ticker')" data-panel="ticker">Bandeau défilant</button>
+        <div class="sb-section">Administration</div>
+        <button class="sb-btn" onclick="showPanel('pages')" data-panel="pages">Textes des pages</button>
+        <button class="sb-btn" onclick="showPanel('palmares')" data-panel="palmares">Palmarès (CEPE/BEPC)</button>
+        <button class="sb-btn" onclick="showPanel('notes')" data-panel="notes">Notes de Service</button>
+        <button class="sb-btn" onclick="showPanel('enseignants')" data-panel="enseignants">Liste Enseignants</button>
+      </aside>
+
+      <main class="a-main">
+        <!-- DASHBOARD -->
+        <div class="panel active" id="panel-dashboard">
+          <div class="panel-hd"><h2>Tableau de bord CMS</h2><p>Toute modification est répercutée instantanément sur le site public.</p></div>
+          <div class="ds-grid">
+            <div class="ds-cell"><div class="ds-n" id="ds-ev">-</div><div style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--md);">Actualités</div></div>
+            <div class="ds-cell"><div class="ds-n" id="ds-te">-</div><div style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--md);">Enseignants</div></div>
+            <div class="ds-cell"><div class="ds-n" id="ds-sl">-</div><div style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--md);">Slides Accueil</div></div>
+          </div>
+          <div class="ac">
+            <h3>Mode de fonctionnement</h3>
+            <p style="color:var(--md); font-size:0.9rem;">Ce CMS en mémoire gère le contenu de la session courante. Les modifications que vous effectuez ici mettront immédiatement à jour l'affichage de l'interface publique. Vous pouvez basculer entre les deux vues via le bouton en haut à droite.</p>
+          </div>
+        </div>
+
+        <!-- CONFIG -->
+        <div class="panel" id="panel-config">
+          <div class="panel-hd"><h2>Paramètres généraux</h2><p>Modifiez les informations principales (Contact, Stats)</p></div>
+          <div class="ac"><h3>Identité & Contact</h3>
+            <div class="fr">
+              <div class="fg"><label>Nom complet</label><input id="cfg-name" type="text"></div>
+              <div class="fg"><label>Code établissement</label><input id="cfg-code" type="text"></div>
+            </div>
+            <div class="fr">
+              <div class="fg"><label>Téléphone</label><input id="cfg-tel" type="text"></div>
+              <div class="fg"><label>Email</label><input id="cfg-email" type="email"></div>
+            </div>
+          </div>
+          <div class="ac"><h3>Statistiques Accueil</h3>
+            <div class="fr">
+              <div class="fg"><label>Élèves inscrits</label><input id="cfg-s1" type="number"></div>
+              <div class="fg"><label>Préscolaire-Primaire</label><input id="cfg-s2" type="number"></div>
+              <div class="fg"><label>Candidats BEPC</label><input id="cfg-s3" type="number"></div>
+              <div class="fg"><label>Candidats BAC</label><input id="cfg-s4" type="number"></div>
+            </div>
+          </div>
+          <div class="ac"><h3>Directeur (Page Accueil)</h3>
+            <div class="fr">
+              <div class="fg"><label>Nom</label><input id="cfg-dname" type="text"></div>
+              <div class="fg"><label>Titre</label><input id="cfg-dtitle" type="text"></div>
+            </div>
+            <div class="fg"><label>URL Photo</label><input id="cfg-dphoto" type="text"></div>
+          </div>
+          <button class="bp" onclick="saveConfig()">Enregistrer les paramètres</button>
+        </div>
+
+        <!-- HERO CAROUSEL -->
+        <div class="panel" id="panel-hero">
+          <div class="panel-hd"><h2>Carrousel accueil</h2></div>
+          <button class="ba" onclick="openSlideMod(null)" style="margin-bottom:1.3rem;">Ajouter un slide</button>
+          <div class="ilist" id="slidesList"></div>
+        </div>
+
+        <!-- ACTUALITES -->
+        <div class="panel" id="panel-actualites">
+          <div class="panel-hd"><h2>Actualités et Événements</h2></div>
+          <button class="ba" onclick="openEvMod(null)" style="margin-bottom:1.3rem;">Ajouter une actualité</button>
+          <div class="ilist" id="eventsList"></div>
+        </div>
+
+        <!-- TICKER -->
+        <div class="panel" id="panel-ticker">
+          <div class="panel-hd"><h2>Bandeau défilant</h2></div>
+          <div class="ac">
+            <div id="tickerItems"></div>
+            <button class="ba" onclick="addTicker()" style="margin-top:.9rem;">Ajouter</button>
+            <div style="margin-top:1.3rem;"><button class="bp" onclick="saveTicker()">Enregistrer</button></div>
+          </div>
+        </div>
+
+        <!-- TEXTES PAGES -->
+        <div class="panel" id="panel-pages">
+          <div class="panel-hd"><h2>Éditeur de textes</h2></div>
+          <div id="pagesGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;"></div>
+        </div>
+
+        <!-- PALMARES -->
+        <div class="panel" id="panel-palmares">
+          <div class="panel-hd"><h2>Palmarès (CEPE/BEPC/BAC)</h2></div>
+          <div class="ac"><h3>CEPE</h3>
+            <div class="fr"><div class="fg"><label>Taux</label><input id="p-cepe-r"></div><div class="fg"><label>Texte</label><input id="p-cepe-t"></div></div>
+          </div>
+          <div class="ac"><h3>BEPC</h3>
+            <div class="fr"><div class="fg"><label>Taux</label><input id="p-bepc-r"></div><div class="fg"><label>Texte</label><input id="p-bepc-t"></div></div>
+          </div>
+          <button class="bp" onclick="savePalmares()">Enregistrer</button>
+        </div>
+
+        <!-- NOTES DE SERVICE -->
+        <div class="panel" id="panel-notes">
+          <div class="panel-hd"><h2>Notes de Service</h2></div>
+          <button class="ba" onclick="openNoteMod('service',null)" style="margin-bottom:1.3rem;">Ajouter</button>
+          <div class="ilist" id="notesList"></div>
+        </div>
+
+        <!-- ENSEIGNANTS -->
+        <div class="panel" id="panel-enseignants">
+          <div class="panel-hd"><h2>Liste des Enseignants</h2></div>
+          <button class="ba" onclick="openTchMod(null)" style="margin-bottom:1.3rem;">Ajouter</button>
+          <div class="ilist" id="teachersList"></div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- MODALS ADMIN -->
+  <div class="mb" id="mod-slide">
+    <div class="mbox">
+      <div class="mhead"><h3>Slide carrousel</h3></div>
+      <div class="mbody">
+        <div class="fg"><label>URL Image</label><input id="sl-img-v" type="text"></div>
+        <div class="fg"><label>Tag</label><input id="sl-tag" type="text"></div>
+        <div class="fg"><label>Titre</label><input id="sl-title" type="text"></div>
+        <input type="hidden" id="sl-idx">
+      </div>
+      <div class="mfoot"><button class="be" onclick="closeMod('mod-slide')">Annuler</button><button class="bp" onclick="saveSlide()">Enregistrer</button></div>
+    </div>
+  </div>
+
+  <div class="mb" id="mod-ev">
+    <div class="mbox">
+      <div class="mhead"><h3>Actualité</h3></div>
+      <div class="mbody">
+        <div class="fg"><label>URL Image</label><input id="ev-img-v" type="text"></div>
+        <div class="fr">
+          <div class="fg"><label>Date</label><input id="ev-date" type="text"></div>
+          <div class="fg"><label>Tag</label><input id="ev-tag" type="text"></div>
+        </div>
+        <div class="fg"><label>Titre</label><input id="ev-title" type="text"></div>
+        <div class="fg"><label>Texte</label><textarea id="ev-text" rows="3"></textarea></div>
+        <input type="hidden" id="ev-idx">
+      </div>
+      <div class="mfoot"><button class="be" onclick="closeMod('mod-ev')">Annuler</button><button class="bp" onclick="saveEvent()">Enregistrer</button></div>
+    </div>
+  </div>
+
+  <div class="mb" id="mod-note">
+    <div class="mbox">
+      <div class="mhead"><h3>Note de service</h3></div>
+      <div class="mbody">
+        <div class="fr">
+          <div class="fg"><label>Date</label><input id="note-date" type="text"></div>
+          <div class="fg"><label>Titre</label><input id="note-title" type="text"></div>
+        </div>
+        <div class="fg"><label>URL PDF</label><input id="note-pdf-v" type="text"></div>
+        <input type="hidden" id="note-idx">
+      </div>
+      <div class="mfoot"><button class="be" onclick="closeMod('mod-note')">Annuler</button><button class="bp" onclick="saveNote()">Enregistrer</button></div>
+    </div>
+  </div>
+
+  <div class="mb" id="mod-tch">
+    <div class="mbox">
+      <div class="mhead"><h3>Enseignant</h3></div>
+      <div class="mbody">
+        <div class="fg"><label>Nom</label><input id="tch-name" type="text"></div>
+        <div class="fg"><label>Discipline</label><input id="tch-subj" type="text"></div>
+        <input type="hidden" id="tch-idx">
+      </div>
+      <div class="mfoot"><button class="be" onclick="closeMod('mod-tch')">Annuler</button><button class="bp" onclick="saveTch()">Enregistrer</button></div>
+    </div>
+  </div>
+
+  <div class="mb" id="mod-page">
+    <div class="mbox">
+      <div class="mhead"><h3>Éditer Texte</h3></div>
+      <div class="mbody">
+        <div class="fg"><label>Titre</label><input type="text" id="ped-title"></div>
+        <div class="fg"><label>Contenu</label><textarea id="ped-content" rows="6"></textarea></div>
+      </div>
+      <div class="mfoot"><button class="be" onclick="closeMod('mod-page')">Annuler</button><button class="bp" onclick="savePage()">Enregistrer</button></div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+</div>
+
+<script>
+/* ==========================================================================
+   DONNÉES GLOBALES (ÉTAT CENTRALISÉ CMS <-> PUBLIC)
+   ========================================================================== */
+const APP_DATA = {
+  'site:config': {
+    name:'Groupe Scolaire Le Miri', code:'041604', tel:'+225 27 22 52 79 00', email:'lemiri2015ac@gmail.com', address:'01 BP 8051, Abidjan 01 — Bingerville', year:'2025-2026',
+    s1:542, s2:105, s3:77, s4:78,
+    dname:'M. LAWSON Silvere', dtitle:'Directeur des Études', dphoto:'https://static.wixstatic.com/media/568692_3e5e5748f7054e3bb0d5a3576f283e20~mv2.jpeg',
+    dmsg:"Bienvenue au Groupe Scolaire Le Miri."
+  },
+  'site:slides': [
+    {img:'https://static.wixstatic.com/media/568692_e74ddedabe33488d96e4e1f158cd0e2e~mv2.jpeg',tag:'Vie scolaire · Mars 2026',title:"Journée internationale des droits des femmes"},
+    {img:'https://static.wixstatic.com/media/568692_5872756807264897800571835c6aa93e~mv2.jpeg',tag:'Excellence · Juin 2025',title:"Journée du mérite et de l'excellence"},
+    {img:'https://static.wixstatic.com/media/568692_4e332bbf1a0b463b88aca254efd3e71b~mv2.jpeg',tag:'Prix · Mai 2025',title:"Prix d'excellence — Meilleur élève"}
+  ],
+  'site:events': [
+    {img:'https://static.wixstatic.com/media/568692_e74ddedabe33488d96e4e1f158cd0e2e~mv2.jpeg',date:'Mars 2026',title:"Journée des droits des femmes",text:"Célébration et participation active de l'école.",tag:'Vie scolaire'},
+    {img:'https://static.wixstatic.com/media/568692_5872756807264897800571835c6aa93e~mv2.jpeg',date:'Juin 2025',title:"Journée du mérite",text:"Récompense de nos meilleurs élèves.",tag:'Excellence'},
+    {img:'https://static.wixstatic.com/media/568692_54db957d77394b61a594f9e1e70a819d~mv2.jpeg',date:'Mai 2025',title:"Concours d'anglais",text:"Qualification de BINTUNI JOËLLE pour la finale.",tag:'Compétition'}
+  ],
+  'site:ticker': ["Ouverture de la piscine 2025-2026", "Inscriptions 2025-2026 ouvertes", "BAC 2024 : 95% · BEPC 2024 : 92%"],
+  'site:notes_service': [
+    {date:'12 Septembre 2025',title:"Ouverture de la piscine",pdf:''},
+    {date:'05 Octobre 2025',title:'Nouvelle tenue du lundi',pdf:''}
+  ],
+  'site:palmares': {
+    cepe:{rate:'100%',year:'2025',text:"Félicitations à tous nos élèves !"},
+    bepc:{rate:'82.19%',year:'2025',text:"Une belle performance à la session officielle."},
+    bac:{rate:'95%',year:'2024',text:"Taux exceptionnel."}
+  },
+  'site:teachers': [
+    {name:'M. KOUASSI Jean',subj:'Mathématiques'},
+    {name:'Mme BAMBA Fatou',subj:'Français'},
+    {name:'M. TOURE Ali',subj:'Anglais'}
+  ],
+  'site:pages': {
+    historique:{title:'Historique — Le MIRI',content:"Le Groupe Scolaire Le Miri est un établissement privé laïc à Bingerville. Notre établissement se distingue par ses résultats exceptionnels."},
+    reglement:{title:'Règlement Intérieur',content:"Le règlement vise à garantir un environnement d'apprentissage sécurisé pour tous."},
+    organigramme:{title:'Organigramme',content:"Direction Générale, Direction des Études, Corps enseignant."},
+    maternelle:{title:'La Maternelle du Miri',content:"Un environnement chaleureux pour les tout-petits."},
+    primaire:{title:'Le Primaire',content:"Des bases solides en lecture et mathématiques."},
+    secondaire:{title:'Secondaire & Lycée',content:"Accompagnement vers le Baccalauréat."}
+  }
+};
+
+/* ==========================================================================
+   LOGIQUE ADMINISTRATEUR (CMS)
+   ========================================================================== */
+let isAdminLoggedIn = false;
+let curPageKey = '';
+
+function openAdmin() {
+  document.getElementById('public-site').style.display = 'none';
+  document.getElementById('admin-container').style.display = 'block';
+  if (isAdminLoggedIn) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminApp').style.display = 'block';
+    loadDash();
+  } else {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('adminApp').style.display = 'none';
+  }
+}
+
+function closeAdmin() {
+  document.getElementById('admin-container').style.display = 'none';
+  document.getElementById('public-site').style.display = 'block';
+  renderPublicApp(); // Mettre à jour la vue publique avec les nouvelles données
+}
+
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  if (u === 'admin' && p === 'lemiri2025') {
+    isAdminLoggedIn = true;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminApp').style.display = 'block';
+    loadDash();
+  } else {
+    const err = document.getElementById('loginError');
+    err.style.display = 'block';
+    setTimeout(() => err.style.display = 'none', 3000);
+  }
+}
+
+function doLogout() {
+  isAdminLoggedIn = false;
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('adminApp').style.display = 'none';
+}
+
+function showPanel(name) {
+  document.querySelectorAll('#adminApp .panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#adminApp .sb-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.querySelector(`[data-panel="${name}"]`).classList.add('active');
+  
+  if(name==='config') loadConfig();
+  if(name==='hero') loadSlides();
+  if(name==='actualites') loadEvents();
+  if(name==='ticker') loadTicker();
+  if(name==='notes') loadNotes();
+  if(name==='enseignants') loadEns();
+  if(name==='palmares') loadPalmares();
+  if(name==='pages') loadPagesGrid();
+}
+
+function loadDash() {
+  document.getElementById('ds-ev').textContent = APP_DATA['site:events'].length;
+  document.getElementById('ds-te').textContent = APP_DATA['site:teachers'].length;
+  document.getElementById('ds-sl').textContent = APP_DATA['site:slides'].length;
+}
+
+function v(id){return document.getElementById(id).value.trim();}
+function h(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function toast(msg, err=false){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = err ? 'show error' : 'show';
+  setTimeout(() => t.className = '', 3000);
+}
+function openMod(id){document.getElementById(id).classList.add('open');}
+function closeMod(id){document.getElementById(id).classList.remove('open');}
+
+/* Éditeurs CMS */
+function loadConfig() {
+  const c = APP_DATA['site:config'];
+  ['name','code','tel','email'].forEach(k => document.getElementById('cfg-'+k).value = c[k]);
+  ['s1','s2','s3','s4'].forEach(k => document.getElementById('cfg-'+k).value = c[k]);
+  ['dname','dtitle','dphoto'].forEach(k => document.getElementById('cfg-'+k).value = c[k]);
+}
+function saveConfig() {
+  const c = APP_DATA['site:config'];
+  ['name','code','tel','email','s1','s2','s3','s4','dname','dtitle','dphoto'].forEach(k => c[k] = v('cfg-'+k));
+  toast('Paramètres enregistrés');
+}
+
+function loadSlides() {
+  const sl = APP_DATA['site:slides'];
+  document.getElementById('slidesList').innerHTML = sl.map((s,i) => `
+    <div class="irow wi">
+      <img class="ithumb" src="${s.img}">
+      <div><h4>${h(s.title)}</h4><p>${h(s.tag)}</p></div>
+      <button class="be" onclick="openSlideMod(${i})">Modifier</button>
+    </div>`).join('');
+}
+function openSlideMod(idx) {
+  document.getElementById('sl-idx').value = idx===null ? '' : idx;
+  if(idx!==null) {
+    const s = APP_DATA['site:slides'][idx];
+    document.getElementById('sl-img-v').value = s.img;
+    document.getElementById('sl-tag').value = s.tag;
+    document.getElementById('sl-title').value = s.title;
+  } else {
+    ['sl-img-v','sl-tag','sl-title'].forEach(id=>document.getElementById(id).value='');
+  }
+  openMod('mod-slide');
+}
+function saveSlide() {
+  const idx = document.getElementById('sl-idx').value;
+  const item = {img:v('sl-img-v'), tag:v('sl-tag'), title:v('sl-title')};
+  if(idx==='') APP_DATA['site:slides'].push(item); else APP_DATA['site:slides'][idx] = item;
+  closeMod('mod-slide'); loadSlides(); toast('Enregistré');
+}
+
+function loadEvents() {
+  document.getElementById('eventsList').innerHTML = APP_DATA['site:events'].map((e,i) => `
+    <div class="irow wi"><img class="ithumb" src="${e.img}"><div><h4>${h(e.title)}</h4></div>
+    <button class="be" onclick="openEvMod(${i})">Modifier</button></div>`).join('');
+}
+function openEvMod(idx) {
+  document.getElementById('ev-idx').value = idx===null ? '' : idx;
+  if(idx!==null) {
+    const e = APP_DATA['site:events'][idx];
+    document.getElementById('ev-img-v').value = e.img;
+    document.getElementById('ev-date').value = e.date;
+    document.getElementById('ev-tag').value = e.tag;
+    document.getElementById('ev-title').value = e.title;
+    document.getElementById('ev-text').value = e.text;
+  } else {
+    ['ev-img-v','ev-date','ev-tag','ev-title','ev-text'].forEach(id=>document.getElementById(id).value='');
+  }
+  openMod('mod-ev');
+}
+function saveEvent() {
+  const idx = document.getElementById('ev-idx').value;
+  const item = {img:v('ev-img-v'), date:v('ev-date'), tag:v('ev-tag'), title:v('ev-title'), text:v('ev-text')};
+  if(idx==='') APP_DATA['site:events'].unshift(item); else APP_DATA['site:events'][idx] = item;
+  closeMod('mod-ev'); loadEvents(); toast('Enregistré');
+}
+
+function loadTicker() {
+  document.getElementById('tickerItems').innerHTML = APP_DATA['site:ticker'].map((t,i) => `
+    <div class="fr" style="margin-bottom:.5rem;">
+      <input type="text" value="${h(t)}" id="tk-${i}">
+      <button class="bd" onclick="APP_DATA['site:ticker'].splice(${i},1);loadTicker()">Supprimer</button>
+    </div>`).join('');
+}
+function addTicker(){ APP_DATA['site:ticker'].push('Nouveau message'); loadTicker(); }
+function saveTicker() {
+  const len = APP_DATA['site:ticker'].length;
+  const arr = [];
+  for(let i=0; i<len; i++) { const el = document.getElementById('tk-'+i); if(el) arr.push(el.value); }
+  APP_DATA['site:ticker'] = arr;
+  toast('Bandeau enregistré');
+}
+
+function loadNotes() {
+  document.getElementById('notesList').innerHTML = APP_DATA['site:notes_service'].map((n,i) => `
+    <div class="irow"><div><h4>${h(n.title)}</h4></div><button class="be" onclick="openNoteMod(null,${i})">Modifier</button></div>`).join('');
+}
+function openNoteMod(_, idx) {
+  document.getElementById('note-idx').value = idx===null ? '' : idx;
+  if(idx!==null) {
+    const n = APP_DATA['site:notes_service'][idx];
+    document.getElementById('note-date').value = n.date;
+    document.getElementById('note-title').value = n.title;
+    document.getElementById('note-pdf-v').value = n.pdf;
+  } else {
+    ['note-date','note-title','note-pdf-v'].forEach(id=>document.getElementById(id).value='');
+  }
+  openMod('mod-note');
+}
+function saveNote() {
+  const idx = document.getElementById('note-idx').value;
+  const item = {date:v('note-date'), title:v('note-title'), pdf:v('note-pdf-v')};
+  if(idx==='') APP_DATA['site:notes_service'].push(item); else APP_DATA['site:notes_service'][idx] = item;
+  closeMod('mod-note'); loadNotes(); toast('Enregistré');
+}
+
+function loadEns() {
+  document.getElementById('teachersList').innerHTML = APP_DATA['site:teachers'].map((t,i) => `
+    <div class="irow"><div><h4>${h(t.name)}</h4></div><button class="be" onclick="openTchMod(${i})">Modifier</button></div>`).join('');
+}
+function openTchMod(idx) {
+  document.getElementById('tch-idx').value = idx===null ? '' : idx;
+  if(idx!==null) {
+    document.getElementById('tch-name').value = APP_DATA['site:teachers'][idx].name;
+    document.getElementById('tch-subj').value = APP_DATA['site:teachers'][idx].subj;
+  } else {
+    document.getElementById('tch-name').value=''; document.getElementById('tch-subj').value='';
+  }
+  openMod('mod-tch');
+}
+function saveTch() {
+  const idx = document.getElementById('tch-idx').value;
+  const item = {name:v('tch-name'), subj:v('tch-subj')};
+  if(idx==='') APP_DATA['site:teachers'].push(item); else APP_DATA['site:teachers'][idx] = item;
+  closeMod('mod-tch'); loadEns(); toast('Enregistré');
+}
+
+const PAGE_DEFS = [
+  {key:'historique', label:'Historique / Le MIRI'}, {key:'reglement', label:'Règlement Intérieur'},
+  {key:'organigramme', label:'Organigramme'}, {key:'maternelle', label:'Maternelle'},
+  {key:'primaire', label:'Primaire'}, {key:'secondaire', label:'Secondaire & Lycée'}
+];
+function loadPagesGrid() {
+  document.getElementById('pagesGrid').innerHTML = PAGE_DEFS.map(p => `
+    <div style="background:var(--bg2);padding:1rem;border:1px solid var(--cr2);cursor:pointer;" onclick="openPageEd('${p.key}')">
+      <h4>${p.label}</h4><p style="font-size:0.8rem;color:var(--md);">Modifier le texte</p>
+    </div>`).join('');
+}
+function openPageEd(key) {
+  curPageKey = key;
+  const p = APP_DATA['site:pages'][key];
+  document.getElementById('ped-title').value = p.title;
+  document.getElementById('ped-content').value = p.content;
+  openMod('mod-page');
+}
+function savePage() {
+  APP_DATA['site:pages'][curPageKey] = {title: v('ped-title'), content: v('ped-content')};
+  closeMod('mod-page'); toast('Page mise à jour');
+}
+
+function loadPalmares() {
+  const p = APP_DATA['site:palmares'];
+  document.getElementById('p-cepe-r').value = p.cepe.rate; document.getElementById('p-cepe-t').value = p.cepe.text;
+  document.getElementById('p-bepc-r').value = p.bepc.rate; document.getElementById('p-bepc-t').value = p.bepc.text;
+}
+function savePalmares() {
+  APP_DATA['site:palmares'].cepe.rate = v('p-cepe-r'); APP_DATA['site:palmares'].cepe.text = v('p-cepe-t');
+  APP_DATA['site:palmares'].bepc.rate = v('p-bepc-r'); APP_DATA['site:palmares'].bepc.text = v('p-bepc-t');
+  toast('Palmarès mis à jour');
+}
+
+/* ==========================================================================
+   LOGIQUE PUBLIQUE (SITE VITRINE DYNAMIQUE)
+   ========================================================================== */
+let currentPage = 'accueil';
+let currentSub = null;
+
+function renderPublicApp() {
+  const root = document.getElementById('root');
+  root.style.animation = 'none';
+  root.innerHTML = '';
+  
+  // Update Ticker and Topbar instantly from APP_DATA
+  const config = APP_DATA['site:config'];
+  document.getElementById('top-tel').textContent = `📞 ${config.tel}`;
+  document.getElementById('top-email').textContent = `✉ ${config.email}`;
+  document.getElementById('foot-tel').textContent = config.tel;
+  document.getElementById('foot-email').textContent = config.email;
+  document.getElementById('foot-name').innerHTML = `${config.name.split(' ')[0]} ${config.name.split(' ')[1]} <em>${config.name.split(' ').slice(2).join(' ')}</em>`;
+
+  const doubledTicker = [...APP_DATA['site:ticker'], ...APP_DATA['site:ticker']];
+  document.getElementById('tickerTrack').innerHTML = doubledTicker.map(t => `<span class="t-item"><span class="t-dot"></span>${t}</span>`).join('');
+
+  requestAnimationFrame(() => {
+    root.style.animation = 'pgIn .35s ease';
+    switch(currentPage) {
+      case 'accueil': root.innerHTML = viewAccueil(); break;
+      case 'admin': root.innerHTML = viewAdmin(currentSub); break;
+      case 'groupe': root.innerHTML = viewGroupe(currentSub); break;
+      case 'enseignants': root.innerHTML = viewEnseignants(); break;
+      case 'parents': root.innerHTML = viewParents(); break;
+      case 'blog': root.innerHTML = viewBlog(); break;
+      default: root.innerHTML = viewAccueil();
+    }
+    if (currentPage === 'accueil') { initCarousel(); initCounters(); }
+  });
+}
+
+function go(page, sub) {
+  currentPage = page; currentSub = sub || null;
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const el = document.getElementById('nav-' + page);
+  if (el) el.classList.add('active');
+  window.scrollTo({top: 0, behavior:'smooth'});
+  renderPublicApp();
+}
+
+function viewAccueil() {
+  const conf = APP_DATA['site:config'];
+  const slides = APP_DATA['site:slides'].map(s => `
+    <div class="carousel-slide">
+      <img src="${s.img}" alt="${s.title}">
+      <div class="slide-caption"><span class="slide-caption-tag">${s.tag}</span><div class="slide-caption-title">${s.title}</div></div>
+    </div>`).join('');
+    
+  const news = APP_DATA['site:events'].slice(0,3).map(e => `
+    <div class="simple-news-card">
+      <div class="sn-img-wrap"><img src="${e.img}"></div>
+      <div class="sn-content">
+        <div class="sn-date">${e.date}</div><h3 class="sn-title">${e.title}</h3><p class="sn-text">${e.text}</p>
+      </div>
+    </div>`).join('');
+
+  return `
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-tag">Bingerville, Abidjan · Depuis 2015</div>
+      <h1 class="hero-title">Élever chaque<br>esprit,<br><em>construire<br>l'avenir.</em></h1>
+      <p class="hero-desc">Du préscolaire au Baccalauréat, ${conf.name} cultive l'excellence. Travaillons ensemble pour gagner l'année ${conf.year} !</p>
+      <div class="hero-actions">
+        <button class="btn btn-tr" onclick="window.open('https://www.expertpro-ci.net/accueilpreinscription.php')">Inscription</button>
+        <button class="btn btn-outline" onclick="go('groupe')">Découvrir l'école</button>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="carousel-track" id="cTrack">${slides}</div>
+      <button class="carousel-btn prev" id="cPrev">&#8592;</button><button class="carousel-btn next" id="cNext">&#8594;</button>
+      <div class="carousel-dots" id="cDots"></div>
+    </div>
+  </div>
+  
+  <div class="stats-strip">
+    <div class="stat-cell"><div class="stat-n" data-target="${conf.s1}">0</div><div class="stat-l">Élèves inscrits</div></div>
+    <div class="stat-cell"><div class="stat-n" data-target="${conf.s2}">0</div><div class="stat-l">Préscolaire-Primaire</div></div>
+    <div class="stat-cell"><div class="stat-n" data-target="${conf.s3}">0</div><div class="stat-l">Candidats BEPC</div></div>
+    <div class="stat-cell"><div class="stat-n" data-target="${conf.s4}">0</div><div class="stat-l">Candidats BAC</div></div>
+  </div>
+
+  <div class="page"><div class="intro"><div class="intro-grid">
+    <div>
+      <blockquote class="intro-quote">Relevez les défis, et faisons de cette année une <em>année mémorable !</em></blockquote>
+      <div class="director-card">
+        <div class="imgBx"><img src="${conf.dphoto}"></div>
+        <div class="content"><h4>${conf.dname}</h4><h6>${conf.dtitle}</h6></div>
+      </div>
+    </div>
+    <div>
+      <div class="s-tag">Notre mission</div><h2 class="s-h2 mb2">L'excellence au quotidien</h2>
+      <p class="text-md">L'établissement est bien plus qu'une école. C'est un espace de vie où chaque élève est accompagné vers son plein potentiel.</p>
+    </div>
+  </div></div></div>
+  
+  <div class="news-section"><div class="page">
+    <div class="s-tag">L'actualité en direct</div><h2 class="s-h2">Ce qui se passe <em>au Miri</em></h2>
+    <div class="social-feed">${news}</div>
+  </div></div>`;
+}
+
+function viewAdmin(sub) {
+  const p = APP_DATA['site:pages'][sub || 'historique'];
+  return `<div class="page py4">
+    <div class="admin-grid">
+      <div class="sidebar">
+        <h3>Menu</h3>
+        <ul class="sidebar-links">
+          <li><button onclick="go('admin','historique')" class="${(!sub||sub==='historique')?'active':''}">Historique</button></li>
+          <li><button onclick="go('admin','reglement')" class="${sub==='reglement'?'active':''}">Règlement</button></li>
+          <li><button onclick="go('admin','organigramme')" class="${sub==='organigramme'?'active':''}">Organigramme</button></li>
+        </ul>
+      </div>
+      <div class="content-box">
+        <h2>${p.title}</h2>
+        <p style="white-space: pre-line;">${p.content}</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+function viewGroupe(sub) {
+  const s = sub || 'maternelle';
+  const p = APP_DATA['site:pages'][s];
+  const palm = APP_DATA['site:palmares'];
+  
+  let palmaresHtml = '';
+  if(s === 'primaire') palmaresHtml = `<div class="palmares-banner"><div class="palmares-content"><h3 style="color:var(--fo); font-size:1.5rem; margin-bottom:1rem;">Palmarès CEPE</h3><div class="palmares-score">${palm.cepe.rate}</div><p>${palm.cepe.text}</p></div></div>`;
+  if(s === 'secondaire') palmaresHtml = `<div class="palmares-banner"><div class="palmares-content"><h3 style="color:var(--fo); font-size:1.5rem; margin-bottom:1rem;">Palmarès BEPC</h3><div class="palmares-score">${palm.bepc.rate}</div><p>${palm.bepc.text}</p></div></div>`;
+
+  return `<div class="page">
+    <div class="cycle-tabs">
+      <button class="cycle-tab ${s==='maternelle'?'active':''}" onclick="go('groupe','maternelle')">Maternelle</button>
+      <button class="cycle-tab ${s==='primaire'?'active':''}" onclick="go('groupe','primaire')">Primaire</button>
+      <button class="cycle-tab ${s==='secondaire'?'active':''}" onclick="go('groupe','secondaire')">Secondaire & Lycée</button>
+    </div>
+    <div class="py4">
+      <h2 class="s-h2 mb2">${p.title}</h2>
+      <p class="text-md mb2" style="white-space:pre-line;">${p.content}</p>
+      ${palmaresHtml}
+    </div>
+  </div>`;
+}
+
+function viewEnseignants() {
+  const list = APP_DATA['site:teachers'].map(t => `<div style="background:var(--wh);border:1px solid var(--cr2);padding:1rem;border-radius:4px;"><strong>${t.name}</strong><br><span style="color:var(--md);font-size:0.85rem;">${t.subj}</span></div>`).join('');
+  return `<div class="page py4">
+    <h2 class="s-h2 mb2">Liste des Enseignants</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;">${list}</div>
+  </div>`;
+}
+
+function viewParents() {
+  const list = APP_DATA['site:notes_service'].map(n => `<div class="note-item"><div style="display:flex;gap:1rem;align-items:center;"><div class="note-dot"></div><div><div style="font-size:0.75rem;color:var(--md);">${n.date}</div><div class="note-title">${n.title}</div></div></div></div>`).join('');
+  return `<div class="page py4">
+    <h2 class="s-h2 mb2">Notes d'Informations & Parents</h2>
+    <div class="note-list">${list}</div>
+  </div>`;
+}
+
+function viewBlog() {
+  const ev = APP_DATA['site:events'].map(e => `
+    <div class="simple-news-card">
+      <div class="sn-img-wrap"><img src="${e.img}"></div>
+      <div class="sn-content"><div class="sn-date">${e.date}</div><h3 class="sn-title">${e.title}</h3><p class="sn-text">${e.text}</p></div>
+    </div>`).join('');
+  return `<div class="page py4"><h2 class="s-h2 mb2">Événements & Actualités</h2><div class="social-feed">${ev}</div></div>`;
+}
+
+/* Utils publics */
+function initCarousel() {
+  const track = document.getElementById('cTrack');
+  const dotsEl = document.getElementById('cDots');
+  if (!track || !dotsEl) return;
+  const slides = track.querySelectorAll('.carousel-slide');
+  let cur = 0; let timer;
+
+  dotsEl.innerHTML = '';
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(idx) {
+    cur = (idx + slides.length) % slides.length;
+    track.style.transform = `translateX(-${cur * 100}%)`;
+    dotsEl.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+  }
+  function startAuto() { clearInterval(timer); timer = setInterval(() => goTo(cur + 1), 4500); }
+  
+  document.getElementById('cPrev')?.addEventListener('click', () => { goTo(cur - 1); startAuto(); });
+  document.getElementById('cNext')?.addEventListener('click', () => { goTo(cur + 1); startAuto(); });
+  startAuto();
+}
+
+function initCounters() {
+  const els = document.querySelectorAll('[data-target]');
+  els.forEach(el => {
+    const target = parseInt(el.dataset.target);
+    let start = null;
+    const step = ts => {
+      if (!start) start = ts;
+      const p = Math.min((ts - start) / 1500, 1);
+      el.textContent = Math.round((1 - Math.pow(1 - p, 3)) * target);
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+// Démarrage initial
+window.addEventListener('DOMContentLoaded', renderPublicApp);
+</script>
+</body>
+</html>
