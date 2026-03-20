@@ -446,9 +446,9 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
     <div class="login-box">
       <img class="login-logo" src="https://static.wixstatic.com/media/568692_f9b4440e8b2e4586bd61ffab50a3f1d2~mv2.jpg" alt="Logo Le Miri">
       <h1>CMS Le Miri</h1>
-      <p>Panneau d'administration en direct</p>
+      <p>Panneau d'administration en direct (Cloud Sync)</p>
       <div class="lf"><label>Identifiant</label><input type="text" id="loginUser" placeholder="admin" value="admin"></div>
-      <div class="lf"><label>Mot de passe</label><input type="password" id="loginPass" placeholder="lemiri2025" value="lemiri2025"></div>
+      <div class="lf"><label>Mot de passe</label><input type="password" id="loginPass" placeholder="lemiri2025" value="lemiri2025" onkeydown="if(event.key==='Enter') window.doLogin()"></div>
       <button class="login-btn" onclick="doLogin()">Accéder au panneau</button>
       <div class="login-err" id="loginError">Identifiant ou mot de passe incorrect.</div>
       <button onclick="closeAdmin()" style="background:none;border:none;color:var(--md);margin-top:1rem;width:100%;cursor:pointer;text-decoration:underline;">Retour au site</button>
@@ -489,15 +489,15 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
       <main class="a-main">
         <!-- DASHBOARD -->
         <div class="panel active" id="panel-dashboard">
-          <div class="panel-hd"><h2>Tableau de bord CMS</h2><p>Toute modification est répercutée instantanément sur le site public.</p></div>
+          <div class="panel-hd"><h2>Tableau de bord CMS</h2><p>Toute modification est répercutée instantanément sur le site public via le Cloud.</p></div>
           <div class="ds-grid">
             <div class="ds-cell"><div class="ds-n" id="ds-ev">-</div><div style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--md);">Actualités</div></div>
             <div class="ds-cell"><div class="ds-n" id="ds-te">-</div><div style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--md);">Enseignants</div></div>
             <div class="ds-cell"><div class="ds-n" id="ds-sl">-</div><div style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--md);">Slides Accueil</div></div>
           </div>
           <div class="ac">
-            <h3>Mode de fonctionnement</h3>
-            <p style="color:var(--md); font-size:0.9rem;">Ce CMS en mémoire gère le contenu de la session courante. Les modifications que vous effectuez ici mettront immédiatement à jour l'affichage de l'interface publique. Vous pouvez basculer entre les deux vues via le bouton en haut à droite.</p>
+            <h3>Mode de fonctionnement (Cloud Activé ☁️)</h3>
+            <p style="color:var(--md); font-size:0.9rem;">Ce CMS est connecté à une base de données cloud en temps réel. Toutes les modifications effectuées ici mettent à jour le contenu de façon persistante pour tous les visiteurs du site.</p>
           </div>
         </div>
 
@@ -664,10 +664,15 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
   <div id="toast"></div>
 </div>
 
-<script>
-/* ==========================================================================
-   DONNÉES GLOBALES (ÉTAT CENTRALISÉ CMS <-> PUBLIC)
-   ========================================================================== */
+<!-- ==========================================================================
+     LOGIQUE FONCTIONNELLE ET CONNEXION FIREBASE
+     ========================================================================== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+/* DONNÉES GLOBALES (État par défaut) */
 const APP_DATA = {
   'site:config': {
     name:'Groupe Scolaire Le Miri', code:'041604', tel:'+225 27 22 52 79 00', email:'lemiri2015ac@gmail.com', address:'01 BP 8051, Abidjan 01 — Bingerville', year:'2025-2026',
@@ -710,11 +715,116 @@ const APP_DATA = {
   }
 };
 
-/* ==========================================================================
-   LOGIQUE ADMINISTRATEUR (CMS)
-   ========================================================================== */
+/* ════ EXPORT GLOBAL (Pour les appels onclick natifs de l'HTML) ════ */
+window.APP_DATA = APP_DATA;
+window.go = go;
+window.openAdmin = openAdmin;
+window.closeAdmin = closeAdmin;
+window.doLogin = doLogin;
+window.doLogout = doLogout;
+window.showPanel = showPanel;
+window.loadTicker = loadTicker;
+window.addTicker = addTicker;
+window.saveTicker = saveTicker;
+window.deleteTicker = deleteTicker;
+window.saveConfig = saveConfig;
+window.openSlideMod = openSlideMod;
+window.saveSlide = saveSlide;
+window.openEvMod = openEvMod;
+window.saveEvent = saveEvent;
+window.openNoteMod = openNoteMod;
+window.saveNote = saveNote;
+window.openTchMod = openTchMod;
+window.saveTch = saveTch;
+window.openPageEd = openPageEd;
+window.savePage = savePage;
+window.savePalmares = savePalmares;
+window.closeMod = closeMod;
+
+/* ════ ÉTAT & UTILITAIRES ════ */
 let isAdminLoggedIn = false;
 let curPageKey = '';
+let currentPage = 'accueil';
+let currentSub = null;
+
+function v(id){return document.getElementById(id).value.trim();}
+function h(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function toast(msg, err=false){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = err ? 'show error' : 'show';
+  setTimeout(() => t.className = '', 3000);
+}
+function openMod(id){document.getElementById(id).classList.add('open');}
+function closeMod(id){document.getElementById(id).classList.remove('open');}
+
+/* ════ LOGIQUE CMS (Enregistrement vers Firebase) ════ */
+
+function saveConfig() {
+  const c = APP_DATA['site:config'];
+  ['name','code','tel','email','s1','s2','s3','s4','dname','dtitle','dphoto'].forEach(k => c[k] = v('cfg-'+k));
+  saveToFirebase();
+}
+
+function saveSlide() {
+  const idx = document.getElementById('sl-idx').value;
+  const item = {img:v('sl-img-v'), tag:v('sl-tag'), title:v('sl-title')};
+  if(idx==='') APP_DATA['site:slides'].push(item); else APP_DATA['site:slides'][idx] = item;
+  closeMod('mod-slide'); loadSlides(); saveToFirebase();
+}
+
+function saveEvent() {
+  const idx = document.getElementById('ev-idx').value;
+  const item = {img:v('ev-img-v'), date:v('ev-date'), tag:v('ev-tag'), title:v('ev-title'), text:v('ev-text')};
+  if(idx==='') APP_DATA['site:events'].unshift(item); else APP_DATA['site:events'][idx] = item;
+  closeMod('mod-ev'); loadEvents(); saveToFirebase();
+}
+
+function addTicker(){ 
+  APP_DATA['site:ticker'].push('Nouveau message'); 
+  loadTicker(); 
+}
+
+function deleteTicker(idx) {
+  APP_DATA['site:ticker'].splice(idx, 1);
+  loadTicker();
+  saveToFirebase();
+}
+
+function saveTicker() {
+  const len = APP_DATA['site:ticker'].length;
+  const arr = [];
+  for(let i=0; i<len; i++) { const el = document.getElementById('tk-'+i); if(el) arr.push(el.value); }
+  APP_DATA['site:ticker'] = arr;
+  saveToFirebase();
+}
+
+function saveNote() {
+  const idx = document.getElementById('note-idx').value;
+  const item = {date:v('note-date'), title:v('note-title'), pdf:v('note-pdf-v')};
+  if(idx==='') APP_DATA['site:notes_service'].push(item); else APP_DATA['site:notes_service'][idx] = item;
+  closeMod('mod-note'); loadNotes(); saveToFirebase();
+}
+
+function saveTch() {
+  const idx = document.getElementById('tch-idx').value;
+  const item = {name:v('tch-name'), subj:v('tch-subj')};
+  if(idx==='') APP_DATA['site:teachers'].push(item); else APP_DATA['site:teachers'][idx] = item;
+  closeMod('mod-tch'); loadEns(); saveToFirebase();
+}
+
+function savePage() {
+  APP_DATA['site:pages'][curPageKey] = {title: v('ped-title'), content: v('ped-content')};
+  closeMod('mod-page'); saveToFirebase();
+}
+
+function savePalmares() {
+  APP_DATA['site:palmares'].cepe.rate = v('p-cepe-r'); APP_DATA['site:palmares'].cepe.text = v('p-cepe-t');
+  APP_DATA['site:palmares'].bepc.rate = v('p-bepc-r'); APP_DATA['site:palmares'].bepc.text = v('p-bepc-t');
+  saveToFirebase();
+}
+
+/* ════ LOGIQUE INTERFACE ADMIN (Chargement UI) ════ */
 
 function openAdmin() {
   document.getElementById('public-site').style.display = 'none';
@@ -732,7 +842,7 @@ function openAdmin() {
 function closeAdmin() {
   document.getElementById('admin-container').style.display = 'none';
   document.getElementById('public-site').style.display = 'block';
-  renderPublicApp(); // Mettre à jour la vue publique avec les nouvelles données
+  renderPublicApp();
 }
 
 function doLogin() {
@@ -770,6 +880,15 @@ function showPanel(name) {
   if(name==='enseignants') loadEns();
   if(name==='palmares') loadPalmares();
   if(name==='pages') loadPagesGrid();
+  if(name==='dashboard') loadDash();
+}
+
+function refreshCurrentPanel() {
+  const activeBtn = document.querySelector('#adminApp .sb-btn.active');
+  if (activeBtn) {
+    const p = activeBtn.getAttribute('data-panel');
+    if(p) showPanel(p);
+  }
 }
 
 function loadDash() {
@@ -778,39 +897,20 @@ function loadDash() {
   document.getElementById('ds-sl').textContent = APP_DATA['site:slides'].length;
 }
 
-function v(id){return document.getElementById(id).value.trim();}
-function h(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function toast(msg, err=false){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = err ? 'show error' : 'show';
-  setTimeout(() => t.className = '', 3000);
-}
-function openMod(id){document.getElementById(id).classList.add('open');}
-function closeMod(id){document.getElementById(id).classList.remove('open');}
-
-/* Éditeurs CMS */
 function loadConfig() {
   const c = APP_DATA['site:config'];
-  ['name','code','tel','email'].forEach(k => document.getElementById('cfg-'+k).value = c[k]);
-  ['s1','s2','s3','s4'].forEach(k => document.getElementById('cfg-'+k).value = c[k]);
-  ['dname','dtitle','dphoto'].forEach(k => document.getElementById('cfg-'+k).value = c[k]);
-}
-function saveConfig() {
-  const c = APP_DATA['site:config'];
-  ['name','code','tel','email','s1','s2','s3','s4','dname','dtitle','dphoto'].forEach(k => c[k] = v('cfg-'+k));
-  toast('Paramètres enregistrés');
+  ['name','code','tel','email','s1','s2','s3','s4','dname','dtitle','dphoto'].forEach(k => document.getElementById('cfg-'+k).value = c[k]);
 }
 
 function loadSlides() {
-  const sl = APP_DATA['site:slides'];
-  document.getElementById('slidesList').innerHTML = sl.map((s,i) => `
+  document.getElementById('slidesList').innerHTML = APP_DATA['site:slides'].map((s,i) => `
     <div class="irow wi">
       <img class="ithumb" src="${s.img}">
       <div><h4>${h(s.title)}</h4><p>${h(s.tag)}</p></div>
       <button class="be" onclick="openSlideMod(${i})">Modifier</button>
     </div>`).join('');
 }
+
 function openSlideMod(idx) {
   document.getElementById('sl-idx').value = idx===null ? '' : idx;
   if(idx!==null) {
@@ -823,18 +923,13 @@ function openSlideMod(idx) {
   }
   openMod('mod-slide');
 }
-function saveSlide() {
-  const idx = document.getElementById('sl-idx').value;
-  const item = {img:v('sl-img-v'), tag:v('sl-tag'), title:v('sl-title')};
-  if(idx==='') APP_DATA['site:slides'].push(item); else APP_DATA['site:slides'][idx] = item;
-  closeMod('mod-slide'); loadSlides(); toast('Enregistré');
-}
 
 function loadEvents() {
   document.getElementById('eventsList').innerHTML = APP_DATA['site:events'].map((e,i) => `
     <div class="irow wi"><img class="ithumb" src="${e.img}"><div><h4>${h(e.title)}</h4></div>
     <button class="be" onclick="openEvMod(${i})">Modifier</button></div>`).join('');
 }
+
 function openEvMod(idx) {
   document.getElementById('ev-idx').value = idx===null ? '' : idx;
   if(idx!==null) {
@@ -849,33 +944,20 @@ function openEvMod(idx) {
   }
   openMod('mod-ev');
 }
-function saveEvent() {
-  const idx = document.getElementById('ev-idx').value;
-  const item = {img:v('ev-img-v'), date:v('ev-date'), tag:v('ev-tag'), title:v('ev-title'), text:v('ev-text')};
-  if(idx==='') APP_DATA['site:events'].unshift(item); else APP_DATA['site:events'][idx] = item;
-  closeMod('mod-ev'); loadEvents(); toast('Enregistré');
-}
 
 function loadTicker() {
   document.getElementById('tickerItems').innerHTML = APP_DATA['site:ticker'].map((t,i) => `
     <div class="fr" style="margin-bottom:.5rem;">
       <input type="text" value="${h(t)}" id="tk-${i}">
-      <button class="bd" onclick="APP_DATA['site:ticker'].splice(${i},1);loadTicker()">Supprimer</button>
+      <button class="bd" onclick="deleteTicker(${i})">Supprimer</button>
     </div>`).join('');
-}
-function addTicker(){ APP_DATA['site:ticker'].push('Nouveau message'); loadTicker(); }
-function saveTicker() {
-  const len = APP_DATA['site:ticker'].length;
-  const arr = [];
-  for(let i=0; i<len; i++) { const el = document.getElementById('tk-'+i); if(el) arr.push(el.value); }
-  APP_DATA['site:ticker'] = arr;
-  toast('Bandeau enregistré');
 }
 
 function loadNotes() {
   document.getElementById('notesList').innerHTML = APP_DATA['site:notes_service'].map((n,i) => `
     <div class="irow"><div><h4>${h(n.title)}</h4></div><button class="be" onclick="openNoteMod(null,${i})">Modifier</button></div>`).join('');
 }
+
 function openNoteMod(_, idx) {
   document.getElementById('note-idx').value = idx===null ? '' : idx;
   if(idx!==null) {
@@ -888,17 +970,12 @@ function openNoteMod(_, idx) {
   }
   openMod('mod-note');
 }
-function saveNote() {
-  const idx = document.getElementById('note-idx').value;
-  const item = {date:v('note-date'), title:v('note-title'), pdf:v('note-pdf-v')};
-  if(idx==='') APP_DATA['site:notes_service'].push(item); else APP_DATA['site:notes_service'][idx] = item;
-  closeMod('mod-note'); loadNotes(); toast('Enregistré');
-}
 
 function loadEns() {
   document.getElementById('teachersList').innerHTML = APP_DATA['site:teachers'].map((t,i) => `
     <div class="irow"><div><h4>${h(t.name)}</h4></div><button class="be" onclick="openTchMod(${i})">Modifier</button></div>`).join('');
 }
+
 function openTchMod(idx) {
   document.getElementById('tch-idx').value = idx===null ? '' : idx;
   if(idx!==null) {
@@ -909,24 +986,19 @@ function openTchMod(idx) {
   }
   openMod('mod-tch');
 }
-function saveTch() {
-  const idx = document.getElementById('tch-idx').value;
-  const item = {name:v('tch-name'), subj:v('tch-subj')};
-  if(idx==='') APP_DATA['site:teachers'].push(item); else APP_DATA['site:teachers'][idx] = item;
-  closeMod('mod-tch'); loadEns(); toast('Enregistré');
-}
 
-const PAGE_DEFS = [
-  {key:'historique', label:'Historique / Le MIRI'}, {key:'reglement', label:'Règlement Intérieur'},
-  {key:'organigramme', label:'Organigramme'}, {key:'maternelle', label:'Maternelle'},
-  {key:'primaire', label:'Primaire'}, {key:'secondaire', label:'Secondaire & Lycée'}
-];
 function loadPagesGrid() {
+  const PAGE_DEFS = [
+    {key:'historique', label:'Historique / Le MIRI'}, {key:'reglement', label:'Règlement Intérieur'},
+    {key:'organigramme', label:'Organigramme'}, {key:'maternelle', label:'Maternelle'},
+    {key:'primaire', label:'Primaire'}, {key:'secondaire', label:'Secondaire & Lycée'}
+  ];
   document.getElementById('pagesGrid').innerHTML = PAGE_DEFS.map(p => `
     <div style="background:var(--bg2);padding:1rem;border:1px solid var(--cr2);cursor:pointer;" onclick="openPageEd('${p.key}')">
       <h4>${p.label}</h4><p style="font-size:0.8rem;color:var(--md);">Modifier le texte</p>
     </div>`).join('');
 }
+
 function openPageEd(key) {
   curPageKey = key;
   const p = APP_DATA['site:pages'][key];
@@ -934,34 +1006,21 @@ function openPageEd(key) {
   document.getElementById('ped-content').value = p.content;
   openMod('mod-page');
 }
-function savePage() {
-  APP_DATA['site:pages'][curPageKey] = {title: v('ped-title'), content: v('ped-content')};
-  closeMod('mod-page'); toast('Page mise à jour');
-}
 
 function loadPalmares() {
   const p = APP_DATA['site:palmares'];
   document.getElementById('p-cepe-r').value = p.cepe.rate; document.getElementById('p-cepe-t').value = p.cepe.text;
   document.getElementById('p-bepc-r').value = p.bepc.rate; document.getElementById('p-bepc-t').value = p.bepc.text;
 }
-function savePalmares() {
-  APP_DATA['site:palmares'].cepe.rate = v('p-cepe-r'); APP_DATA['site:palmares'].cepe.text = v('p-cepe-t');
-  APP_DATA['site:palmares'].bepc.rate = v('p-bepc-r'); APP_DATA['site:palmares'].bepc.text = v('p-bepc-t');
-  toast('Palmarès mis à jour');
-}
 
-/* ==========================================================================
-   LOGIQUE PUBLIQUE (SITE VITRINE DYNAMIQUE)
-   ========================================================================== */
-let currentPage = 'accueil';
-let currentSub = null;
+
+/* ════ LOGIQUE PUBLIQUE (Site Vitrine) ════ */
 
 function renderPublicApp() {
   const root = document.getElementById('root');
   root.style.animation = 'none';
   root.innerHTML = '';
   
-  // Update Ticker and Topbar instantly from APP_DATA
   const config = APP_DATA['site:config'];
   document.getElementById('top-tel').textContent = `📞 ${config.tel}`;
   document.getElementById('top-email').textContent = `✉ ${config.email}`;
@@ -1125,7 +1184,6 @@ function viewBlog() {
   return `<div class="page py4"><h2 class="s-h2 mb2">Événements & Actualités</h2><div class="social-feed">${ev}</div></div>`;
 }
 
-/* Utils publics */
 function initCarousel() {
   const track = document.getElementById('cTrack');
   const dotsEl = document.getElementById('cDots');
@@ -1168,8 +1226,87 @@ function initCounters() {
   });
 }
 
-// Démarrage initial
-window.addEventListener('DOMContentLoaded', renderPublicApp);
+/* ════ FIREBASE INITIALIZATION & REALTIME SYNC ════ */
+let auth, db, appId, currentUser;
+
+try {
+  const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+  appId = typeof __app_id !== 'undefined' ? __app_id : 'lemiri-cms-app';
+  
+  if (firebaseConfig && Object.keys(firebaseConfig).length > 0) {
+    const app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
+  }
+} catch (e) {
+  console.error("Configuration Cloud invalide :", e);
+}
+
+let isFirstLoad = true;
+
+function setupRealtimeSync() {
+  const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'siteData', 'v1');
+  onSnapshot(docRef, (docSnap) => {
+    if (docSnap.exists()) {
+      // Met à jour la mémoire avec les données fraîches venant d'internet
+      Object.assign(APP_DATA, docSnap.data());
+    } else if (isFirstLoad) {
+      // Crée les données pour la toute première fois
+      saveToFirebase(false); 
+    }
+    isFirstLoad = false;
+    
+    // Rafraîchit immédiatement le visuel (Public et Admin)
+    renderPublicApp();
+    if (isAdminLoggedIn) {
+      refreshCurrentPanel();
+    }
+  }, (err) => console.error("Erreur de synchronisation :", err));
+}
+
+async function saveToFirebase(showToast = true) {
+  if (!db || !currentUser) {
+    if (showToast) toast('Mode Local (Aucun Cloud détecté)', true);
+    return;
+  }
+  try {
+    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'siteData', 'v1');
+    await setDoc(docRef, APP_DATA);
+    if (showToast) toast('Enregistré en direct ☁️');
+  } catch(e) {
+    console.error("Erreur sauvegarde :", e);
+    if (showToast) toast('Erreur de connexion', true);
+  }
+}
+
+async function initAuth() {
+  if (!auth) {
+    renderPublicApp(); // Mode hors-ligne / fallback
+    return;
+  }
+  try {
+    const initToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+    if (initToken) {
+      await signInWithCustomToken(auth, initToken);
+    } else {
+      await signInAnonymously(auth);
+    }
+  } catch (e) {
+    console.error("Auth err:", e);
+    renderPublicApp();
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+    if (user) {
+      setupRealtimeSync();
+    }
+  });
+}
+
+// Initialisation au lancement du script
+initAuth();
+
 </script>
 </body>
 </html>
