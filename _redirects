@@ -1,0 +1,8 @@
+# _redirects — Règles de redirection Netlify
+# Ce fichier est lu automatiquement par Netlify
+
+# /admin sans slash → /admin/index.html
+/admin    /admin/index.html    200
+
+# Toutes les URLs inconnues → page d'accueil (important pour le routage JS)
+/*    /index.html    200
