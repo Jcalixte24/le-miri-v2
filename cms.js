@@ -12,8 +12,7 @@
 /* ════════════════════════════════════════════
    ⚙️  VOTRE CONFIGURATION FIREBASE ICI
    ════════════════════════════════════════════ */
-const FIREBASE_URL = 'https://console.firebase.google.com/project/lemiri-cms/database/lemiri-cms-default-rtdb/data/~https://lemiri-cms-default-rtdb.europe-west1.firebasedatabase.app';
-//             
+const FIREBASE_URL = 'https://lemiri-cms-default-rtdb.europe-west1.firebasedatabase.app';//             
 
 /* ════════════════════════════════════════════
    COUCHE FIREBASE — lecture / écriture
