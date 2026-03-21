@@ -275,6 +275,14 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
         Infos enseignants
       </button>
+      <button class="sb-btn" onclick="showPanel('activites')" data-panel="activites">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Activités fin trimestre
+      </button>
+      <button class="sb-btn" onclick="showPanel('conseils_ens')" data-panel="conseils_ens">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Conseils d'enseignements
+      </button>
       <button class="sb-btn" onclick="showPanel('enseignants')" data-panel="enseignants">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Liste des enseignants
@@ -310,7 +318,7 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
         <!-- BANDEAU CMS LIÉ -->
         <div style="background:linear-gradient(135deg,var(--fo),var(--fo2));color:#fff;padding:1.1rem 1.6rem;margin-bottom:1.6rem;border-left:4px solid var(--go);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;">
           <div>
-            <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1rem;margin-bottom:.2rem;">✅ CMS actif — Modifications en direct</div>
+            <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1rem;margin-bottom:.2rem;">CMS actif — Modifications en direct</div>
             <div style="font-size:.78rem;opacity:.85;">Les changements (actualités, slides, ticker) sont immédiatement visibles sur la page principale.</div>
           </div>
           <button class="tbtn" onclick="openSite()" style="background:var(--go);color:var(--fo2);border:none;font-weight:800;">→ Voir le site</button>
@@ -386,6 +394,10 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
             <img id="dphoto-p" class="ig-prev" src="" alt="">
           </div>
           <div class="fg"><label>Mot du directeur</label><textarea id="cfg-dmsg" rows="7"></textarea></div>
+        </div>
+        <div class="ac"><h3>Documents PDF — Inscriptions</h3>
+          <div class="fg"><label>PDF — Fiche de renseignement 2025 (URL)</label><input id="cfg-fichesPdf" type="text" placeholder="https://...pdf"></div>
+          <div class="fg"><label>PDF — Mode de paiement (URL)</label><input id="cfg-paiementPdf" type="text" placeholder="https://...pdf"></div>
         </div>
         <div class="ac"><h3>Texte de la page d'accueil (Hero)</h3>
           <div class="fg"><label>Titre principal (ligne 1)</label><input id="cfg-hero-t1" type="text" placeholder="Élever chaque esprit,"></div>
@@ -562,6 +574,20 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
         <div class="panel-hd"><h2>Informations enseignants</h2><p>Documents d'information pour le corps enseignant — PDF</p></div>
         <button class="ba" onclick="openPdfDocMod('ens_infos',null)" style="margin-bottom:1.3rem;">Ajouter un document PDF</button>
         <div class="ilist" id="ensInfosList"></div>
+      </div>
+
+      <!-- ACTIVITES FIN DE TRIMESTRE -->
+      <div class="panel" id="panel-activites">
+        <div class="panel-hd"><h2>Activités de fin de trimestre</h2><p>Documents PDF des activités pédagogiques en fin de période</p></div>
+        <button class="ba" onclick="openPdfDocMod('activites',null)" style="margin-bottom:1.3rem;">Ajouter un document PDF</button>
+        <div class="ilist" id="activitesList"></div>
+      </div>
+
+      <!-- CONSEILS D'ENSEIGNEMENTS -->
+      <div class="panel" id="panel-conseils_ens">
+        <div class="panel-hd"><h2>Conseils d'Enseignements</h2><p>Comptes rendus et documents des conseils d'enseignement — PDF</p></div>
+        <button class="ba" onclick="openPdfDocMod('conseils_ens',null)" style="margin-bottom:1.3rem;">Ajouter un document PDF</button>
+        <div class="ilist" id="conseilsEnsList"></div>
       </div>
 
       <!-- PARENTS HORAIRES -->
@@ -875,20 +901,20 @@ const D = CMS_DEFAULTS || {
   ],
   'site:ticker':["Ouverture de la piscine du Groupe Scolaire Le Miri 2025-2026","Nouvelle tenue du lundi \u2014 consulter la note d'information","Inscriptions 2025-2026 ouvertes \u2014 nouvel eleve et reinscription","Calendrier des examens blancs 2025-2026 disponible","BROU GRACE LYN \u2014 Prix d'excellence meilleur eleve de Bingerville","BINTUNI JOELLE (4eme) \u2014 Finaliste Concours national d'anglais 2025","Note d'information KERMESSE \u2014 consulter votre espace parents","BAC 2024 : 95% \u00b7 BEPC 2024 : 92%"],
   'site:notes_service':[
-    {date:'12 Septembre 2025',title:"Ouverture de la piscine \u2014 Note d'information",pdf:'https://www.groupescolairelemiri.org/_files/ugd/568692_0f839d3a037144fe861b9632def30a37.pdf'},
-    {date:'05 Octobre 2025',title:'Nouvelle tenue du lundi',pdf:'https://www.groupescolairelemiri.org/_files/ugd/568692_0fb0c1c8a8e84d9d8b9ea9e35cc7ac8a.pdf'},
-    {date:'18 Novembre 2025',title:"Note d'information \u2014 Reunion parents",pdf:'https://www.groupescolairelemiri.org/_files/ugd/568692_7a042b67c8bd44de8e6f853f6b756636.pdf'},
-    {date:'10 Decembre 2025',title:"Note d'information \u2014 Retrait des bulletins",pdf:'https://www.groupescolairelemiri.org/_files/ugd/568692_b0f616ff8cd44e2685f10d2cfe9c8282.pdf'},
-    {date:'22 Fevrier 2026',title:"Note d'information \u2014 Kermesse",pdf:'https://www.groupescolairelemiri.org/_files/ugd/568692_f83ca99195d44e73a18523ea48bdeb2a.pdf'},
-    {date:'05 Mars 2026',title:'Compte rendu de reunion',pdf:'https://www.groupescolairelemiri.org/_files/ugd/568692_7410ccc7c4fa4c45ac755267f1ec7571.pdf'}
+    {date:'12 Septembre 2025',title:"Ouverture de la piscine \u2014 Note d'information",pdf:''},
+    {date:'05 Octobre 2025',title:'Nouvelle tenue du lundi',pdf:''},
+    {date:'18 Novembre 2025',title:"Note d'information \u2014 Reunion parents",pdf:''},
+    {date:'10 Decembre 2025',title:"Note d'information \u2014 Retrait des bulletins",pdf:''},
+    {date:'22 Fevrier 2026',title:"Note d'information \u2014 Kermesse",pdf:''},
+    {date:'05 Mars 2026',title:'Compte rendu de reunion',pdf:''}
   ],
   'site:notes_parents':[
-    {date:'12 Septembre 2025',title:"Ouverture de la piscine \u2014 Note d'information",pdf:'https://www.groupescolairelemiri.org/_files/ugd/568692_0f839d3a037144fe861b9632def30a37.pdf'},
-    {date:'05 Octobre 2025',title:'Nouvelle tenue du lundi',pdf:'https://www.groupescolairelemiri.org/_files/ugd/568692_0fb0c1c8a8e84d9d8b9ea9e35cc7ac8a.pdf'},
-    {date:'18 Novembre 2025',title:"Note d'information \u2014 Reunion parents",pdf:'https://www.groupescolairelemiri.org/_files/ugd/568692_7a042b67c8bd44de8e6f853f6b756636.pdf'},
-    {date:'10 Decembre 2025',title:"Note d'information \u2014 Retrait des bulletins",pdf:'https://www.groupescolairelemiri.org/_files/ugd/568692_b0f616ff8cd44e2685f10d2cfe9c8282.pdf'},
-    {date:'22 Fevrier 2026',title:"Note d'information \u2014 Kermesse",pdf:'https://www.groupescolairelemiri.org/_files/ugd/568692_f83ca99195d44e73a18523ea48bdeb2a.pdf'},
-    {date:'05 Mars 2026',title:'Compte rendu de reunion',pdf:'https://www.groupescolairelemiri.org/_files/ugd/568692_7410ccc7c4fa4c45ac755267f1ec7571.pdf'}
+    {date:'12 Septembre 2025',title:"Ouverture de la piscine \u2014 Note d'information",pdf:''},
+    {date:'05 Octobre 2025',title:'Nouvelle tenue du lundi',pdf:''},
+    {date:'18 Novembre 2025',title:"Note d'information \u2014 Reunion parents",pdf:''},
+    {date:'10 Decembre 2025',title:"Note d'information \u2014 Retrait des bulletins",pdf:''},
+    {date:'22 Fevrier 2026',title:"Note d'information \u2014 Kermesse",pdf:''},
+    {date:'05 Mars 2026',title:'Compte rendu de reunion',pdf:''}
   ],
   'site:palmares':{
     cepe:{rate:'100%',year:'2025',text:"Felicitations a tous nos eleves pour ce taux de reussite exceptionnel a la session officielle du CEPE 2025. Le fruit d'un travail rigoureux et d'un encadrement de qualite !",img:'https://static.wixstatic.com/media/568692_ec3af11afc7a40a488d0ff31d17b873e~mv2.jpeg'},
@@ -1030,6 +1056,8 @@ async function loadPanel(name){
     parents_examens:()=>loadPdfDocs('examens'),
     liste_eleves:()=>loadPdfDocs('eleves'),
     ens_infos:()=>loadPdfDocs('ens_infos'),
+    activites:()=>loadPdfDocs('activites'),
+    conseils_ens:()=>loadPdfDocs('conseils_ens'),
     palmares:loadPalmares,
     enseignants:loadEns,
     pages:loadPagesGrid,
@@ -1081,13 +1109,14 @@ async function loadConfig(){
   set('cfg-address',c.address);set('cfg-year',c.year);
   set('cfg-s1',c.s1);set('cfg-s2',c.s2);set('cfg-s3',c.s3);set('cfg-s4',c.s4);
   set('cfg-dname',c.dname);set('cfg-dtitle',c.dtitle);set('cfg-dphoto',c.dphoto);set('cfg-dmsg',c.dmsg);
+  set('cfg-fichesPdf',c.fichesPdf||'');set('cfg-paiementPdf',c.paiementPdf||'');
   set('cfg-hero-t1',c.heroT1);set('cfg-hero-t2',c.heroT2);set('cfg-hero-desc',c.heroDesc);set('cfg-hero-btn',c.heroBtn);
   set('cfg-logo-v',c.logo);
   if(c.dphoto)prevImg('dphoto-p',c.dphoto);
   if(c.logo)prevImg('cfg-logo-p',c.logo);
 }
 async function saveConfig(){
-  const c={name:v('cfg-name'),code:v('cfg-code'),tel:v('cfg-tel'),email:v('cfg-email'),address:v('cfg-address'),year:v('cfg-year'),s1:+v('cfg-s1')||0,s2:+v('cfg-s2')||0,s3:+v('cfg-s3')||0,s4:+v('cfg-s4')||0,dname:v('cfg-dname'),dtitle:v('cfg-dtitle'),dphoto:v('cfg-dphoto'),dmsg:v('cfg-dmsg'),heroT1:v('cfg-hero-t1'),heroT2:v('cfg-hero-t2'),heroDesc:v('cfg-hero-desc'),heroBtn:v('cfg-hero-btn'),logo:v('cfg-logo-v')};
+  const c={name:v('cfg-name'),code:v('cfg-code'),tel:v('cfg-tel'),email:v('cfg-email'),address:v('cfg-address'),year:v('cfg-year'),s1:+v('cfg-s1')||0,s2:+v('cfg-s2')||0,s3:+v('cfg-s3')||0,s4:+v('cfg-s4')||0,dname:v('cfg-dname'),dtitle:v('cfg-dtitle'),dphoto:v('cfg-dphoto'),dmsg:v('cfg-dmsg'),fichesPdf:v('cfg-fichesPdf'),paiementPdf:v('cfg-paiementPdf'),heroT1:v('cfg-hero-t1'),heroT2:v('cfg-hero-t2'),heroDesc:v('cfg-hero-desc'),heroBtn:v('cfg-hero-btn'),logo:v('cfg-logo-v')};
   await sSet('site:config',c);toast('Parametres enregistres');
 }
 
@@ -1283,13 +1312,16 @@ async function openPageEd(key,label){
   curPageKey=key;
   document.getElementById('page-mt').textContent='Modifier : '+label;
   const pages=await gd('site:pages');
-  const page=pages[key]||{title:'',content:''};
-  document.getElementById('page-body').innerHTML=`<div class="fg"><label>Titre de la section</label><input type="text" id="ped-title" value="${h(page.title)}"></div><div class="fg"><label>Contenu (texte)</label><textarea id="ped-content" rows="10">${h(page.content)}</textarea></div>`;
+  const page=pages[key]||{title:'',content:'',pdf:''};
+  const pdfField = key==='reglement' ? `<div class="fg"><label>PDF du règlement intérieur (URL)</label><input type="text" id="ped-pdf" value="${h(page.pdf||'')}" placeholder="https://...pdf"></div>` : '';
+  document.getElementById('page-body').innerHTML=`<div class="fg"><label>Titre de la section</label><input type="text" id="ped-title" value="${h(page.title)}"></div><div class="fg"><label>Contenu (texte)</label><textarea id="ped-content" rows="10">${h(page.content)}</textarea></div>${pdfField}`;
   openMod('mod-page');
 }
 async function savePage(){
   const pages=await gd('site:pages');
+  const pdfEl=document.getElementById('ped-pdf');
   pages[curPageKey]={title:document.getElementById('ped-title').value,content:document.getElementById('ped-content').value};
+  if(pdfEl) pages[curPageKey].pdf=pdfEl.value;
   await sSet('site:pages',pages);closeMod('mod-page');toast('Page mise a jour');
 }
 
@@ -1442,12 +1474,14 @@ async function initAdmin(){
   await loadDash();
 }
 
-/* ═══ PDF DOC GENERIQUE (eleves, ens_infos, horaires, examens) ═══ */
+/* ═══ PDF DOC GENERIQUE (eleves, ens_infos, horaires, examens, activites, conseils_ens) ═══ */
 const PDF_CAT_MAP = {
   eleves: {key:'site:eleves', listId:'elevesList', label:'Liste eleves'},
   ens_infos: {key:'site:ens_infos', listId:'ensInfosList', label:'Info enseignants'},
   horaires: {key:'site:horaires', listId:'horairesList', label:'Horaire'},
-  examens: {key:'site:examens', listId:'examensList', label:'Examen blanc'}
+  examens: {key:'site:examens', listId:'examensList', label:'Examen blanc'},
+  activites: {key:'site:activites', listId:'activitesList', label:'Activite'},
+  conseils_ens: {key:'site:conseils_ens', listId:'conseilsEnsList', label:'Conseil enseignement'}
 };
 
 async function loadPdfDocs(cat) {

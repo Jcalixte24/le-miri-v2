@@ -1263,9 +1263,11 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
         </button>
         <div class="dropdown">
           <button onclick="go('enseignants','infos')">Infos aux Enseignants</button>
+          <button onclick="go('enseignants','activites')">Activités fin de trimestre</button>
           <button onclick="go('enseignants','liste')">Liste 2025-2026</button>
           <button onclick="go('enseignants','principaux')">Professeurs principaux</button>
           <button onclick="go('enseignants','surveillance')">Calendrier de surveillance</button>
+          <button onclick="go('enseignants','conseils')">Conseils d'enseignements</button>
           <button onclick="go('enseignants','notes')">Saisie des notes</button>
           <button onclick="go('enseignants','visites')">Visites de classe</button>
         </div>
@@ -1350,9 +1352,11 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
       <summary>Enseignants <span class="arr">▼</span></summary>
       <div class="mob-sub">
         <a onclick="go('enseignants','infos'); closeMob()">Infos aux Enseignants</a>
+        <a onclick="go('enseignants','activites'); closeMob()">Activités fin de trimestre</a>
         <a onclick="go('enseignants','liste'); closeMob()">Liste 2025-2026</a>
         <a onclick="go('enseignants','principaux'); closeMob()">Professeurs principaux</a>
         <a onclick="go('enseignants','surveillance'); closeMob()">Calendrier de surveillance</a>
+        <a onclick="go('enseignants','conseils'); closeMob()">Conseils d'enseignements</a>
         <a onclick="go('enseignants','notes'); closeMob()">Saisie des notes</a>
         <a onclick="go('enseignants','visites'); closeMob()">Visites de classe</a>
       </div>
@@ -1411,6 +1415,48 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
   </div>
 </div>
 
+<!-- MODAL: Mot du Directeur -->
+<div id="directeurModal" class="modal-overlay" onclick="closeDirecteurModal(event)" style="z-index:9999;">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:600px;border-radius:16px;overflow:hidden;">
+    <button class="modal-close-btn" onclick="closeDirecteurModal(event)">
+      <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <div style="background:var(--fo);padding:2rem 2rem 1.5rem;display:flex;align-items:center;gap:1.2rem;">
+      <img id="directeurModalPhoto" src="" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.3);">
+      <div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:800;color:#fff;" id="directeurModalName"></div>
+        <div style="font-size:.8rem;color:rgba(255,255,255,.75);font-weight:600;text-transform:uppercase;letter-spacing:.05em;" id="directeurModalTitle"></div>
+      </div>
+    </div>
+    <div class="modal-info" style="padding:1.8rem 2rem;">
+      <div class="modal-date">Mot du Directeur</div>
+      <div id="directeurModalMsg" class="modal-text" style="white-space:pre-line;line-height:1.85;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Visionneuse PDF -->
+<div id="pdfModal" class="modal-overlay" onclick="closePdfModal(event)" style="z-index:9999;">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:860px;width:95vw;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;background:var(--fo);">
+      <span id="pdfModalTitle" style="font-family:'Montserrat',sans-serif;font-weight:700;color:#fff;font-size:1rem;"></span>
+      <button class="modal-close-btn" onclick="closePdfModal(event)" style="position:static;background:rgba(255,255,255,.15);">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div id="pdfModalBody" style="flex:1;min-height:70vh;background:#444;display:flex;align-items:center;justify-content:center;">
+      <iframe id="pdfModalFrame" src="" style="width:100%;height:75vh;border:none;" allowfullscreen></iframe>
+    </div>
+    <div style="padding:.8rem 1.5rem;background:var(--cr);text-align:center;">
+      <a id="pdfModalDownload" href="" target="_blank" style="font-size:.85rem;color:var(--fo);font-weight:700;text-decoration:none;">⬇ Télécharger le PDF</a>
+    </div>
+  </div>
+</div>
+
 <!-- ROOT: pages render here -->
 <div id="root"></div>
 
@@ -1440,8 +1486,8 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
       <ul class="foot-links">
         <li><a href="https://www.expertpro-ci.net/accueilpreinscription.php" target="_blank">Nouvel élève 2025-2026</a></li>
         <li><a href="https://www.expertpro-ci.net/accueilpreinscription.php" target="_blank">Réinscription</a></li>
-        <li><a href="https://www.groupescolairelemiri.org/de-fiches-de-renseignement-2025" target="_blank">Fiche de renseignement</a></li>
-        <li><a href="https://www.groupescolairelemiri.org/mode-de-paiement-2023-2024" target="_blank">Mode de paiement</a></li>
+        <li><a href="javascript:void(0)" onclick="openPdfModal((CMS.config||{}).fichesPdf||'','Fiche de renseignement 2025')">Fiche de renseignement</a></li>
+        <li><a href="javascript:void(0)" onclick="openPdfModal((CMS.config||{}).paiementPdf||'','Mode de paiement')">Mode de paiement</a></li>
       </ul>
     </div>
     <div class="foot-col">
@@ -1709,7 +1755,7 @@ function pageAccueil() {
             <div class="content">
               <h4>${dname}</h4>
               <h6>${dtitle}</h6>
-              <a href="https://www.groupescolairelemiri.org/mot-du-directeur" target="_blank">Lire le Mot du Directeur →</a>
+              <a href="javascript:void(0)" onclick="openDirecteurModal()" style="cursor:pointer;">Lire le Mot du Directeur →</a>
             </div>
           </div>
 
@@ -1755,7 +1801,7 @@ function pageAccueil() {
       <div class="cta-btns">
         <a href="https://www.expertpro-ci.net/accueilpreinscription.php" target="_blank" class="btn" style="background:#fff;color:var(--tr);text-align:center;">Inscription — Nouvel élève</a>
         <a href="https://www.expertpro-ci.net/accueilpreinscription.php" target="_blank" class="btn" style="background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.4);text-align:center;">Réinscription — Ancien élève</a>
-        <a href="https://www.groupescolairelemiri.org/de-fiches-de-renseignement-2025" target="_blank" class="btn" style="background:rgba(255,255,255,.05);color:rgba(255,255,255,.9);border:2px solid rgba(255,255,255,.2);text-align:center;">Fiche de renseignement</a>
+        <a href="javascript:void(0)" onclick="openPdfModal((CMS.config||{}).fichesPdf||'','Fiche de renseignement 2025')" class="btn" style="background:rgba(255,255,255,.05);color:rgba(255,255,255,.9);border:2px solid rgba(255,255,255,.2);text-align:center;">Fiche de renseignement</a>
       </div>
     </div>
     <div class="cta-right">
@@ -1816,7 +1862,7 @@ function pageAdmin(sub) {
         <li>Respect du personnel enseignant et administratif</li>
         <li>Interdiction de tout appareil électronique non autorisé</li>
       </ul>
-      <div class="info-link-card mt2" onclick="window.open('https://www.groupescolairelemiri.org/_files/ugd/568692_cba705cea1cf4a27878386068a7b5079.pdf','_blank')">
+      <div class="info-link-card mt2" onclick="openPdfModal((CMS['pages']||{}).reglement&&(CMS['pages']||{}).reglement.pdf||(CMS.config||{}).reglementPdf||'', 'Règlement Intérieur Complet')" style="cursor:pointer;">
         <span> Consulter le règlement intérieur complet</span>
         <span class="arrow">→</span>
       </div>`,
@@ -2010,9 +2056,11 @@ function pageEnseignants(sub) {
   const activeSub = sub || 'infos';
   const tabs = [
     {id:'infos',label:'Infos enseignants'},
+    {id:'activites',label:'Activités fin de trimestre'},
     {id:'liste',label:'Liste 2025-2026'},
     {id:'principaux',label:'Professeurs principaux'},
     {id:'surveillance',label:'Surveillance'},
+    {id:'conseils',label:"Conseils d'enseignements"},
     {id:'notes',label:'Saisie des notes'},
     {id:'visites',label:'Visites de classe'},
   ];
@@ -2047,21 +2095,59 @@ function pageEnseignants(sub) {
               </div>`).join('')}
           </div>` : ''}
           <div class="info-cards mt2">
-            <div class="info-card" onclick="window.open('https://www.groupescolairelemiri.org/activites-de-fin-de-trimestre','_blank')">
+            <div class="info-card" onclick="go('enseignants','activites')">
               <div class="info-card-icon"></div>
               <div class="info-card-title">Activités de fin de trimestre</div>
               <div class="info-card-desc">Calendrier et organisation des activités pédagogiques en fin de période.</div>
             </div>
-            <div class="info-card" onclick="window.open('https://www.groupescolairelemiri.org/calendrier-de-surveillance','_blank')">
+            <div class="info-card" onclick="go('enseignants','surveillance')">
               <div class="info-card-icon"></div>
               <div class="info-card-title">Calendrier de surveillance</div>
               <div class="info-card-desc">Planning de surveillance des examens et épreuves de l'année.</div>
             </div>
-            <div class="info-card" onclick="window.open('https://www.groupescolairelemiri.org/conseils-d-enseignements','_blank')">
+            <div class="info-card" onclick="go('enseignants','conseils')">
               <div class="info-card-icon"></div>
               <div class="info-card-title">Conseils d'Enseignements</div>
               <div class="info-card-desc">Comptes rendus et documents des conseils d'enseignement.</div>
             </div>
+          </div>` : ''}
+        ${activeSub==='activites' ? `
+          <h2>Activités de fin de trimestre</h2>
+          <p>Cette section regroupe les documents relatifs aux activités pédagogiques et récréatives organisées en fin de chaque trimestre pour l'année académique ${(CMS.config||{}).year||'2025-2026'}.</p>
+          <div class="note-list mt2">
+            ${(CMS['activites']||[]).length > 0
+              ? (CMS['activites']||[]).map(d => `
+              <div class="note-item" onclick="${d.pdf ? `openPdfModal('${d.pdf}','${d.title}')` : ''}\" style="${d.pdf?'cursor:pointer;':''}">
+                <div class="note-item-left">
+                  <div class="note-dot"></div>
+                  <div>
+                    <div style="font-size:0.75rem;color:var(--md);margin-bottom:0.3rem;font-weight:600;text-transform:uppercase;">${d.date}</div>
+                    <div class="note-title">${d.title}</div>
+                    ${d.desc ? `<div style="font-size:.8rem;color:var(--md);">${d.desc}</div>` : ''}
+                  </div>
+                </div>
+                ${d.pdf ? '<div class="note-arr">→</div>' : ''}
+              </div>`).join('')
+              : '<p style="color:var(--md);">Documents à venir — consultez régulièrement cette rubrique.</p>'}
+          </div>` : ''}
+        ${activeSub==='conseils' ? `
+          <h2>Conseils d'Enseignements</h2>
+          <p>Comptes rendus et documents officiels issus des conseils d'enseignement du Groupe Scolaire Le Miri pour l'année ${(CMS.config||{}).year||'2025-2026'}.</p>
+          <div class="note-list mt2">
+            ${(CMS['conseils_ens']||[]).length > 0
+              ? (CMS['conseils_ens']||[]).map(d => `
+              <div class="note-item" onclick="${d.pdf ? `openPdfModal('${d.pdf}','${d.title}')` : ''}\" style="${d.pdf?'cursor:pointer;':''}">
+                <div class="note-item-left">
+                  <div class="note-dot"></div>
+                  <div>
+                    <div style="font-size:0.75rem;color:var(--md);margin-bottom:0.3rem;font-weight:600;text-transform:uppercase;">${d.date}</div>
+                    <div class="note-title">${d.title}</div>
+                    ${d.desc ? `<div style="font-size:.8rem;color:var(--md);">${d.desc}</div>` : ''}
+                  </div>
+                </div>
+                ${d.pdf ? '<div class="note-arr">→</div>' : ''}
+              </div>`).join('')
+              : '<p style="color:var(--md);">Documents à venir — consultez régulièrement cette rubrique.</p>'}
           </div>` : ''}
         ${activeSub==='liste' ? `
           <h2>Liste des Enseignants ${(CMS.config||{}).year||'2025-2026'}</h2>
@@ -2118,7 +2204,7 @@ function pageEnseignants(sub) {
               </div>`).join('')
               : '<p style="color:var(--md);">Calendrier à venir.</p>'}
           </div>
-          <div class="info-link-card mt2" onclick="window.open('https://www.groupescolairelemiri.org/calendrier-de-surveillance','_blank')">
+          <div class="info-link-card mt2" onclick="go('enseignants','surveillance')">
             <span>🗓️ Voir le calendrier complet</span><span class="arrow">→</span>
           </div>` : ''}
         ${activeSub==='notes' ? `
@@ -2229,13 +2315,13 @@ function pageParents(sub) {
         ${activeSub==='notes' ? `
           <h2>Consultation des Notes</h2>
           <p>Les parents et élèves peuvent consulter les notes et résultats en ligne via le portail sécurisé de l'établissement. Une connexion avec vos identifiants personnels est requise.</p>
-          <div class="info-link-card mt2" onclick="window.open('https://www.groupescolairelemiri.org/consultations-notes','_blank')">
+          <div class="info-link-card mt2" onclick="go('parents','notes')">
             <span> Accéder à la consultation des notes</span><span class="arrow">→</span>
           </div>` : ''}
         ${activeSub==='evaluation' ? `
           <h2>Évaluation des Professeurs</h2>
           <p>Dans le cadre de notre démarche qualité, les parents d'élèves sont invités à évaluer les professeurs en fin de chaque trimestre. Vos retours nous permettent d'améliorer continuellement la qualité de l'enseignement.</p>
-          <div class="info-link-card mt2" onclick="window.open('https://www.groupescolairelemiri.org/evaluation-prof','_blank')">
+          <div class="info-link-card mt2" onclick="go('parents','evaluation')">
             <span> Accéder au formulaire d'évaluation</span><span class="arrow">→</span>
           </div>` : ''}
       </div>
@@ -2275,7 +2361,7 @@ function pageVie(sub) {
             <li>Participation aux décisions concernant la vie scolaire</li>
             <li>Promotion du vivre-ensemble et de la citoyenneté</li>
           </ul>
-          <div class="info-link-card mt2" onclick="window.open('https://www.groupescolairelemiri.org/conseil-scolaire','_blank')">
+          <div class="info-link-card mt2" onclick="go('vie-scolaire','conseil')">
             <span> En savoir plus sur le Conseil Scolaire</span><span class="arrow">→</span>
           </div>` : ''}
         ${activeSub==='clubs' ? `
@@ -2618,6 +2704,44 @@ window.updateGalleryModal = function() {
   }  render();
   renderTicker();
 })();
+
+/* ══════════════════════════════════════
+   MODAL: MOT DU DIRECTEUR
+══════════════════════════════════════ */
+function openDirecteurModal() {
+  const cfg = CMS.config || {};
+  document.getElementById('directeurModalPhoto').src  = cfg.dphoto || '';
+  document.getElementById('directeurModalName').textContent  = cfg.dname  || 'M. LAWSON Silvere';
+  document.getElementById('directeurModalTitle').textContent = cfg.dtitle || 'Directeur des Études';
+  document.getElementById('directeurModalMsg').textContent   = cfg.dmsg   || '';
+  document.getElementById('directeurModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDirecteurModal(e) {
+  if (!e || e.target === document.getElementById('directeurModal') || e.currentTarget.classList.contains('modal-close-btn')) {
+    document.getElementById('directeurModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+/* ══════════════════════════════════════
+   MODAL: VISIONNEUSE PDF
+══════════════════════════════════════ */
+function openPdfModal(url, title) {
+  if (!url) { alert('PDF non encore disponible. Veuillez contacter l\'administration.'); return; }
+  document.getElementById('pdfModalTitle').textContent = title || 'Document PDF';
+  document.getElementById('pdfModalFrame').src = url;
+  document.getElementById('pdfModalDownload').href = url;
+  document.getElementById('pdfModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closePdfModal(e) {
+  if (!e || e.target === document.getElementById('pdfModal') || e.currentTarget.classList.contains('modal-close-btn')) {
+    document.getElementById('pdfModal').classList.remove('open');
+    document.getElementById('pdfModalFrame').src = '';
+    document.body.style.overflow = '';
+  }
+}
 </script>
 </body>
 </html>
