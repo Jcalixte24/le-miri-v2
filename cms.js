@@ -12,8 +12,7 @@
 /* ════════════════════════════════════════════
    ⚙️  VOTRE CONFIGURATION FIREBASE ICI
    ════════════════════════════════════════════ */
-const FIREBASE_URL = 'https://lemiri-cms-default-rtdb.europe-west1.firebasedatabase.app';
-//         
+const FIREBASE_URL = 'https://lemiri-cms-default-rtdb.europe-west1.firebasedatabase.app';//             
 
 /* ════════════════════════════════════════════
    COUCHE FIREBASE — lecture / écriture
@@ -113,6 +112,8 @@ const CMS_DEFAULTS = {
     dtitle: 'Directeur des Études',
     dphoto: 'https://static.wixstatic.com/media/568692_3e5e5748f7054e3bb0d5a3576f283e20~mv2.jpeg',
     dmsg: "Chers parents, chers élèves,\n\nC'est avec une immense fierté que je vous souhaite la bienvenue au Groupe Scolaire Le Miri.",
+    fichesPdf: '',
+    paiementPdf: '',
     heroT1: 'Élever chaque<br>esprit,',
     heroT2: "construire<br>l'avenir.",
     heroDesc: "Du préscolaire au Baccalauréat, le Groupe Scolaire Le Miri cultive l'excellence, la créativité et les valeurs humaines.",
@@ -149,17 +150,17 @@ const CMS_DEFAULTS = {
     '🔸 BAC 2024 : 95% · BEPC 2024 : 92%',
   ],
   'site:notes_parents': [
-    { date: '12 Septembre 2025', title: "Ouverture de la piscine — Note d'information", pdf: 'https://www.groupescolairelemiri.org/_files/ugd/568692_0f839d3a037144fe861b9632def30a37.pdf' },
-    { date: '05 Octobre 2025',   title: 'Nouvelle tenue du lundi', pdf: 'https://www.groupescolairelemiri.org/_files/ugd/568692_0fb0c1c8a8e84d9d8b9ea9e35cc7ac8a.pdf' },
-    { date: '18 Novembre 2025',  title: "Note d'information — Réunion parents", pdf: 'https://www.groupescolairelemiri.org/_files/ugd/568692_7a042b67c8bd44de8e6f853f6b756636.pdf' },
-    { date: '10 Décembre 2025',  title: "Note d'information — Retrait des bulletins", pdf: 'https://www.groupescolairelemiri.org/_files/ugd/568692_b0f616ff8cd44e2685f10d2cfe9c8282.pdf' },
-    { date: '22 Février 2026',   title: "Note d'information — Kermesse", pdf: 'https://www.groupescolairelemiri.org/_files/ugd/568692_f83ca99195d44e73a18523ea48bdeb2a.pdf' },
-    { date: '05 Mars 2026',      title: 'Compte rendu de réunion', pdf: 'https://www.groupescolairelemiri.org/_files/ugd/568692_7410ccc7c4fa4c45ac755267f1ec7571.pdf' },
+    { date: '12 Septembre 2025', title: "Ouverture de la piscine — Note d'information", pdf: '' },
+    { date: '05 Octobre 2025',   title: 'Nouvelle tenue du lundi', pdf: '' },
+    { date: '18 Novembre 2025',  title: "Note d'information — Réunion parents", pdf: '' },
+    { date: '10 Décembre 2025',  title: "Note d'information — Retrait des bulletins", pdf: '' },
+    { date: '22 Février 2026',   title: "Note d'information — Kermesse", pdf: '' },
+    { date: '05 Mars 2026',      title: 'Compte rendu de réunion', pdf: '' },
   ],
   'site:notes_service': [
-    { date: '12 Septembre 2025', title: "Ouverture de la piscine — Note d'information", pdf: 'https://www.groupescolairelemiri.org/_files/ugd/568692_0f839d3a037144fe861b9632def30a37.pdf' },
-    { date: '05 Octobre 2025',   title: 'Nouvelle tenue du lundi', pdf: 'https://www.groupescolairelemiri.org/_files/ugd/568692_0fb0c1c8a8e84d9d8b9ea9e35cc7ac8a.pdf' },
-    { date: '05 Mars 2026',      title: 'Compte rendu de réunion', pdf: 'https://www.groupescolairelemiri.org/_files/ugd/568692_7410ccc7c4fa4c45ac755267f1ec7571.pdf' },
+    { date: '12 Septembre 2025', title: "Ouverture de la piscine — Note d'information", pdf: '' },
+    { date: '05 Octobre 2025',   title: 'Nouvelle tenue du lundi', pdf: '' },
+    { date: '05 Mars 2026',      title: 'Compte rendu de réunion', pdf: '' },
   ],
   'site:horaires': [
     { title: 'Horaire Maternelle 2025-2026',  date: 'Année 2025-2026', desc: 'Emploi du temps Maternelle',  img: '', pdf: '' },
@@ -168,7 +169,7 @@ const CMS_DEFAULTS = {
     { title: 'Horaire Lycée 2025-2026',       date: 'Année 2025-2026', desc: 'Emploi du temps Lycée',       img: '', pdf: '' },
   ],
   'site:examens': [
-    { title: 'Calendrier examens blancs BEPC 2026', date: 'Mars 2026',     desc: 'Programme et salles BEPC', pdf: 'https://www.groupescolairelemiri.org/_files/ugd/568692_99a49e505cc44b55aa509c1eff1a731e.pdf' },
+    { title: 'Calendrier examens blancs BEPC 2026', date: 'Mars 2026',     desc: 'Programme et salles BEPC', pdf: '' },
     { title: 'Calendrier examens blancs BAC 2026',  date: 'Mars 2026',     desc: 'Programme et salles BAC',  pdf: '' },
     { title: 'Sujets composés 1er trimestre',       date: 'Novembre 2025', desc: 'Énoncés des compositions', pdf: '' },
   ],
@@ -232,9 +233,11 @@ const CMS_DEFAULTS = {
     { title: 'Emploi du temps corps enseignant 2025-2026', date: 'Septembre 2025', desc: 'Répartition des heures et salles', img: '', pdf: '' },
     { title: 'Note de rentrée pédagogique', date: 'Septembre 2025', desc: 'Instructions pour le corps enseignant', img: '', pdf: '' },
   ],
+  'site:activites': [],
+  'site:conseils_ens': [],
   'site:pages': {
     historique:    { title: 'Historique — Le MIRI',           content: "Le Groupe Scolaire Le Miri est un établissement d'enseignement privé laïc situé à Bingerville, dans la commune d'Abidjan, en Côte d'Ivoire.\n\nDepuis sa création, le MIRI s'est imposé comme un acteur incontournable de l'éducation à Bingerville.\n\nCode Établissement : 041604." },
-    reglement:     { title: 'Règlement Intérieur',             content: "Le règlement intérieur du Groupe Scolaire Le Miri définit les droits et les obligations de tous les membres de la communauté scolaire." },
+    reglement:     { title: 'Règlement Intérieur',             content: "Le règlement intérieur du Groupe Scolaire Le Miri définit les droits et les obligations de tous les membres de la communauté scolaire.", pdf: '' },
     organigramme:  { title: "Organigramme de l'établissement", content: "Direction Générale\nDirection des Études\nCorps enseignant (Maternelle, Primaire, Secondaire)\nService de la Vie Scolaire\nService Administratif et Comptable\nConseil Scolaire" },
     maternelle:    { title: 'La Maternelle du Miri',           content: "La maternelle offre un environnement chaleureux, ludique et sécurisé pour les tout-petits." },
     primaire:      { title: 'Le Primaire du Miri',             content: "Le cycle primaire construit des bases académiques solides en lecture, écriture, mathématiques et langues." },
@@ -263,6 +266,7 @@ async function loadAllCMS() {
     'site:clubs','site:gallery2','site:conseil',
     'site:teachers','site:principals','site:surveillance','site:visites',
     'site:eleves','site:pages','site:ens_infos',
+    'site:activites','site:conseils_ens',
   ];
   const results = await Promise.all(keys.map(k => cmsGet(k)));
   keys.forEach((k, i) => {
