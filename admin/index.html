@@ -395,10 +395,11 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
           </div>
           <div class="fg"><label>Mot du directeur</label><textarea id="cfg-dmsg" rows="7"></textarea></div>
         </div>
-        <div class="ac"><h3>Documents PDF — Inscriptions</h3>
-          <div class="fg"><label>PDF — Fiche de renseignement 2025 (URL)</label><input id="cfg-fichesPdf" type="text" placeholder="https://...pdf"></div>
-          <div class="fg"><label>PDF — Mode de paiement (URL)</label><input id="cfg-paiementPdf" type="text" placeholder="https://...pdf"></div>
-          <div class="fg"><label>PDF — Règlement intérieur complet (URL)</label><input id="cfg-reglementPdf" type="text" placeholder="https://...pdf"></div>
+        <div class="ac"><h3>Documents PDF — Inscriptions & Administration</h3>
+          <div class="fg"><label>Fiche de renseignement (URL Google Drive /preview)</label><input id="cfg-fichesPdf" type="text" placeholder="https://drive.google.com/file/d/.../preview"></div>
+          <div class="fg"><label>Mode de paiement (URL Google Drive /preview)</label><input id="cfg-paiementPdf" type="text" placeholder="https://drive.google.com/file/d/.../preview"></div>
+          <div class="fg"><label>Règlement intérieur complet (URL Google Drive /preview)</label><input id="cfg-reglementPdf" type="text" placeholder="https://drive.google.com/file/d/.../preview"></div>
+          <small style="color:#888;font-size:.75rem;display:block;margin-top:.3rem;">💡 Hébergez vos PDF sur Google Drive → Partager → "Tout le monde" → remplacer <strong>/view</strong> par <strong>/preview</strong> dans l'URL</small>
         </div>
         <div class="ac"><h3>Texte de la page d'accueil (Hero)</h3>
           <div class="fg"><label>Titre principal (ligne 1)</label><input id="cfg-hero-t1" type="text" placeholder="Élever chaque esprit,"></div>
@@ -1018,7 +1019,7 @@ const D = CMS_DEFAULTS || {
     {name:'Club Sports Collectifs',resp:'M. KONE Seydou',desc:'Football, basketball, handball et athletisme.',members:35,img:'https://static.wixstatic.com/media/568692_dc37e82b251f4539a2197bfce1bb7473~mv2.jpg',pdf:''},
     {name:'Club Journalisme',resp:'Mme BAMBA Fatou',desc:'Journal scolaire, reportage et communication.',members:12,img:'',pdf:''}
   ],
-  'admin:credentials':{user:'admin',pass:'lemiri2025'}
+  'admin:credentials':{user:'admin', passHash:'38a1fc99e044d13532611498ea8048e5839374e6b194176a95933f77e78c03ed'}
 };
 
 // gd() : lit depuis storage, sinon fallback sur CMS_DEFAULTS puis D local

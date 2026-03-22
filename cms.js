@@ -247,8 +247,7 @@ const CMS_DEFAULTS = {
     secondaire:    { title: 'Le Secondaire du Miri',           content: "Du collège jusqu'au Baccalauréat, nos équipes pédagogiques accompagnent chaque lycéen vers l'excellence." },
     intro_mission: { title: 'Notre mission (accueil)',          content: "Le Groupe Scolaire Le Miri est bien plus qu'une école. C'est un espace de vie, de croissance et d'ambition." },
   },
-  // ⚠️  NE JAMAIS stocker le mot de passe en clair.
-  // passHash = SHA-256 de "lemiri2025"
+  // Le mot de passe est stocké sous forme de hash SHA-256 uniquement.
   // Pour changer le mot de passe : Admin → Sécurité
   'admin:credentials': {
     user: 'admin',
