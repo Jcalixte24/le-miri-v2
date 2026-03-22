@@ -804,15 +804,20 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
   background: rgba(0,0,0,.15);
   position: relative;
   min-height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 .palmares-img-wrap img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
-  opacity: .92;
+  opacity: .95;
+  padding: 0.5rem;
   transition: opacity .3s;
 }
 .palmares-banner:hover .palmares-img-wrap img {
@@ -1027,17 +1032,22 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
 }
 .palmares-img-wrap {
   flex: 1;
-  background: var(--cr);
+  background: var(--cr2);
   position: relative;
   min-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 .palmares-img-wrap img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
+  padding: 0.5rem;
 }
 
 /* Adaptation sur grands écrans */
@@ -1417,20 +1427,22 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
 
 <!-- MODAL: Mot du Directeur -->
 <div id="directeurModal" class="modal-overlay" onclick="closeDirecteurModal(event)" style="z-index:9999;">
-  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:600px;border-radius:16px;overflow:hidden;">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:600px;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;max-height:88vh;">
     <button class="modal-close-btn" onclick="closeDirecteurModal(event)">
       <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
         <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
     </button>
-    <div style="background:var(--fo);padding:2rem 2rem 1.5rem;display:flex;align-items:center;gap:1.2rem;">
+    <!-- En-tête fixe : photo + nom -->
+    <div style="background:var(--fo);padding:2rem 2rem 1.5rem;display:flex;align-items:center;gap:1.2rem;flex-shrink:0;">
       <img id="directeurModalPhoto" src="" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.3);">
       <div>
         <div style="font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:800;color:#fff;" id="directeurModalName"></div>
         <div style="font-size:.8rem;color:rgba(255,255,255,.75);font-weight:600;text-transform:uppercase;letter-spacing:.05em;" id="directeurModalTitle"></div>
       </div>
     </div>
-    <div class="modal-info" style="padding:1.8rem 2rem;">
+    <!-- Corps scrollable : le texte peut défiler sans affecter la page -->
+    <div class="modal-info" style="padding:1.8rem 2rem;overflow-y:auto;flex:1;overscroll-behavior:contain;">
       <div class="modal-date">Mot du Directeur</div>
       <div id="directeurModalMsg" class="modal-text" style="white-space:pre-line;line-height:1.85;"></div>
     </div>
@@ -1863,7 +1875,7 @@ function pageAdmin(sub) {
         <li>Interdiction de tout appareil électronique non autorisé</li>
       </ul>
       <div class="info-link-card mt2" onclick="openPdfModal((CMS['pages']||{}).reglement&&(CMS['pages']||{}).reglement.pdf||(CMS.config||{}).reglementPdf||'', 'Règlement Intérieur Complet')" style="cursor:pointer;">
-        <span> Consulter le règlement intérieur complet</span>
+        <span>📄 Consulter le règlement intérieur complet</span>
         <span class="arrow">→</span>
       </div>`,
     organigramme: `
@@ -2204,8 +2216,8 @@ function pageEnseignants(sub) {
               </div>`).join('')
               : '<p style="color:var(--md);">Calendrier à venir.</p>'}
           </div>
-          <div class="info-link-card mt2" onclick="go('enseignants','surveillance')">
-            <span>🗓️ Voir le calendrier complet</span><span class="arrow">→</span>
+          <div class="info-link-card mt2" onclick="openPdfModal((CMS['surveillance_pdf'])||(CMS.config||{}).surveillancePdf||'','Calendrier de Surveillance Complet')" style="cursor:pointer;">
+            <span>📄 Voir le calendrier complet</span><span class="arrow">→</span>
           </div>` : ''}
         ${activeSub==='notes' ? `
           <h2>Saisie des Notes</h2>
@@ -2361,8 +2373,8 @@ function pageVie(sub) {
             <li>Participation aux décisions concernant la vie scolaire</li>
             <li>Promotion du vivre-ensemble et de la citoyenneté</li>
           </ul>
-          <div class="info-link-card mt2" onclick="go('vie-scolaire','conseil')">
-            <span> En savoir plus sur le Conseil Scolaire</span><span class="arrow">→</span>
+          <div class="info-link-card mt2" onclick="openPdfModal((CMS['conseil']||{}).pdf||'','Le Conseil Scolaire — Groupe Scolaire Le Miri')" style="cursor:pointer;">
+            <span>📄 En savoir plus sur le Conseil Scolaire</span><span class="arrow">→</span>
           </div>` : ''}
         ${activeSub==='clubs' ? `
           <h2>Les Clubs du MIRI</h2>

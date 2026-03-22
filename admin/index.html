@@ -398,6 +398,7 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
         <div class="ac"><h3>Documents PDF — Inscriptions</h3>
           <div class="fg"><label>PDF — Fiche de renseignement 2025 (URL)</label><input id="cfg-fichesPdf" type="text" placeholder="https://...pdf"></div>
           <div class="fg"><label>PDF — Mode de paiement (URL)</label><input id="cfg-paiementPdf" type="text" placeholder="https://...pdf"></div>
+          <div class="fg"><label>PDF — Règlement intérieur complet (URL)</label><input id="cfg-reglementPdf" type="text" placeholder="https://...pdf"></div>
         </div>
         <div class="ac"><h3>Texte de la page d'accueil (Hero)</h3>
           <div class="fg"><label>Titre principal (ligne 1)</label><input id="cfg-hero-t1" type="text" placeholder="Élever chaque esprit,"></div>
@@ -518,6 +519,19 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
           <div class="ilist" id="principalsList"></div>
         </div>
         <div class="atpanel" id="ens-surveil">
+          <div class="ac" style="margin-bottom:1rem;">
+            <h3>PDF — Calendrier de surveillance complet</h3>
+            <div class="fg"><label>URL du PDF calendrier complet</label>
+              <div class="ig-tabs">
+                <button class="ig-tab active" onclick="swPdf('surveil-pdf','url')">URL PDF</button>
+                <button class="ig-tab" onclick="swPdf('surveil-pdf','file')">Upload PDF</button>
+              </div>
+              <div class="ig-url show" id="surveil-pdf-url"><input type="text" id="surveil-pdf-v" placeholder="https://...pdf"></div>
+              <div class="ig-file" id="surveil-pdf-file"><input type="file" accept=".pdf" onchange="filePdf(this,'surveil-pdf-v')"></div>
+              <small style="color:var(--lt);font-size:.72rem;margin-top:.3rem;display:block;">Ce PDF s'ouvre via le bouton "Voir le calendrier complet"</small>
+            </div>
+            <button class="bp" onclick="saveSurveillancePdf()">Enregistrer le PDF</button>
+          </div>
           <button class="ba" onclick="openSvMod(null)" style="margin-bottom:.9rem;">Ajouter une surveillance</button>
           <div class="ilist" id="surveilList"></div>
         </div>
@@ -557,6 +571,15 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
         <div class="atpanel" id="clubs-conseil">
           <div class="ac"><h3>Texte du Conseil Scolaire</h3>
             <div class="fg"><label>Contenu</label><textarea id="conseil-text" rows="6"></textarea></div>
+            <div class="fg"><label>PDF — Document Conseil Scolaire (URL)</label>
+              <div class="ig-tabs">
+                <button class="ig-tab active" onclick="swPdf('conseil-pdf','url')">URL PDF</button>
+                <button class="ig-tab" onclick="swPdf('conseil-pdf','file')">Upload PDF</button>
+              </div>
+              <div class="ig-url show" id="conseil-pdf-url"><input type="text" id="conseil-pdf-v" placeholder="https://...pdf"></div>
+              <div class="ig-file" id="conseil-pdf-file"><input type="file" accept=".pdf" onchange="filePdf(this,'conseil-pdf-v')"></div>
+              <small style="color:var(--lt);font-size:.72rem;margin-top:.3rem;display:block;">Laisser vide si pas de PDF</small>
+            </div>
             <button class="bp" onclick="saveConseil()">Enregistrer</button>
           </div>
         </div>
@@ -1109,14 +1132,14 @@ async function loadConfig(){
   set('cfg-address',c.address);set('cfg-year',c.year);
   set('cfg-s1',c.s1);set('cfg-s2',c.s2);set('cfg-s3',c.s3);set('cfg-s4',c.s4);
   set('cfg-dname',c.dname);set('cfg-dtitle',c.dtitle);set('cfg-dphoto',c.dphoto);set('cfg-dmsg',c.dmsg);
-  set('cfg-fichesPdf',c.fichesPdf||'');set('cfg-paiementPdf',c.paiementPdf||'');
+  set('cfg-fichesPdf',c.fichesPdf||'');set('cfg-paiementPdf',c.paiementPdf||'');set('cfg-reglementPdf',c.reglementPdf||'');
   set('cfg-hero-t1',c.heroT1);set('cfg-hero-t2',c.heroT2);set('cfg-hero-desc',c.heroDesc);set('cfg-hero-btn',c.heroBtn);
   set('cfg-logo-v',c.logo);
   if(c.dphoto)prevImg('dphoto-p',c.dphoto);
   if(c.logo)prevImg('cfg-logo-p',c.logo);
 }
 async function saveConfig(){
-  const c={name:v('cfg-name'),code:v('cfg-code'),tel:v('cfg-tel'),email:v('cfg-email'),address:v('cfg-address'),year:v('cfg-year'),s1:+v('cfg-s1')||0,s2:+v('cfg-s2')||0,s3:+v('cfg-s3')||0,s4:+v('cfg-s4')||0,dname:v('cfg-dname'),dtitle:v('cfg-dtitle'),dphoto:v('cfg-dphoto'),dmsg:v('cfg-dmsg'),fichesPdf:v('cfg-fichesPdf'),paiementPdf:v('cfg-paiementPdf'),heroT1:v('cfg-hero-t1'),heroT2:v('cfg-hero-t2'),heroDesc:v('cfg-hero-desc'),heroBtn:v('cfg-hero-btn'),logo:v('cfg-logo-v')};
+  const c={name:v('cfg-name'),code:v('cfg-code'),tel:v('cfg-tel'),email:v('cfg-email'),address:v('cfg-address'),year:v('cfg-year'),s1:+v('cfg-s1')||0,s2:+v('cfg-s2')||0,s3:+v('cfg-s3')||0,s4:+v('cfg-s4')||0,dname:v('cfg-dname'),dtitle:v('cfg-dtitle'),dphoto:v('cfg-dphoto'),dmsg:v('cfg-dmsg'),fichesPdf:v('cfg-fichesPdf'),paiementPdf:v('cfg-paiementPdf'),reglementPdf:v('cfg-reglementPdf'),heroT1:v('cfg-hero-t1'),heroT2:v('cfg-hero-t2'),heroDesc:v('cfg-hero-desc'),heroBtn:v('cfg-hero-btn'),logo:v('cfg-logo-v')};
   await sSet('site:config',c);toast('Parametres enregistres');
 }
 
@@ -1330,6 +1353,10 @@ async function loadClubs(){
   await loadClubsList();
   const conseil = await gd('site:conseil');
   document.getElementById('conseil-text').value = conseil.text||'';
+  document.getElementById('conseil-pdf-v').value = conseil.pdf||'';
+  // Charger PDF surveillance
+  const svPdf = await gd('site:surveillance_pdf');
+  if(document.getElementById('surveil-pdf-v')) document.getElementById('surveil-pdf-v').value = svPdf||'';
 }
 
 async function loadClubsList() {
@@ -1382,7 +1409,14 @@ async function saveClub() {
   await loadClubsList();
   toast('Club enregistre');
 }
-async function saveConseil(){await sSet('site:conseil',{text:v('conseil-text')});toast('Conseil scolaire enregistre');}
+async function saveConseil(){
+  await sSet('site:conseil',{text:v('conseil-text'), pdf:v('conseil-pdf-v')||''});
+  toast('Conseil scolaire enregistre');
+}
+async function saveSurveillancePdf(){
+  await sSet('site:surveillance_pdf', v('surveil-pdf-v')||'');
+  toast('PDF calendrier de surveillance enregistre');
+}
 
 /* ═══ SECURITY ═══ */
 async function saveCreds(){

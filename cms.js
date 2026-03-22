@@ -114,6 +114,8 @@ const CMS_DEFAULTS = {
     dmsg: "Chers parents, chers élèves,\n\nC'est avec une immense fierté que je vous souhaite la bienvenue au Groupe Scolaire Le Miri.",
     fichesPdf: '',
     paiementPdf: '',
+    reglementPdf: '',
+    surveillancePdf: '',
     heroT1: 'Élever chaque<br>esprit,',
     heroT2: "construire<br>l'avenir.",
     heroDesc: "Du préscolaire au Baccalauréat, le Groupe Scolaire Le Miri cultive l'excellence, la créativité et les valeurs humaines.",
@@ -202,7 +204,8 @@ const CMS_DEFAULTS = {
     { type: 'photo', src: 'https://static.wixstatic.com/media/568692_a65331c5584f43638b715742c86f8512~mv2.jpeg', caption: 'Palmarès BEPC 2025' },
   ],
   'site:conseil': {
-    text: "Le Conseil Scolaire du Groupe Scolaire Le Miri est l'instance représentative des élèves. Il joue un rôle actif dans la vie de l'établissement, en relayant les propositions et préoccupations des élèves auprès de la direction."
+    text: "Le Conseil Scolaire du Groupe Scolaire Le Miri est l'instance représentative des élèves. Il joue un rôle actif dans la vie de l'établissement, en relayant les propositions et préoccupations des élèves auprès de la direction.",
+    pdf: ''
   },
   'site:teachers': [
     { name: 'M. KOUASSI Jean', subj: 'Mathématiques',   cycle: 'Secondaire & Lycée' },
@@ -266,7 +269,7 @@ async function loadAllCMS() {
     'site:clubs','site:gallery2','site:conseil',
     'site:teachers','site:principals','site:surveillance','site:visites',
     'site:eleves','site:pages','site:ens_infos',
-    'site:activites','site:conseils_ens',
+    'site:activites','site:conseils_ens','site:surveillance_pdf',
   ];
   const results = await Promise.all(keys.map(k => cmsGet(k)));
   keys.forEach((k, i) => {
