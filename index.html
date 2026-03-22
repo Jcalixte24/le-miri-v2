@@ -1875,7 +1875,7 @@ function pageAdmin(sub) {
         <li>Interdiction de tout appareil électronique non autorisé</li>
       </ul>
       <div class="info-link-card mt2" onclick="openPdfModal((CMS['pages']||{}).reglement&&(CMS['pages']||{}).reglement.pdf||(CMS.config||{}).reglementPdf||'', 'Règlement Intérieur Complet')" style="cursor:pointer;">
-        <span>📄 Consulter le règlement intérieur complet</span>
+        <span>Consulter le règlement intérieur complet</span>
         <span class="arrow">→</span>
       </div>`,
     organigramme: `
@@ -2217,13 +2217,13 @@ function pageEnseignants(sub) {
               : '<p style="color:var(--md);">Calendrier à venir.</p>'}
           </div>
           <div class="info-link-card mt2" onclick="openPdfModal((CMS['surveillance_pdf'])||(CMS.config||{}).surveillancePdf||'','Calendrier de Surveillance Complet')" style="cursor:pointer;">
-            <span>📄 Voir le calendrier complet</span><span class="arrow">→</span>
+            <span>Voir le calendrier complet</span><span class="arrow">→</span>
           </div>` : ''}
         ${activeSub==='notes' ? `
           <h2>Saisie des Notes</h2>
           <p>L'interface de saisie des notes permet aux enseignants d'enregistrer les résultats des évaluations de leurs élèves. Accès sécurisé réservé au personnel enseignant habilité.</p>
           <div class="info-link-card mt2" onclick="window.open('https://www.expertpro.ci/index.php?adr=index.connexion.etab.inc&esp=ETAB','_blank')">
-            <span> Accéder à la saisie des notes (espace sécurisé)</span><span class="arrow">→</span>
+            <span>Accéder à la saisie des notes (espace sécurisé)</span><span class="arrow">→</span>
           </div>` : ''}
         ${activeSub==='visites' ? `
           <h2>Visites de Classe</h2>
@@ -2327,14 +2327,14 @@ function pageParents(sub) {
         ${activeSub==='notes' ? `
           <h2>Consultation des Notes</h2>
           <p>Les parents et élèves peuvent consulter les notes et résultats en ligne via le portail sécurisé de l'établissement. Une connexion avec vos identifiants personnels est requise.</p>
-          <div class="info-link-card mt2" onclick="go('parents','notes')">
-            <span> Accéder à la consultation des notes</span><span class="arrow">→</span>
+          <div class="info-link-card mt2" onclick="window.open('https://www.expertpro.ci/index.php?adr=index.connexion.etab.inc&esp=ETAB','_blank')" style="cursor:pointer;">
+            <span>Accéder à la consultation des notes</span><span class="arrow">→</span>
           </div>` : ''}
         ${activeSub==='evaluation' ? `
           <h2>Évaluation des Professeurs</h2>
           <p>Dans le cadre de notre démarche qualité, les parents d'élèves sont invités à évaluer les professeurs en fin de chaque trimestre. Vos retours nous permettent d'améliorer continuellement la qualité de l'enseignement.</p>
-          <div class="info-link-card mt2" onclick="go('parents','evaluation')">
-            <span> Accéder au formulaire d'évaluation</span><span class="arrow">→</span>
+          <div class="info-link-card mt2" onclick="window.open('VOTRE_URL_ICI','_blank')" style="cursor:pointer;">
+          <span>Accéder au formulaire d'évaluation</span><span class="arrow">→</span>
           </div>` : ''}
       </div>
     </div>
@@ -2374,7 +2374,7 @@ function pageVie(sub) {
             <li>Promotion du vivre-ensemble et de la citoyenneté</li>
           </ul>
           <div class="info-link-card mt2" onclick="openPdfModal((CMS['conseil']||{}).pdf||'','Le Conseil Scolaire — Groupe Scolaire Le Miri')" style="cursor:pointer;">
-            <span>📄 En savoir plus sur le Conseil Scolaire</span><span class="arrow">→</span>
+            <span>En savoir plus sur le Conseil Scolaire</span><span class="arrow">→</span>
           </div>` : ''}
         ${activeSub==='clubs' ? `
           <h2>Les Clubs du MIRI</h2>
