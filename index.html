@@ -2339,19 +2339,15 @@ function pageParents(sub) {
         ${activeSub==='notes' ? `
           <h2>Consultation des Notes</h2>
           <p>Les parents et élèves peuvent consulter les notes et résultats en ligne via le portail sécurisé de l'établissement. Une connexion avec vos identifiants personnels est requise.</p>
-          <div class="info-link-card mt2" onclick="window.open('https://www.expertpro.ci/index.php?adr=index.connexion.etab.inc&esp=ETAB','_blank')" style="cursor:pointer;">
+          <div class="info-link-card mt2" onclick="window.open('https://www.expertpro.ci/index.php?adr=index.connexion.etab.inc&esp=PELV','_blank')" style="cursor:pointer;">
             <span>Accéder à la consultation des notes</span><span class="arrow">→</span>
           </div>` : ''}
         ${activeSub==='evaluation' ? `
           <h2>Évaluation des Professeurs</h2>
           <p>Dans le cadre de notre démarche qualité, les parents d'élèves sont invités à évaluer les professeurs en fin de chaque trimestre. Vos retours nous permettent d'améliorer continuellement la qualité de l'enseignement.</p>
-<<<<<<< HEAD
-          <div class="info-link-card mt2" style="opacity:0.55;cursor:not-allowed;">
-            <span>Évaluation des professeurs — Bientôt disponible</span><span class="arrow">→</span>
-=======
-          <div class="info-link-card mt2" onclick="window.open('VOTRE_URL_ICI','_blank')" style="cursor:pointer;">
-          <span>Accéder au formulaire d'évaluation</span><span class="arrow">→</span>
->>>>>>> 462c5bf664b39dacccc1ecfd149ec0201e468e4b
+          <div class="info-link-card mt2" onclick="window.open('https://tole.snsenon.com/question/index.php','_blank')" style="cursor:pointer;">
+         <span>Accéder au formulaire d'évaluation</span><span class="arrow">→</span>
+          </div>
           </div>` : ''}
       </div>
     </div>
