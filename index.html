@@ -373,7 +373,7 @@ nav{
 
 /* ══ TICKER ══ */
 .ticker{background:var(--dk);color:rgba(253,252,248,.8);padding:.4rem 0;overflow:hidden;}
-.ticker-track{display:flex;white-space:nowrap;animation:tick 40s linear infinite;}
+.ticker-track{display:flex;white-space:nowrap;animation:tick 20s linear infinite;}
 .ticker-track:hover{animation-play-state:paused;}
 .t-item{display:inline-flex;align-items:center;gap:.7rem;padding:0 2.5rem;font-size:.74rem; font-weight:600;}
 .t-dot{width:6px;height:6px;border-radius:50%;background:var(--go2);flex-shrink:0;}
@@ -1219,8 +1219,8 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
     <span id="cms-address">📍 Bingerville, Abidjan 01</span>
   </div>
   <div class="topbar-right">
-    <a href="https://www.expertpro-ci.net/accueilpreinscription.php" target="_blank">Inscription Nouvel Élève</a>
-    <a href="https://www.expertpro-ci.net/accueilpreinscription.php" target="_blank">Réinscription</a>
+    <a href="https://www.expertpro.ci/accueilpreinscription.php" target="_blank">Inscription Nouvel Élève</a>
+    <a href="https://www.expertpro.ci/accueilpreinscription.php" target="_blank">Réinscription</a>
     <a href="admin/index.html" style="background:rgba(232,93,4,.25);border:1px solid rgba(232,93,4,.5);">⚙ Administration</a>
   </div>
 </div>
@@ -1314,7 +1314,7 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
       </li>
     </ul>
 
-    <button class="nav-cta" onclick="window.open('https://www.expertpro-ci.net/accueilpreinscription.php','_blank')">
+    <button class="nav-cta" onclick="window.open('https://www.expertpro.ci/accueilpreinscription.php','_blank')">
       Inscription 2025-2026
     </button>
     <!-- BOUTON HAMBURGER (Ouverture) -->
@@ -1395,9 +1395,7 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
     <a class="mob-nav-link" onclick="go('blog'); closeMob()">Événements</a>
     <a class="mob-nav-link" onclick="go('contact'); closeMob()">Contact</a>
     
-    <a href="https://www.expertpro-ci.net/accueilpreinscription.php" target="_blank" style="color:var(--tr);margin-top:1.5rem;border:none;font-family:'Montserrat', sans-serif;font-size:1.8rem;font-weight:700;text-decoration:none;">→ Inscription 2025-2026</a>
-  </nav>
-</div>
+<button onclick="window.open('https://www.expertpro.ci/accueilpreinscription.php', '_blank'); closeMob();" style="display: inline-block; background: none; text-align: left; cursor: pointer; color:var(--tr); margin-top:1.5rem; border:none; font-family:'Montserrat', sans-serif; font-size:1.8rem; font-weight:700; text-decoration:none; padding: 0;">→ Inscription 2025-2026</button></div>
 
 <!-- TICKER -->
 <div class="ticker">
@@ -1496,8 +1494,8 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
     <div class="foot-col">
       <h4>Inscriptions</h4>
       <ul class="foot-links">
-        <li><a href="https://www.expertpro-ci.net/accueilpreinscription.php" target="_blank">Nouvel élève 2025-2026</a></li>
-        <li><a href="https://www.expertpro-ci.net/accueilpreinscription.php" target="_blank">Réinscription</a></li>
+        <li><a href="https://www.expertpro.ci/accueilpreinscription.php" target="_blank">Nouvel élève 2025-2026</a></li>
+        <li><a href="https://www.expertpro.ci/accueilpreinscription.php" target="_blank">Réinscription</a></li>
         <li><a href="javascript:void(0)" onclick="openPdfModal((CMS.config||{}).fichesPdf||'','Fiche de renseignement 2025')">Fiche de renseignement</a></li>
         <li><a href="javascript:void(0)" onclick="openPdfModal((CMS.config||{}).paiementPdf||'','Mode de paiement')">Mode de paiement</a></li>
       </ul>
@@ -1671,8 +1669,8 @@ function footer_cta() {
       <div style="color:rgba(253,252,248,.8);font-size:1rem;margin-top:.5rem; font-weight:500;">Nouveaux élèves et réinscriptions — formulaire en ligne disponible</div>
     </div>
     <div style="display:flex;gap:1rem;flex-wrap:wrap;">
-      <a href="https://www.expertpro-ci.net/accueilpreinscription.php" target="_blank" class="btn btn-tr">Nouvel élève</a>
-      <a href="https://www.expertpro-ci.net/accueilpreinscription.php" target="_blank" class="btn" style="background:rgba(255,255,255,.1);color:var(--wh);border:1px solid rgba(255,255,255,.2);">Réinscription</a>
+      <a href="https://www.expertpro.ci/accueilpreinscription.php" target="_blank" class="btn btn-tr">Nouvel élève</a>
+      <a href="https://www.expertpro.ci/accueilpreinscription.php" target="_blank" class="btn" style="background:rgba(255,255,255,.1);color:var(--wh);border:1px solid rgba(255,255,255,.2);">Réinscription</a>
     </div>
   </div>`;
 }
@@ -1705,7 +1703,7 @@ function pageAccueil() {
   const heroT1 = cfg.heroT1 || "Élever chaque<br>esprit,";
   const heroT2 = cfg.heroT2 || "construire<br>l'avenir.";
   const heroDesc = cfg.heroDesc || "Du préscolaire au Baccalauréat, le Groupe Scolaire Le Miri cultive l'excellence, la créativité et les valeurs humaines. Travaillons ensemble pour gagner cette année académique 2025-2026&nbsp;!";
-  const heroBtn = cfg.heroBtn || "https://www.expertpro-ci.net/accueilpreinscription.php";
+  const heroBtn = cfg.heroBtn || "https://www.expertpro-ci.net/https://www.expertpro.ci/accueilpreinscription.php.php";
   const s1 = cfg.s1 || 542;
   const s2 = cfg.s2 || 105;
   const s3 = cfg.s3 || 77;
@@ -1747,8 +1745,8 @@ function pageAccueil() {
   <div class="stats-strip">
     <div class="stat-cell"><div class="stat-n" data-target="${s1}" data-suffix="">0</div><div class="stat-l">Élèves inscrits</div></div>
     <div class="stat-cell"><div class="stat-n" data-target="${s2}" data-suffix="">0</div><div class="stat-l">Préscolaire-primaire</div></div>
-    <div class="stat-cell"><div class="stat-n" data-target="${s3}" data-suffix="">0</div><div class="stat-l">Candidats au Bepc</div></div>
-    <div class="stat-cell"><div class="stat-n" data-target="${s4}" data-suffix="">0</div><div class="stat-l">Candidats au Bac</div></div>
+    <div class="stat-cell"><div class="stat-n" data-target="${s3}" data-suffix="">0</div><div class="stat-l">Taux de réussite au Cepe</div></div>
+    <div class="stat-cell"><div class="stat-n" data-target="${s4}" data-suffix="">0</div><div class="stat-l">Taux de réussite au Bepc</div></div>
   </div>
 
   <!-- INTRO & CARTE DU DIRECTEUR -->
@@ -1811,8 +1809,8 @@ function pageAccueil() {
       <h2>Rejoignez<br>la famille<br>Le Miri</h2>
       <p>Inscriptions ouvertes pour les nouveaux et anciens élèves — Année scolaire 2025-2026</p>
       <div class="cta-btns">
-        <a href="https://www.expertpro-ci.net/accueilpreinscription.php" target="_blank" class="btn" style="background:#fff;color:var(--tr);text-align:center;">Inscription — Nouvel élève</a>
-        <a href="https://www.expertpro-ci.net/accueilpreinscription.php" target="_blank" class="btn" style="background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.4);text-align:center;">Réinscription — Ancien élève</a>
+        <a href="https://www.expertpro.ci/accueilpreinscription.php" target="_blank" class="btn" style="background:#fff;color:var(--tr);text-align:center;">Inscription — Nouvel élève</a>
+        <a href="https://www.expertpro.ci/accueilpreinscription.php" target="_blank" class="btn" style="background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.4);text-align:center;">Réinscription — Ancien élève</a>
         <a href="javascript:void(0)" onclick="openPdfModal((CMS.config||{}).fichesPdf||'','Fiche de renseignement 2025')" class="btn" style="background:rgba(255,255,255,.05);color:rgba(255,255,255,.9);border:2px solid rgba(255,255,255,.2);text-align:center;">Fiche de renseignement</a>
       </div>
     </div>
