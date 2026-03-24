@@ -2280,7 +2280,7 @@ function pageParents(sub) {
             <div>
               <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--go2);margin-bottom:.4rem;">Document officiel</div>
               <div style="font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:800;color:#fff;">Fiche de renseignement ${(CMS.config||{}).year||'2025-2026'}</div>
-              <div style="font-size:.85rem;color:rgba(255,255,255,.75);margin-top:.3rem;">À compléter et remettre à l'administration lors de l'inscription</div>
+              <div style="font-size:.85rem;color:rgba(255,255,255,.75);margin-top:.3rem;">
             </div>
             ${(CMS.config||{}).fichesPdf
               ? `<button onclick="openPdfModal('${(CMS.config||{}).fichesPdf}','Fiche de renseignement ${(CMS.config||{}).year||'2025-2026'}')" style="background:var(--go2);color:var(--fo2);border:none;padding:.75rem 1.5rem;font-family:'Open Sans',sans-serif;font-size:.82rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:2px;cursor:pointer;white-space:nowrap;transition:opacity .2s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Ouvrir la fiche →</button>`
