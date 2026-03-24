@@ -43,13 +43,23 @@ function toFirebaseKey(key) {
 }
 
 // Choisit le bon chemin Firebase selon la clé
-// admin:credentials → /admin/ (chemin protégé, non lisible publiquement)
-// tout le reste     → /cms/  (lisible publiquement)
+/* Variable pour stocker le jeton de sécurité de l'admin */
+let FIREBASE_ID_TOKEN = null;
+
+// Choisit le bon chemin Firebase selon la clé et ajoute le jeton si connecté
 function getFirebasePath(key) {
+  let url = '';
   if (key.startsWith('admin:')) {
-    return `${FIREBASE_URL}/admin/${toFirebaseKey(key)}.json`;
+    url = `${FIREBASE_URL}/admin/${toFirebaseKey(key)}.json`;
+  } else {
+    url = `${FIREBASE_URL}/cms/${toFirebaseKey(key)}.json`;
   }
-  return `${FIREBASE_URL}/cms/${toFirebaseKey(key)}.json`;
+  
+  // La clé magique : on attache le badge pour prouver notre identité à Firebase
+  if (FIREBASE_ID_TOKEN) {
+    url += `?auth=${FIREBASE_ID_TOKEN}`;
+  }
+  return url;
 }
 
 // Lecture depuis Firebase
