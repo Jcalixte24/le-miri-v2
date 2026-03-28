@@ -955,8 +955,10 @@ async function gd(k){
    SÉCURITÉ OFFICIELLE : FIREBASE AUTHENTICATION
 ══════════════════════════════════════════════════════════ */
 const firebaseConfig = {
-  apiKey: "AIzaSyC-eM4IXBfVfRogmhSoLeWeaf-hJiQnbrg", 
-  authDomain: "lemiri-cms.firebaseapp.com"
+  apiKey: "AIzaSyC-eM4IXBfVfRogmhSoLeWeaf-hJiQnbrg",
+  authDomain: "lemiri-cms.firebaseapp.com",
+  projectId: "lemiri-cms",
+  databaseURL: "https://lemiri-cms-default-rtdb.europe-west1.firebasedatabase.app"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -965,14 +967,20 @@ const auth = firebase.auth();
 auth.onAuthStateChanged(async (user) => {
   showLoader();
   if (user) {
-    // Connecté
-    window.FIREBASE_ID_TOKEN = await user.getIdToken();
+    // Connecté — récupère le token frais (force=true pour éviter token expiré)
+    window.FIREBASE_ID_TOKEN = await user.getIdToken(true);
+    // Rafraîchit le token automatiquement toutes les 55 min (expire après 60 min)
+    if (window._tokenRefreshInterval) clearInterval(window._tokenRefreshInterval);
+    window._tokenRefreshInterval = setInterval(async () => {
+      try { window.FIREBASE_ID_TOKEN = await user.getIdToken(true); } catch(e) {}
+    }, 55 * 60 * 1000);
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminApp').style.display = 'block';
     document.getElementById('sbUser').textContent = user.email;
     await initAdmin();
   } else {
     // Déconnecté
+    if (window._tokenRefreshInterval) clearInterval(window._tokenRefreshInterval);
     window.FIREBASE_ID_TOKEN = null;
     document.getElementById('adminApp').style.display = 'none';
     document.getElementById('loginScreen').style.display = 'flex';
@@ -1450,7 +1458,13 @@ function toast(msg,type=''){const t=document.getElementById('toast');t.textConte
 
 /* ═══ INIT ═══ */
 async function initAdmin(){
-  for(const[k,val]of Object.entries(D)){const ex=await sGet(k);if(ex===null)await sSet(k,val);}
+  // Initialise uniquement les clés "site:" — les clés "admin:" (credentials) ne sont jamais
+  // écrasées automatiquement pour éviter les erreurs 401 et les réinitialisations non voulues.
+  for(const[k,val]of Object.entries(D)){
+    if(k.startsWith('admin:')) continue; // protégé — ne pas toucher via initAdmin
+    const ex=await sGet(k);
+    if(ex===null) await sSet(k,val);
+  }
   const oldGal = await sGet('site:gallery');
   const newGal = await sGet('site:gallery2');
   if(oldGal && Array.isArray(oldGal) && oldGal.length && (!newGal || !newGal.length)) {

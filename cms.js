@@ -21,16 +21,16 @@ const FIREBASE_URL = 'https://lemiri-cms-default-rtdb.europe-west1.firebasedatab
      "rules": {
        "cms": {
          ".read": true,
-         ".write": true
+         ".write": "auth != null"
        },
        "admin": {
-         ".read": false,
-         ".write": true
+         ".read": "auth != null",
+         ".write": "auth != null"
        }
      }
    }
-   → cms/ : lecture publique (site), écriture admin
-   → admin/ : jamais lisible publiquement (credentials protégés)
+   → cms/   : lecture publique (site), écriture réservée aux admins authentifiés
+   → admin/ : lecture ET écriture réservées aux admins authentifiés (credentials protégés)
    ════════════════════════════════════════════ */
 
 /* ════════════════════════════════════════════
@@ -42,22 +42,22 @@ function toFirebaseKey(key) {
   return key.replace(/:/g, '_').replace(/[.#$\[\]]/g, '_');
 }
 
-// Choisit le bon chemin Firebase selon la clé
-/* Variable pour stocker le jeton de sécurité de l'admin */
-let FIREBASE_ID_TOKEN = null;
+// Token Firebase — toujours lu/écrit via window pour être partagé avec admin/index.html
+window.FIREBASE_ID_TOKEN = window.FIREBASE_ID_TOKEN || null;
 
-// Choisit le bon chemin Firebase selon la clé et ajoute le jeton si connecté
+// Choisit le bon chemin Firebase selon la clé et ajoute le token si disponible
+// La Realtime Database REST API exige ?auth= (Authorization: Bearer n'est pas supporté)
+// On lit toujours depuis window.FIREBASE_ID_TOKEN (partagé avec admin/index.html)
 function getFirebasePath(key) {
-  let url = '';
+  let url;
   if (key.startsWith('admin:')) {
     url = `${FIREBASE_URL}/admin/${toFirebaseKey(key)}.json`;
   } else {
     url = `${FIREBASE_URL}/cms/${toFirebaseKey(key)}.json`;
   }
-  
-  // La clé magique : on attache le badge pour prouver notre identité à Firebase
-  if (FIREBASE_ID_TOKEN) {
-    url += `?auth=${FIREBASE_ID_TOKEN}`;
+  const token = window.FIREBASE_ID_TOKEN || FIREBASE_ID_TOKEN;
+  if (token) {
+    url += `?auth=${token}`;
   }
   return url;
 }
@@ -65,11 +65,13 @@ function getFirebasePath(key) {
 // Lecture depuis Firebase
 async function cmsGet(key) {
   try {
-    const url = getFirebasePath(key);
-    const res = await fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } });
+    const res = await fetch(getFirebasePath(key), {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    });
     if (!res.ok) return null;
     const data = await res.json();
-    return data; // Firebase retourne null si inexistant
+    return data;
   } catch (e) {
     console.warn(`[CMS] Erreur lecture "${key}":`, e.message);
     return null;
@@ -79,8 +81,7 @@ async function cmsGet(key) {
 // Écriture dans Firebase
 async function cmsSet(key, value) {
   try {
-    const url = getFirebasePath(key);
-    const res = await fetch(url, {
+    const res = await fetch(getFirebasePath(key), {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(value)
@@ -95,8 +96,10 @@ async function cmsSet(key, value) {
 // Suppression dans Firebase
 async function cmsDel(key) {
   try {
-    const url = getFirebasePath(key);
-    const res = await fetch(url, { method: 'DELETE' });
+    const res = await fetch(getFirebasePath(key), {
+      method: 'DELETE',
+      headers: { 'Accept': 'application/json' }
+    });
     return res.ok;
   } catch (e) {
     console.warn(`[CMS] Erreur suppression "${key}":`, e.message);
