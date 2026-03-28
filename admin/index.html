@@ -154,6 +154,11 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
 .irow{background:var(--wh);border:1px solid var(--cr);border-radius:var(--rad);padding:1rem 1.2rem;display:grid;align-items:center;gap:1rem; box-shadow:0 2px 8px rgba(0,0,0,.02); transition:border-color .2s, box-shadow .2s;}
 .irow:hover{border-color:var(--cr2); box-shadow:0 4px 12px rgba(0,0,0,.05);}
 .irow.wi{grid-template-columns:60px 1fr auto;}
+.drag-handle{cursor:grab;padding:0 .5rem;color:var(--md);font-size:1.2rem;display:flex;align-items:center;user-select:none;transition:color .15s;}
+.drag-handle:hover{color:var(--fo);}
+.irow.wi.sortable-drag-enabled{grid-template-columns:28px 60px 1fr auto;}
+.sortable-ghost{opacity:.4;background:var(--cr);}
+.sortable-chosen{box-shadow:0 8px 24px rgba(0,0,0,.12);}
 .irow.ni{grid-template-columns:1fr auto;}
 .irow.fc{grid-template-columns:60px 1fr 1fr auto;}
 .ithumb{width:60px;height:45px;object-fit:cover;border-radius:4px;border:1px solid var(--cr2);flex-shrink:0;background:var(--cr);}
@@ -205,6 +210,7 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
   .ds-grid{grid-template-columns:1fr;}
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
 </head>
 <body>
 
@@ -1100,7 +1106,37 @@ async function saveConfig(){
 /* ═══ SLIDES ═══ */
 async function loadSlides(){
   const sl=await gd('site:slides');
-  document.getElementById('slidesList').innerHTML=sl.length?sl.map((s,i)=>`<div class="irow wi"><img class="ithumb" src="${s.img}" onerror="this.style.background='var(--cr)'"><div class="iinfo"><h4>${h(s.title)}</h4><p>${h(s.tag)}</p></div><div class="iacts"><button class="be" onclick="openSlideMod(${i})">Modifier</button><button class="bd" onclick="delItem('site:slides',${i},loadSlides)">Supprimer</button></div></div>`).join(''):'<p style="color:var(--md);font-size:.88rem;">Aucun slide.</p>';
+  const container=document.getElementById('slidesList');
+  if(!sl.length){container.innerHTML='<p style="color:var(--md);font-size:.88rem;">Aucun slide.</p>';return;}
+  container.innerHTML=sl.map((s,i)=>`
+    <div class="irow wi sortable-drag-enabled" data-idx="${i}">
+      <span class="drag-handle" title="Glisser pour réordonner">⠿</span>
+      <img class="ithumb" src="${h(s.img)}" onerror="this.style.background='var(--cr)'">
+      <div class="iinfo"><h4>${h(s.title)}</h4><p>${h(s.tag)}</p></div>
+      <div class="iacts">
+        <button class="be" onclick="openSlideMod(${i})">Modifier</button>
+        <button class="bd" onclick="delItem('site:slides',${i},loadSlides)">Supprimer</button>
+      </div>
+    </div>`).join('');
+  // Initialise ou réinitialise SortableJS
+  if(window._slidesSortable) window._slidesSortable.destroy();
+  window._slidesSortable = Sortable.create(container, {
+    handle: '.drag-handle',
+    animation: 150,
+    ghostClass: 'sortable-ghost',
+    chosenClass: 'sortable-chosen',
+    onEnd: async function(evt) {
+      if(evt.oldIndex === evt.newIndex) return;
+      showLoader();
+      const slides = await gd('site:slides');
+      const moved = slides.splice(evt.oldIndex, 1)[0];
+      slides.splice(evt.newIndex, 0, moved);
+      await sSet('site:slides', slides);
+      hideLoader();
+      toast('Ordre du carrousel mis à jour');
+      await loadSlides();
+    }
+  });
 }
 function openSlideMod(idx){
   document.getElementById('slide-mt').textContent=idx===null?'Nouveau slide':'Modifier le slide';
