@@ -1207,6 +1207,7 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://web3forms.com/client/script.js" async defer></script>
 </head>
 <body>
 
@@ -1219,7 +1220,7 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
 <div class="topbar">
   <div class="topbar-left">
     <span id="cms-tel">📞 +225 27 22 52 79 00</span>
-    <span id="cms-email">✉ lemiri2015ac@gmail.com</span>
+    <span id="cms-email">✉ info@groupescolairelemiri.com</span>
     <span id="cms-address">📍 Bingerville, Abidjan 01</span>
   </div>
   <div class="topbar-right">
@@ -1508,7 +1509,7 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
       <h4>Contact</h4>
       <ul class="foot-links">
         <li><a href="tel:+22527225279 00">+225 27 22 52 79 00</a></li>
-        <li><a href="mailto:lemiri2015ac@gmail.com">lemiri2015ac@gmail.com</a></li>
+        <li><a href="mailto:info@groupescolairelemiri.com">info@groupescolairelemiri.com</a></li>
         <li><span>01 BP 8051, Abidjan 01</span></li>
       </ul>
       
@@ -1606,31 +1607,24 @@ function go(page, sub) {
   currentPage = page; currentSub = sub || null;
   document.getElementById('root').innerHTML = '';
   document.getElementById('root').style.animation = 'none';
+  
   requestAnimationFrame(() => {
     document.getElementById('root').style.animation = '';
     render();
+    
+    // NOUVEAU CODE : Forcer le rechargement du script Web3Forms
+    const script = document.createElement('script');
+    script.src = "https://web3forms.com/client/script.js";
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
   });
+  
   window.scrollTo({top: 0, behavior:'smooth'});
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
   const el = document.getElementById('nav-' + page);
   if (el) el.classList.add('active');
 }
-
-/* EXCLUSIVITÉ DE L'ACCORDÉON MOBILE ET FERMETURE */
-window.closeMob = function() {
-  document.getElementById('mobMenu').classList.remove('open');
-  document.querySelectorAll('.mob-details').forEach(d => d.removeAttribute('open'));
-};
-
-document.querySelectorAll('.mob-details').forEach(details => {
-  details.addEventListener('toggle', (e) => {
-    if (details.open) {
-      document.querySelectorAll('.mob-details').forEach(other => {
-        if (other !== details) other.removeAttribute('open');
-      });
-    }
-  });
-});
 
 function render() {
   const root = document.getElementById('root');
@@ -1820,25 +1814,46 @@ function pageAccueil() {
     </div>
     <div class="cta-right">
       <h3>Nous écrire directement</h3>
-      <div class="f-row">
-        <div class="f-group"><label>Prénom</label><input type="text" placeholder="Votre prénom"></div>
-        <div class="f-group"><label>Nom</label><input type="text" placeholder="Votre nom"></div>
-      </div>
-      <div class="f-group"><label>Email</label><input type="email" placeholder="votre@email.com"></div>
-      <div class="f-group"><label>Téléphone</label><input type="tel" placeholder="+225 ..."></div>
-      <div class="f-group">
-        <label>Objet</label>
-        <select>
-          <option>Inscription nouvel élève 2025-2026</option>
-          <option>Réinscription ancien élève</option>
-          <option>Renseignements scolarité</option>
-          <option>Mode de paiement</option>
-          <option>Autre demande</option>
-        </select>
-      </div>
-      <div class="f-group"><label>Message</label><textarea placeholder="Votre message..."></textarea></div>
-      <button class="btn-submit" onclick="fakeSubmit(this)">Envoyer le message</button>
+  <form action="https://api.web3forms.com/submit" method="POST" onsubmit="if(!document.querySelector('[name=h-captcha-response]').value) { alert('Veuillez cocher la case Je suis un humain avant d\'envoyer le message.'); return false; }">
+  <input type="hidden" name="access_key" value="fc2697c4-a1bd-4b47-a934-bebca2dfb7eb">
+  <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+  
+  <div class="f-row">
+    <div class="f-group">
+      <label>Prénom</label>
+      <input type="text" name="prenom" placeholder="Votre prénom" required>
     </div>
+    <div class="f-group">
+      <label>Nom</label>
+      <input type="text" name="nom" placeholder="Votre nom" required>
+    </div>
+  </div>
+  <div class="f-group">
+    <label>Email</label>
+    <input type="email" name="email" placeholder="votre@email.com" required>
+  </div>
+  <div class="f-group">
+    <label>Téléphone</label>
+    <input type="tel" name="telephone" placeholder="+225 ...">
+  </div>
+  <div class="f-group">
+    <label>Objet</label>
+    <select name="objet">
+      <option value="Demande d'inscription">Demande d'inscription</option>
+      <option value="Renseignements généraux">Renseignements généraux</option>
+      <option value="Frais de scolarité">Frais de scolarité</option>
+      <option value="Convocation / Rendez-vous">Convocation / Rendez-vous</option>
+      <option value="Autre demande">Autre demande</option>
+    </select>
+  </div>
+  <div class="f-group">
+    <label>Message</label>
+    <textarea name="message" placeholder="Votre message..." required minlength="20" maxlength="2000"></textarea>
+  </div>
+  
+  <button type="submit" class="btn-submit">Envoyer le message</button>
+  <div class="h-captcha" data-captcha="true"></div>
+</form>
   </div>`;
 }
 
@@ -2462,7 +2477,7 @@ function pageBlog() {
 function pageContact() {
   const cfg = CMS.config || {};
   const tel     = cfg.tel     || '+225 27 22 52 79 00';
-  const email   = cfg.email   || 'lemiri2015ac@gmail.com';
+  const email   = cfg.email   || 'info@groupescolairelemiri.com';
   const address = cfg.address || '01 BP 8051, Abidjan 01 — Bingerville';
   const code    = cfg.code    || '041604';
   return `
@@ -2491,25 +2506,46 @@ function pageContact() {
           <div class="card-body" style="padding:2rem 2.5rem;">
             <h3 style="font-family:'Montserrat', sans-serif;font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;">Envoyer un message</h3>
             <p class="text-md mb2">Pour tous renseignements et informations souhaités, veuillez remplir ce formulaire. Nous vous répondrons dans les meilleurs délais.</p>
-            <div class="f-row">
-              <div class="f-group"><label>Prénom</label><input type="text" placeholder="Votre prénom"></div>
-              <div class="f-group"><label>Nom</label><input type="text" placeholder="Votre nom"></div>
-            </div>
-            <div class="f-group"><label>Email</label><input type="email" placeholder="votre@email.com"></div>
-            <div class="f-group"><label>Téléphone</label><input type="tel" placeholder="+225 ..."></div>
-            <div class="f-group">
-              <label>Objet</label>
-              <select>
-                <option>Demande d'inscription</option>
-                <option>Renseignements généraux</option>
-                <option>Frais de scolarité</option>
-                <option>Convocation / Rendez-vous</option>
-                <option>Autre demande</option>
-              </select>
-            </div>
-            <div class="f-group"><label>Message</label><textarea placeholder="Votre message..."></textarea></div>
-            <button class="btn-submit" onclick="fakeSubmit(this)">Envoyer le message</button>
-          </div>
+           <form action="https://api.web3forms.com/submit" method="POST" onsubmit="if(!document.querySelector('[name=h-captcha-response]').value) { alert('Veuillez cocher la case Je suis un humain avant d\'envoyer le message.'); return false; }">
+  <input type="hidden" name="access_key" value="fc2697c4-a1bd-4b47-a934-bebca2dfb7eb">
+  <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+  
+  <div class="f-row">
+    <div class="f-group">
+      <label>Prénom</label>
+      <input type="text" name="prenom" placeholder="Votre prénom" required>
+    </div>
+    <div class="f-group">
+      <label>Nom</label>
+      <input type="text" name="nom" placeholder="Votre nom" required>
+    </div>
+  </div>
+  <div class="f-group">
+    <label>Email</label>
+    <input type="email" name="email" placeholder="votre@email.com" required>
+  </div>
+  <div class="f-group">
+    <label>Téléphone</label>
+    <input type="tel" name="telephone" placeholder="+225 ...">
+  </div>
+  <div class="f-group">
+    <label>Objet</label>
+    <select name="objet">
+      <option value="Demande d'inscription">Demande d'inscription</option>
+      <option value="Renseignements généraux">Renseignements généraux</option>
+      <option value="Frais de scolarité">Frais de scolarité</option>
+      <option value="Convocation / Rendez-vous">Convocation / Rendez-vous</option>
+      <option value="Autre demande">Autre demande</option>
+    </select>
+  </div>
+  <div class="f-group">
+    <label>Message</label>
+    <textarea name="message" placeholder="Votre message..." required minlength="20" maxlength="2000"></textarea>
+  </div>
+  
+  <button type="submit" class="btn-submit">Envoyer le message</button>
+  <div class="h-captcha" data-captcha="true"></div>
+</form>
         </div>
       </div>
     </div>
