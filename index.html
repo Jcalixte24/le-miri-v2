@@ -793,6 +793,7 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
   font-family: 'Open Sans', sans-serif;
   letter-spacing: 0;
   text-transform: uppercase;
+  text-shadow: none;
 }
 .palmares-content .text-md {
   color: rgba(255,255,255,.8);
@@ -1256,6 +1257,7 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
           <button onclick="go('admin','organigramme')">Organigramme</button>
           <button onclick="go('admin','notes-service')">Notes de service</button>
           <button onclick="go('admin','liste-eleves')">Liste des élèves</button>
+          <button onclick="go('admin','nos-professeurs')">Nos professeurs</button>
         </div>
       </li>
       <li class="nav-item">
@@ -1295,7 +1297,6 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
           <button onclick="go('parents','horaires')">Horaires des cours</button>
           <button onclick="go('parents','examens')">Calendrier examens blancs</button>
           <button onclick="go('parents','notes')">Consultations des notes</button>
-          <button onclick="go('parents','evaluation')">Évaluation professeurs</button>
         </div>
       </li>
       <li class="nav-item">
@@ -1349,6 +1350,7 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
         <a onclick="go('admin','organigramme'); closeMob()">Organigramme</a>
         <a onclick="go('admin','notes-service'); closeMob()">Notes de service</a>
         <a onclick="go('admin','liste-eleves'); closeMob()">Liste des élèves</a>
+        <a onclick="go('admin','nos-professeurs'); closeMob()">Nos professeurs</a>
       </div>
     </details>
 
@@ -1382,7 +1384,6 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
         <a onclick="go('parents','horaires'); closeMob()">Horaires des cours</a>
         <a onclick="go('parents','examens'); closeMob()">Calendrier examens blancs</a>
         <a onclick="go('parents','notes'); closeMob()">Consultations des notes</a>
-        <a onclick="go('parents','evaluation'); closeMob()">Évaluation professeurs</a>
       </div>
     </details>
 
@@ -1851,6 +1852,7 @@ function pageAdmin(sub) {
     {id:'organigramme', label:'Organigramme'},
     {id:'notes-service', label:'Notes de service'},
     {id:'liste-eleves', label:'Liste des élèves'},
+    {id:'nos-professeurs', label:'Nos professeurs'},
   ];
   const activeSub = sub || 'historique';
   const pages = CMS['pages'] || {};
@@ -1915,6 +1917,13 @@ function pageAdmin(sub) {
             </div>
             ${e.pdf ? '<div class="note-arr">→ PDF</div>' : '<div style="font-size:.72rem;color:var(--md);">PDF à venir</div>'}
           </div>`).join('')}
+      </div>`,
+    'nos-professeurs': `
+      <h2>Nos Professeurs</h2>
+      <p>Dans le cadre de notre démarche qualité, les parents d'élèves et la direction évaluent les professeurs en fin de chaque trimestre. Vos retours nous permettent d'améliorer continuellement la qualité de l'enseignement au Groupe Scolaire Le Miri.</p>
+      <div class="info-link-card mt2" onclick="window.open('https://tole.snsenon.com/question/index.php','_blank')" style="cursor:pointer;">
+        <span>Accéder au formulaire d'évaluation des professeurs</span>
+        <span class="arrow">→</span>
       </div>`,
   };
 
@@ -2260,7 +2269,6 @@ function pageParents(sub) {
     {id:'horaires',label:'Horaires des cours'},
     {id:'examens',label:'Examens blancs'},
     {id:'notes',label:'Consultations notes'},
-    {id:'evaluation',label:'Évaluation profs'},
   ];
   return `
   ${breadcrumb([{label:'Accueil',page:'accueil'},{label:'Parents d\'Élèves'}])}
@@ -2344,13 +2352,6 @@ function pageParents(sub) {
           <p>Les parents et élèves peuvent consulter les notes et résultats en ligne via le portail sécurisé de l'établissement. Une connexion avec vos identifiants personnels est requise.</p>
           <div class="info-link-card mt2" onclick="window.open('https://www.expertpro.ci/index.php?adr=index.connexion.etab.inc&esp=PELV','_blank')" style="cursor:pointer;">
             <span>Accéder à la consultation des notes</span><span class="arrow">→</span>
-          </div>` : ''}
-        ${activeSub==='evaluation' ? `
-          <h2>Évaluation des Professeurs</h2>
-          <p>Dans le cadre de notre démarche qualité, les parents d'élèves sont invités à évaluer les professeurs en fin de chaque trimestre. Vos retours nous permettent d'améliorer continuellement la qualité de l'enseignement.</p>
-          <div class="info-link-card mt2" onclick="window.open('https://tole.snsenon.com/question/index.php','_blank')" style="cursor:pointer;">
-         <span>Accéder au formulaire d'évaluation</span><span class="arrow">→</span>
-          </div>
           </div>` : ''}
       </div>
     </div>
