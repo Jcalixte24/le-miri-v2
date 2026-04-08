@@ -1619,6 +1619,108 @@ window.addEventListener('load', () => {
 let currentPage = 'accueil';
 let currentSub = null;
 
+/* ══════════════════════════════════════
+   META DYNAMIQUES PAR PAGE
+══════════════════════════════════════ */
+const META = {
+  accueil: {
+    title: 'Groupe Scolaire Le Miri | Excellence à Bingerville, Abidjan',
+    desc:  'Le Groupe Scolaire Le Miri à Bingerville offre un enseignement d\'excellence du préscolaire au Baccalauréat. Inscriptions 2025-2026 ouvertes.',
+    url:   '/'
+  },
+  contact: {
+    title: 'Contact | Groupe Scolaire Le Miri — Bingerville',
+    desc:  'Contactez le Groupe Scolaire Le Miri à Bingerville, Abidjan. Formulaire en ligne, téléphone et plan d\'accès.',
+    url:   '/contact'
+  },
+  blog: {
+    title: 'Événements & Actualités | Groupe Scolaire Le Miri',
+    desc:  'Suivez les événements, sorties scolaires et actualités du Groupe Scolaire Le Miri à Bingerville.',
+    url:   '/evenements'
+  },
+  admin: {
+    default: { title: 'Administration | Groupe Scolaire Le Miri', desc: 'Découvrez l\'administration du Groupe Scolaire Le Miri : historique, organigramme, règlement intérieur.', url: '/administration' },
+    historique:      { title: 'Historique du MIRI | Groupe Scolaire Le Miri', desc: 'Découvrez l\'histoire et les valeurs du Groupe Scolaire Le Miri, établissement privé laïc à Bingerville depuis sa création.', url: '/administration/historique' },
+    reglement:       { title: 'Règlement Intérieur | Groupe Scolaire Le Miri', desc: 'Consultez le règlement intérieur du Groupe Scolaire Le Miri. Règles de vie scolaire et conduites attendues.', url: '/administration/reglement' },
+    organigramme:    { title: 'Organigramme | Groupe Scolaire Le Miri', desc: 'Découvrez l\'équipe dirigeante et l\'organigramme du Groupe Scolaire Le Miri à Bingerville.', url: '/administration/organigramme' },
+    'notes-service': { title: 'Notes de Service | Groupe Scolaire Le Miri', desc: 'Consultez les notes de service officielles du Groupe Scolaire Le Miri.', url: '/administration/notes-service' },
+    'liste-eleves':  { title: 'Liste des Élèves | Groupe Scolaire Le Miri', desc: 'Accédez à la liste officielle des élèves du Groupe Scolaire Le Miri pour l\'année 2025-2026.', url: '/administration/liste-eleves' },
+    'nos-professeurs':{ title: 'Nos Professeurs | Groupe Scolaire Le Miri', desc: 'Rencontrez le corps enseignant du Groupe Scolaire Le Miri, des professeurs qualifiés et dévoués.', url: '/administration/nos-professeurs' },
+  },
+  groupe: {
+    default:    { title: 'Groupe Scolaire Le Miri | Maternelle, Primaire, Secondaire', desc: 'Le Groupe Scolaire Le Miri accueille les élèves de la maternelle au lycée à Bingerville, Abidjan.', url: '/groupe-scolaire' },
+    maternelle: { title: 'Section Maternelle | Groupe Scolaire Le Miri', desc: 'La section maternelle du Groupe Scolaire Le Miri à Bingerville. Encadrement bienveillant et éveil dès le plus jeune âge.', url: '/groupe-scolaire/maternelle' },
+    primaire:   { title: 'Section Primaire | Groupe Scolaire Le Miri', desc: 'La section primaire du Groupe Scolaire Le Miri à Bingerville. Enseignement rigoureux du CP au CM2.', url: '/groupe-scolaire/primaire' },
+    secondaire: { title: 'Secondaire & Lycée | Groupe Scolaire Le Miri', desc: 'Le secondaire et lycée du Groupe Scolaire Le Miri à Bingerville. Préparation au BEPC et au Baccalauréat.', url: '/groupe-scolaire/secondaire' },
+  },
+  enseignants: {
+    default:      { title: 'Espace Enseignants | Groupe Scolaire Le Miri', desc: 'Espace dédié aux enseignants du Groupe Scolaire Le Miri : informations, calendriers et ressources pédagogiques.', url: '/enseignants' },
+    infos:        { title: 'Infos Enseignants | Groupe Scolaire Le Miri', desc: 'Informations pratiques à destination des enseignants du Groupe Scolaire Le Miri.', url: '/enseignants/infos' },
+    activites:    { title: 'Activités Fin de Trimestre | Groupe Scolaire Le Miri', desc: 'Programme des activités de fin de trimestre pour les enseignants du Groupe Scolaire Le Miri.', url: '/enseignants/activites' },
+    liste:        { title: 'Liste Enseignants 2025-2026 | Groupe Scolaire Le Miri', desc: 'Liste complète des enseignants du Groupe Scolaire Le Miri pour l\'année scolaire 2025-2026.', url: '/enseignants/liste' },
+    principaux:   { title: 'Professeurs Principaux | Groupe Scolaire Le Miri', desc: 'Liste des professeurs principaux par classe au Groupe Scolaire Le Miri.', url: '/enseignants/principaux' },
+    surveillance: { title: 'Calendrier de Surveillance | Groupe Scolaire Le Miri', desc: 'Calendrier de surveillance des examens pour les enseignants du Groupe Scolaire Le Miri.', url: '/enseignants/surveillance' },
+    conseils:     { title: 'Conseils d\'Enseignements | Groupe Scolaire Le Miri', desc: 'Dates et comptes-rendus des conseils d\'enseignements du Groupe Scolaire Le Miri.', url: '/enseignants/conseils' },
+    notes:        { title: 'Saisie des Notes | Groupe Scolaire Le Miri', desc: 'Accès à la plateforme de saisie des notes pour les enseignants du Groupe Scolaire Le Miri.', url: '/enseignants/notes' },
+    visites:      { title: 'Visites de Classe | Groupe Scolaire Le Miri', desc: 'Calendrier des visites de classe au Groupe Scolaire Le Miri.', url: '/enseignants/visites' },
+  },
+  parents: {
+    default:  { title: 'Espace Parents | Groupe Scolaire Le Miri', desc: 'Espace parents du Groupe Scolaire Le Miri : informations, horaires, examens et consultation des notes.', url: '/parents' },
+    infos:    { title: 'Informations Parents | Groupe Scolaire Le Miri', desc: 'Toutes les informations importantes pour les parents d\'élèves du Groupe Scolaire Le Miri.', url: '/parents/infos' },
+    horaires: { title: 'Horaires des Cours | Groupe Scolaire Le Miri', desc: 'Consultez les horaires des cours du Groupe Scolaire Le Miri pour l\'année 2025-2026.', url: '/parents/horaires' },
+    examens:  { title: 'Calendrier des Examens Blancs | Groupe Scolaire Le Miri', desc: 'Calendrier complet des examens blancs du Groupe Scolaire Le Miri pour l\'année 2025-2026.', url: '/parents/examens' },
+    notes:    { title: 'Consultation des Notes | Groupe Scolaire Le Miri', desc: 'Accédez aux notes de votre enfant en ligne via le portail du Groupe Scolaire Le Miri.', url: '/parents/notes' },
+  },
+  vie: {
+    default: { title: 'Vie Scolaire | Groupe Scolaire Le Miri', desc: 'La vie scolaire au Groupe Scolaire Le Miri : conseil scolaire, clubs et galerie photos.', url: '/vie-scolaire' },
+    conseil: { title: 'Conseil Scolaire | Groupe Scolaire Le Miri', desc: 'Le conseil scolaire du Groupe Scolaire Le Miri : représentation des élèves et vie démocratique.', url: '/vie-scolaire/conseil' },
+    clubs:   { title: 'Les Clubs du MIRI | Groupe Scolaire Le Miri', desc: 'Découvrez les clubs et activités parascolaires du Groupe Scolaire Le Miri à Bingerville.', url: '/vie-scolaire/clubs' },
+    galerie: { title: 'Galerie Photos & Vidéos | Groupe Scolaire Le Miri', desc: 'Galerie photos et vidéos des événements et activités du Groupe Scolaire Le Miri.', url: '/vie-scolaire/galerie' },
+  }
+};
+
+function updateMeta(page, sub) {
+  const pageMeta = META[page];
+  if (!pageMeta) return;
+
+  // Récupère la meta de la sous-page ou la default
+  const m = (sub && pageMeta[sub]) ? pageMeta[sub]
+           : (pageMeta.url !== undefined) ? pageMeta          // page sans sous-pages
+           : (pageMeta.default)            ? pageMeta.default
+           : null;
+  if (!m) return;
+
+  const baseUrl = 'https://www.groupescolairelemiri.com';
+  const fullUrl = baseUrl + m.url;
+
+  // Title
+  document.title = m.title;
+
+  // Meta description
+  let desc = document.querySelector('meta[name="description"]');
+  if (desc) desc.setAttribute('content', m.desc);
+
+  // Canonical
+  let canonical = document.querySelector('link[rel="canonical"]');
+  if (canonical) canonical.setAttribute('href', fullUrl);
+
+  // Open Graph (WhatsApp / Facebook)
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  const ogDesc  = document.querySelector('meta[property="og:description"]');
+  const ogUrl   = document.querySelector('meta[property="og:url"]');
+  if (ogTitle) ogTitle.setAttribute('content', m.title);
+  if (ogDesc)  ogDesc.setAttribute('content', m.desc);
+  if (ogUrl)   ogUrl.setAttribute('content', fullUrl);
+
+  // Twitter Card
+  const twTitle = document.querySelector('meta[name="twitter:title"]');
+  const twDesc  = document.querySelector('meta[name="twitter:description"]');
+  const twUrl   = document.querySelector('meta[name="twitter:url"]');
+  if (twTitle) twTitle.setAttribute('content', m.title);
+  if (twDesc)  twDesc.setAttribute('content', m.desc);
+  if (twUrl)   twUrl.setAttribute('content', fullUrl);
+}
+
 function go(page, sub) {
   currentPage = page; currentSub = sub || null;
   document.getElementById('root').innerHTML = '';
@@ -1633,7 +1735,10 @@ function go(page, sub) {
   const subPath = sub ? '/' + sub : '';
   const newUrl = (urlMap[page] || '/') + subPath;
   history.pushState({page, sub: sub||null}, '', newUrl);
-  
+
+  // Met à jour les metas SEO
+  updateMeta(page, sub || null);
+
   requestAnimationFrame(() => {
     document.getElementById('root').style.animation = '';
     render();
@@ -1653,6 +1758,7 @@ window.addEventListener('popstate', function(e) {
     currentSub  = e.state.sub || null;
     render();
     renderCaptcha();
+    updateMeta(currentPage, currentSub);
     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
     const el = document.getElementById('nav-' + currentPage);
     if (el) el.classList.add('active');
@@ -2882,6 +2988,9 @@ function resolveUrlToPage(pathname) {
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
   const navEl = document.getElementById('nav-' + currentPage);
   if (navEl) navEl.classList.add('active');
+
+  // Mettre à jour les metas selon la page initiale
+  updateMeta(currentPage, currentSub);
 })();
 
 /* ══════════════════════════════════════
