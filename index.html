@@ -1339,7 +1339,7 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
       Inscription 2025-2026
     </button>
     <!-- BOUTON HAMBURGER (Ouverture) -->
-    <button class="hamburger" onclick="document.getElementById('mobMenu').classList.add('open')" id="hamburger">
+    <button class="hamburger" onclick="document.getElementById('mobMenu').classList.add('open'); document.body.style.overflow='hidden';" id="hamburger">
       <span></span><span></span><span></span>
     </button>
   </div>
@@ -1623,23 +1623,70 @@ function go(page, sub) {
   currentPage = page; currentSub = sub || null;
   document.getElementById('root').innerHTML = '';
   document.getElementById('root').style.animation = 'none';
+
+  // Met à jour l'URL sans rechargement (routing SPA)
+  const urlMap = {
+    accueil: '/', admin: '/administration', groupe: '/groupe-scolaire',
+    enseignants: '/enseignants', parents: '/parents', vie: '/vie-scolaire',
+    blog: '/evenements', contact: '/contact'
+  };
+  const subPath = sub ? '/' + sub : '';
+  const newUrl = (urlMap[page] || '/') + subPath;
+  history.pushState({page, sub: sub||null}, '', newUrl);
   
   requestAnimationFrame(() => {
     document.getElementById('root').style.animation = '';
     render();
-    
-    // NOUVEAU CODE : Forcer le rechargement du script Web3Forms
-    const script = document.createElement('script');
-    script.src = "https://web3forms.com/client/script.js";
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
+    renderCaptcha();
   });
   
   window.scrollTo({top: 0, behavior:'smooth'});
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
   const el = document.getElementById('nav-' + page);
   if (el) el.classList.add('active');
+}
+
+/* Gestion du bouton retour du navigateur */
+window.addEventListener('popstate', function(e) {
+  if (e.state && e.state.page) {
+    currentPage = e.state.page;
+    currentSub  = e.state.sub || null;
+    render();
+    renderCaptcha();
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    const el = document.getElementById('nav-' + currentPage);
+    if (el) el.classList.add('active');
+  }
+});
+
+/* Re-render hCaptcha de façon fiable après injection du DOM */
+function renderCaptcha() {
+  const widgets = document.querySelectorAll('.h-captcha[data-captcha="true"]');
+  if (!widgets.length) return;
+
+  function doRender() {
+    widgets.forEach(function(el) {
+      // Vide le widget pour éviter le double-rendu
+      el.innerHTML = '';
+      if (window.hcaptcha) {
+        try { window.hcaptcha.render(el, {sitekey: el.getAttribute('data-sitekey') || 'auto'}); } catch(e) {}
+      } else if (window.w3f && window.w3f.captchaLoaded) {
+        // Web3Forms a déjà initialisé — re-trigger son init interne
+        try { window.w3f.init(); } catch(e) {}
+      }
+    });
+  }
+
+  if (window.hcaptcha) {
+    doRender();
+  } else {
+    // Supprime l'ancien script pour forcer le re-chargement
+    document.querySelectorAll('script[src*="web3forms.com/client/script.js"]').forEach(s => s.remove());
+    const script = document.createElement('script');
+    script.src = "https://web3forms.com/client/script.js";
+    script.onload = doRender;
+    document.body.appendChild(script);
+  }
 }
 
 function render() {
@@ -2771,6 +2818,47 @@ window.updateGalleryModal = function() {
 };
 
 /* ══════════════════════════════════════
+   ROUTING — résolution URL → page
+══════════════════════════════════════ */
+function resolveUrlToPage(pathname) {
+  const routeMap = {
+    '/':                      {page:'accueil',      sub:null},
+    '/administration':        {page:'admin',        sub:'historique'},
+    '/administration/historique':   {page:'admin',  sub:'historique'},
+    '/administration/reglement':    {page:'admin',  sub:'reglement'},
+    '/administration/organigramme': {page:'admin',  sub:'organigramme'},
+    '/administration/notes-service':{page:'admin',  sub:'notes-service'},
+    '/administration/liste-eleves': {page:'admin',  sub:'liste-eleves'},
+    '/administration/nos-professeurs':{page:'admin',sub:'nos-professeurs'},
+    '/groupe-scolaire':         {page:'groupe',     sub:'maternelle'},
+    '/groupe-scolaire/maternelle':  {page:'groupe', sub:'maternelle'},
+    '/groupe-scolaire/primaire':    {page:'groupe', sub:'primaire'},
+    '/groupe-scolaire/secondaire':  {page:'groupe', sub:'secondaire'},
+    '/enseignants':             {page:'enseignants',sub:'infos'},
+    '/enseignants/infos':       {page:'enseignants',sub:'infos'},
+    '/enseignants/activites':   {page:'enseignants',sub:'activites'},
+    '/enseignants/liste':       {page:'enseignants',sub:'liste'},
+    '/enseignants/principaux':  {page:'enseignants',sub:'principaux'},
+    '/enseignants/surveillance':{page:'enseignants',sub:'surveillance'},
+    '/enseignants/conseils':    {page:'enseignants',sub:'conseils'},
+    '/enseignants/notes':       {page:'enseignants',sub:'notes'},
+    '/enseignants/visites':     {page:'enseignants',sub:'visites'},
+    '/parents':                 {page:'parents',    sub:'infos'},
+    '/parents/infos':           {page:'parents',    sub:'infos'},
+    '/parents/horaires':        {page:'parents',    sub:'horaires'},
+    '/parents/examens':         {page:'parents',    sub:'examens'},
+    '/parents/notes':           {page:'parents',    sub:'notes'},
+    '/vie-scolaire':            {page:'vie',        sub:'conseil'},
+    '/vie-scolaire/conseil':    {page:'vie',        sub:'conseil'},
+    '/vie-scolaire/clubs':      {page:'vie',        sub:'clubs'},
+    '/vie-scolaire/galerie':    {page:'vie',        sub:'galerie'},
+    '/evenements':              {page:'blog',       sub:null},
+    '/contact':                 {page:'contact',    sub:null},
+  };
+  return routeMap[pathname] || routeMap[pathname.replace(/\/$/, '')] || {page:'accueil', sub:null};
+}
+
+/* ══════════════════════════════════════
    INIT — charge tout le CMS puis affiche
 ══════════════════════════════════════ */
 (async function() {
@@ -2782,8 +2870,23 @@ window.updateGalleryModal = function() {
   if (c.address) { const el = document.getElementById('cms-address'); if(el) el.textContent = '📍 ' + c.address; }
   if (c.logo) {
     document.querySelectorAll('.cms-logo').forEach(el => el.src = c.logo);
-  }  render();
+  }
+
+  // Résoudre la page selon l'URL courante (arrivée directe depuis Google, partage de lien, etc.)
+  const route = resolveUrlToPage(window.location.pathname);
+  currentPage = route.page;
+  currentSub  = route.sub;
+  // Remplace l'état initial dans l'historique pour que popstate fonctionne
+  history.replaceState({page: currentPage, sub: currentSub}, '', window.location.pathname);
+
+  render();
+  renderCaptcha();
   renderTicker();
+
+  // Activer le bon lien nav
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + currentPage);
+  if (navEl) navEl.classList.add('active');
 })();
 
 /* ══════════════════════════════════════
@@ -2822,6 +2925,14 @@ function closePdfModal(e) {
     document.getElementById('pdfModalFrame').src = '';
     document.body.style.overflow = '';
   }
+}
+
+/* ══════════════════════════════════════
+   MENU MOBILE — FERMETURE
+══════════════════════════════════════ */
+function closeMob() {
+  document.getElementById('mobMenu').classList.remove('open');
+  document.body.style.overflow = '';
 }
 </script>
 </body>
