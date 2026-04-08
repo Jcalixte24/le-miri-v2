@@ -1223,7 +1223,7 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-<script src="https://web3forms.com/client/script.js" async defer></script>
+<!-- Web3Forms chargé dynamiquement par renderCaptcha() après chaque navigation -->
 </head>
 <body>
 
@@ -1659,34 +1659,29 @@ window.addEventListener('popstate', function(e) {
   }
 });
 
-/* Re-render hCaptcha de façon fiable après injection du DOM */
+/* Re-render hCaptcha via Web3Forms auto-init (data-captcha="true") */
 function renderCaptcha() {
   const widgets = document.querySelectorAll('.h-captcha[data-captcha="true"]');
   if (!widgets.length) return;
 
-  function doRender() {
-    widgets.forEach(function(el) {
-      // Vide le widget pour éviter le double-rendu
-      el.innerHTML = '';
-      if (window.hcaptcha) {
-        try { window.hcaptcha.render(el, {sitekey: el.getAttribute('data-sitekey') || 'auto'}); } catch(e) {}
-      } else if (window.w3f && window.w3f.captchaLoaded) {
-        // Web3Forms a déjà initialisé — re-trigger son init interne
-        try { window.w3f.init(); } catch(e) {}
-      }
-    });
+  // Vide chaque widget pour éviter le double-rendu hCaptcha
+  widgets.forEach(function(el) { el.innerHTML = ''; });
+
+  // Supprime tous les anciens scripts Web3Forms + hCaptcha pour repartir proprement
+  document.querySelectorAll('script[src*="web3forms.com"], script[src*="hcaptcha.com"]').forEach(s => s.remove());
+
+  // Réinitialise l'objet hcaptcha pour forcer un fresh render
+  if (window.hcaptcha) {
+    try { delete window.hcaptcha; } catch(e) { window.hcaptcha = undefined; }
   }
 
-  if (window.hcaptcha) {
-    doRender();
-  } else {
-    // Supprime l'ancien script pour forcer le re-chargement
-    document.querySelectorAll('script[src*="web3forms.com/client/script.js"]').forEach(s => s.remove());
-    const script = document.createElement('script');
-    script.src = "https://web3forms.com/client/script.js";
-    script.onload = doRender;
-    document.body.appendChild(script);
-  }
+  // Recharge le script Web3Forms : il détecte data-captcha="true" et injecte
+  // automatiquement la bonne sitekey liée à votre access_key
+  const script = document.createElement('script');
+  script.src = "https://web3forms.com/client/script.js";
+  script.async = true;
+  script.defer = true;
+  document.body.appendChild(script);
 }
 
 function render() {
