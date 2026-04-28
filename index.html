@@ -1264,68 +1264,19 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
         <button class="nav-link" onclick="go('accueil')" id="nav-accueil">Accueil</button>
       </li>
       <li class="nav-item">
-        <button class="nav-link" onclick="go('admin')">
-          Administration
-          <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg>
-        </button>
-        <div class="dropdown">
-          <button onclick="go('admin','historique')">Historique / Le MIRI</button>
-          <button onclick="go('admin','reglement')">Règlement intérieur</button>
-          <button onclick="go('admin','organigramme')">Organigramme</button>
-          <button onclick="go('admin','notes-service')">Notes de service</button>
-          <button onclick="go('admin','liste-eleves')">Liste des élèves</button>
-          <button onclick="go('admin','nos-professeurs')">Nos professeurs</button>
-        </div>
+        <button class="nav-link" onclick="go('admin')">Administration</button>
       </li>
       <li class="nav-item">
-        <button class="nav-link" onclick="go('groupe')">
-          Groupe Scolaire
-          <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg>
-        </button>
-        <div class="dropdown">
-          <button onclick="go('groupe','maternelle')">Maternelle</button>
-          <button onclick="go('groupe','primaire')">Primaire</button>
-          <button onclick="go('groupe','secondaire')">Secondaire & Lycée</button>
-        </div>
+        <button class="nav-link" onclick="go('groupe')">Groupe Scolaire</button>
       </li>
       <li class="nav-item">
-        <button class="nav-link" onclick="go('enseignants')">
-          Enseignants
-          <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg>
-        </button>
-        <div class="dropdown">
-          <button onclick="go('enseignants','infos')">Infos aux Enseignants</button>
-          <button onclick="go('enseignants','activites')">Activités fin de trimestre</button>
-          <button onclick="go('enseignants','liste')">Liste 2025-2026</button>
-          <button onclick="go('enseignants','principaux')">Professeurs principaux</button>
-          <button onclick="go('enseignants','surveillance')">Calendrier de surveillance</button>
-          <button onclick="go('enseignants','conseils')">Conseils d'enseignements</button>
-          <button onclick="go('enseignants','notes')">Saisie des notes</button>
-          <button onclick="go('enseignants','visites')">Visites de classe</button>
-        </div>
+        <button class="nav-link" onclick="go('enseignants')">Enseignants</button>
       </li>
       <li class="nav-item">
-        <button class="nav-link" onclick="go('parents')">
-          Parents d'Élèves
-          <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg>
-        </button>
-        <div class="dropdown">
-          <button onclick="go('parents','infos')">Informations</button>
-          <button onclick="go('parents','horaires')">Horaires des cours</button>
-          <button onclick="go('parents','examens')">Calendrier examens blancs</button>
-          <button onclick="go('parents','notes')">Consultations des notes</button>
-        </div>
+        <button class="nav-link" onclick="go('parents')">Parents d'Élèves</button>
       </li>
       <li class="nav-item">
-        <button class="nav-link" onclick="go('vie')">
-          Vie Scolaire
-          <svg viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg>
-        </button>
-        <div class="dropdown">
-          <button onclick="go('vie','conseil')">Conseil Scolaire</button>
-          <button onclick="go('vie','clubs')">Les Clubs du MIRI</button>
-          <button onclick="go('vie','galerie')">Galerie photos & vidéos</button>
-        </div>
+        <button class="nav-link" onclick="go('vie')">Vie Scolaire</button>
       </li>
       <li class="nav-item">
         <button class="nav-link" onclick="go('blog')">Événements</button>
@@ -1358,60 +1309,15 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
   <nav class="mob-nav">
     <a class="mob-nav-link" onclick="go('accueil'); closeMob()">Accueil</a>
     
-    <!-- ACCORDEON NATIF: AUCUN BUG POSSIBLE -->
-    <details class="mob-details">
-      <summary>Administration <span class="arr">▼</span></summary>
-      <div class="mob-sub">
-        <a onclick="go('admin','historique'); closeMob()">Historique / Le MIRI</a>
-        <a onclick="go('admin','reglement'); closeMob()">Règlement intérieur</a>
-        <a onclick="go('admin','organigramme'); closeMob()">Organigramme</a>
-        <a onclick="go('admin','notes-service'); closeMob()">Notes de service</a>
-        <a onclick="go('admin','liste-eleves'); closeMob()">Liste des élèves</a>
-        <a onclick="go('admin','nos-professeurs'); closeMob()">Nos professeurs</a>
-      </div>
-    </details>
+    <a class="mob-nav-link" onclick="go('admin'); closeMob()">Administration</a>
 
-    <details class="mob-details">
-      <summary>Groupe Scolaire <span class="arr">▼</span></summary>
-      <div class="mob-sub">
-        <a onclick="go('groupe','maternelle'); closeMob()">Maternelle</a>
-        <a onclick="go('groupe','primaire'); closeMob()">Primaire</a>
-        <a onclick="go('groupe','secondaire'); closeMob()">Secondaire & Lycée</a>
-      </div>
-    </details>
+    <a class="mob-nav-link" onclick="go('groupe'); closeMob()">Groupe Scolaire</a>
 
-    <details class="mob-details">
-      <summary>Enseignants <span class="arr">▼</span></summary>
-      <div class="mob-sub">
-        <a onclick="go('enseignants','infos'); closeMob()">Infos aux Enseignants</a>
-        <a onclick="go('enseignants','activites'); closeMob()">Activités fin de trimestre</a>
-        <a onclick="go('enseignants','liste'); closeMob()">Liste 2025-2026</a>
-        <a onclick="go('enseignants','principaux'); closeMob()">Professeurs principaux</a>
-        <a onclick="go('enseignants','surveillance'); closeMob()">Calendrier de surveillance</a>
-        <a onclick="go('enseignants','conseils'); closeMob()">Conseils d'enseignements</a>
-        <a onclick="go('enseignants','notes'); closeMob()">Saisie des notes</a>
-        <a onclick="go('enseignants','visites'); closeMob()">Visites de classe</a>
-      </div>
-    </details>
+    <a class="mob-nav-link" onclick="go('enseignants'); closeMob()">Enseignants</a>
 
-    <details class="mob-details">
-      <summary>Parents d'Élèves <span class="arr">▼</span></summary>
-      <div class="mob-sub">
-        <a onclick="go('parents','infos'); closeMob()">Informations</a>
-        <a onclick="go('parents','horaires'); closeMob()">Horaires des cours</a>
-        <a onclick="go('parents','examens'); closeMob()">Calendrier examens blancs</a>
-        <a onclick="go('parents','notes'); closeMob()">Consultations des notes</a>
-      </div>
-    </details>
+    <a class="mob-nav-link" onclick="go('parents'); closeMob()">Parents d'Élèves</a>
 
-    <details class="mob-details">
-      <summary>Vie Scolaire <span class="arr">▼</span></summary>
-      <div class="mob-sub">
-        <a onclick="go('vie','conseil'); closeMob()">Conseil Scolaire</a>
-        <a onclick="go('vie','clubs'); closeMob()">Les Clubs du MIRI</a>
-        <a onclick="go('vie','galerie'); closeMob()">Galerie photos & vidéos</a>
-      </div>
-    </details>
+    <a class="mob-nav-link" onclick="go('vie'); closeMob()">Vie Scolaire</a>
 
     <a class="mob-nav-link" onclick="go('blog'); closeMob()">Événements</a>
     <a class="mob-nav-link" onclick="go('contact'); closeMob()">Contact</a>
@@ -1484,6 +1390,26 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
     </div>
     <div style="padding:.8rem 1.5rem;background:var(--cr);text-align:center;">
       <a id="pdfModalDownload" href="" target="_blank" style="font-size:.85rem;color:var(--fo);font-weight:700;text-decoration:none;">⬇ Télécharger le PDF</a>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: RIB / Mode de paiement -->
+<div id="ribModal" class="modal-overlay" onclick="closeRibModal(event)" style="z-index:9999;">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:860px;width:95vw;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;max-height:92vh;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;background:var(--fo);flex-shrink:0;">
+      <span style="font-family:'Montserrat',sans-serif;font-weight:700;color:#fff;font-size:1rem;">Mode de paiement</span>
+      <button class="modal-close-btn" onclick="closeRibModal(event)" style="position:static;background:rgba(255,255,255,.15);">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div style="flex:1;overflow-y:auto;background:#f5f5f5;display:flex;align-items:center;justify-content:center;padding:1rem;">
+      <img src="https://www.groupescolairelemiri.com/docs/rib.jpeg" alt="Mode de paiement — RIB" style="max-width:100%;height:auto;display:block;border-radius:4px;">
+    </div>
+    <div style="padding:.8rem 1.5rem;background:var(--cr);text-align:center;flex-shrink:0;">
+      <a href="https://www.groupescolairelemiri.com/docs/rib.jpeg" target="_blank" style="font-size:.85rem;color:var(--fo);font-weight:700;text-decoration:none;">⬇ Télécharger / Ouvrir en grand</a>
     </div>
   </div>
 </div>
@@ -1886,6 +1812,7 @@ function pageAccueil() {
       <div class="hero-actions">
         <a href="${heroBtn}" target="_blank" class="btn btn-tr">Inscription ${year.split('-')[0]}-${year.split('-')[1]||year}</a>
         <button class="btn btn-outline" onclick="go('groupe')">Découvrir l'école</button>
+        <button class="btn btn-outline" onclick="openRibModal()" style="border-color:var(--tr);color:var(--tr);">Mode de paiement</button>
       </div>
     </div>
 
@@ -1974,6 +1901,7 @@ function pageAccueil() {
         <a href="https://www.expertpro.ci/accueilpreinscription.php" target="_blank" class="btn" style="background:#fff;color:var(--fo);text-align:center;">Inscription — Nouvel élève</a>
         <a href="https://www.expertpro.ci/accueilpreinscription.php" target="_blank" class="btn" style="background:rgba(255,255,255,.15);color:var(--dk);border:2px solid rgba(42,28,17,.4);text-align:center;">Réinscription — Ancien élève</a>
         <a href="javascript:void(0)" onclick="openPdfModal((CMS.config||{}).fichesPdf||'','Fiche de renseignement 2025')" class="btn" style="background:rgba(255,255,255,.05);color:var(--dk);border:2px solid rgba(42,28,17,.2);text-align:center;">Fiche de renseignement</a>
+        <button onclick="openRibModal()" class="btn" style="background:rgba(255,255,255,.05);color:var(--dk);border:2px solid rgba(42,28,17,.2);text-align:center;">Mode de paiement</button>
       </div>
     </div>
     <div class="cta-right">
@@ -2465,6 +2393,7 @@ function pageParents(sub) {
           <h2>Notes d'Information — Parents &amp; Élèves</h2>
           <p>Retrouvez ici toutes les notes d'information publiées par la direction à destination des parents et des élèves pour l'année 2025-2026.</p>
 
+<<<<<<< HEAD
           <!-- MODALITÉS DE PAIEMENT IMAGE -->
           <div style="margin-bottom:2rem;text-align:center;">
             <img
@@ -2474,7 +2403,8 @@ function pageParents(sub) {
             />
           </div>
 
-
+=======
+>>>>>>> c1a48319944df653cbe25cbb2226f4b964786ef2
           <!-- FICHE DE RENSEIGNEMENT -->
           <div style="background:linear-gradient(135deg,var(--fo2),var(--fo));border-radius:var(--rad);padding:1.8rem 2rem;margin-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
             <div>
@@ -3037,6 +2967,17 @@ function closePdfModal(e) {
   if (!e || e.target === document.getElementById('pdfModal') || e.currentTarget.classList.contains('modal-close-btn')) {
     document.getElementById('pdfModal').classList.remove('open');
     document.getElementById('pdfModalFrame').src = '';
+    document.body.style.overflow = '';
+  }
+}
+
+function openRibModal() {
+  document.getElementById('ribModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeRibModal(e) {
+  if (!e || e.target === document.getElementById('ribModal') || e.currentTarget.classList.contains('modal-close-btn')) {
+    document.getElementById('ribModal').classList.remove('open');
     document.body.style.overflow = '';
   }
 }
