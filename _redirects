@@ -1,0 +1,22 @@
+# _redirects — Règles de redirection Netlify
+# Ce fichier est lu automatiquement par Netlify
+
+# /admin sans slash → /admin/index.html
+/admin    /admin/index.html    200
+
+# Routes SPA — toutes servies par index.html
+/contact                              /index.html    200
+/evenements                           /index.html    200
+/administration                       /index.html    200
+/administration/*                     /index.html    200
+/groupe-scolaire                      /index.html    200
+/groupe-scolaire/*                    /index.html    200
+/enseignants                          /index.html    200
+/enseignants/*                        /index.html    200
+/parents                              /index.html    200
+/parents/*                            /index.html    200
+/vie-scolaire                         /index.html    200
+/vie-scolaire/*                       /index.html    200
+
+# Fallback SPA — toutes les autres URLs inconnues
+/*    /index.html    200

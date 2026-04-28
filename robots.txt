@@ -1,0 +1,12 @@
+# robots.txt — Instructions pour les moteurs de recherche
+# Groupe Scolaire Le Miri
+
+User-agent: *
+# Autoriser tout le site public
+Allow: /
+
+# Interdire l'indexation de l'admin (ne doit pas apparaître dans Google)
+Disallow: /admin/
+
+# Sitemap (optionnel — à créer si vous voulez le SEO)
+# Sitemap: https://votre-site.netlify.app/sitemap.xml
