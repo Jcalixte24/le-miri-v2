@@ -13,12 +13,5 @@
 /parents                              /parents.html          200
 /vie-scolaire                         /vie-scolaire.html     200
 
-# Sous-pages → index.html (SPA pour les sous-sections)
-/administration/*                     /index.html    200
-/groupe-scolaire/*                    /index.html    200
-/enseignants/*                        /index.html    200
-/parents/*                            /index.html    200
-/vie-scolaire/*                       /index.html    200
-
 # Fallback SPA — toutes les autres URLs inconnues
 /*    /index.html    200
