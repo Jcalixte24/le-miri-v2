@@ -877,7 +877,7 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
 /* Inscription CTA */
 .cta-band{display:grid;grid-template-columns:1.1fr 1fr;border-top:3px solid var(--fo);border-bottom:3px solid var(--fo);}
 .cta-left{background:var(--tr);padding:5rem 4rem;position:relative;overflow:hidden;}
-.cta-left::after{content:'2025';position:absolute;right:-2rem;top:50%;transform:translateY(-50%);font-family:'Montserrat', sans-serif;font-size:12rem;font-weight:800;color:rgba(0,0,0,.06);line-height:1;}
+.cta-left::after{content:'2026-2027';position:absolute;right:-2rem;top:50%;transform:translateY(-50%);font-family:'Montserrat', sans-serif;font-size:12rem;font-weight:800;color:rgba(0,0,0,.06);line-height:1;}
 .cta-left h2{font-family:'Montserrat', sans-serif;font-size:3rem;font-weight:800;color:var(--dk);line-height:1.15;position:relative;z-index:1; letter-spacing:-0.02em;}
 .cta-left p{color:rgba(42,28,17,.9);font-size:1rem;margin-top:1rem;position:relative;z-index:1; font-weight:500; line-height:1.6;}
 .cta-btns{display:flex;flex-direction:column;gap:.8rem;max-width:280px;margin-top:2.5rem;position:relative;z-index:1;}
@@ -1443,7 +1443,7 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
       <ul class="foot-links">
         <li><a href="https://www.expertpro.ci/accueilpreinscription.php" target="_blank">Nouvel élève 2026-2027</a></li>
         <li><a href="https://www.expertpro.ci/accueilpreinscription.php" target="_blank">Réinscription</a></li>
-        <li><a href="javascript:void(0)" onclick="openPdfModal((CMS.config||{}).fichesPdf||'','Fiche de renseignement 2025')">Fiche de renseignement</a></li>
+        <li><a href="javascript:void(0)" onclick="openPdfModal((CMS.config||{}).fichesPdf||'','Fiche de renseignement 2026-2027')">Fiche de renseignement</a></li>
         <li><a href="javascript:void(0)" onclick="openPdfModal((CMS.config||{}).paiementPdf||'','Mode de paiement')">Mode de paiement</a></li>
       </ul>
     </div>
@@ -1785,7 +1785,7 @@ function pageAccueil() {
       <div class="hero-actions">
         <a href="${heroBtn}" target="_blank" class="btn btn-tr">Inscription ${year.split('-')[0]}-${year.split('-')[1]||year}</a>
         <button class="btn btn-outline" onclick="go('groupe')">Découvrir l'école</button>
-        <button class="btn btn-outline" onclick="openRibModal()" style="border-color:var(--tr);color:var(--tr);">Mode de paiement</button>
+        <a href="javascript:void(0)" onclick="openPdfModal((CMS.config||{}).fichesPdf||'','Fiche de renseignement 2026-2027')" class="btn btn-outline" style="border-color:var(--tr);color:var(--tr);">Fiche de renseignement</a>
       </div>
     </div>
 
@@ -1873,7 +1873,7 @@ function pageAccueil() {
       <div class="cta-btns">
         <a href="https://www.expertpro.ci/accueilpreinscription.php" target="_blank" class="btn" style="background:#fff;color:var(--fo);text-align:center;">Inscription — Nouvel élève</a>
         <a href="https://www.expertpro.ci/accueilpreinscription.php" target="_blank" class="btn" style="background:rgba(255,255,255,.15);color:var(--dk);border:2px solid rgba(42,28,17,.4);text-align:center;">Réinscription — Ancien élève</a>
-        <a href="javascript:void(0)" onclick="openPdfModal((CMS.config||{}).fichesPdf||'','Fiche de renseignement 2025')" class="btn" style="background:rgba(255,255,255,.05);color:var(--dk);border:2px solid rgba(42,28,17,.2);text-align:center;">Fiche de renseignement</a>
+        <a href="javascript:void(0)" onclick="openPdfModal((CMS.config||{}).fichesPdf||'','Fiche de renseignement 2026-2027')" class="btn" style="background:rgba(255,255,255,.05);color:var(--dk);border:2px solid rgba(42,28,17,.2);text-align:center;">Fiche de renseignement</a>
         <button onclick="openRibModal()" class="btn" style="background:rgba(255,255,255,.05);color:var(--dk);border:2px solid rgba(42,28,17,.2);text-align:center;">Mode de paiement</button>
       </div>
 
