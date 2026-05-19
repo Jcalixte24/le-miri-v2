@@ -54,8 +54,8 @@
   --rad: 6px; /* Bords très légèrement plus arrondis pour la modernité */
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{background:var(--li);color:var(--dk);font-family:'Open Sans', sans-serif;overflow-x:hidden;}
+html{scroll-behavior:smooth;overflow-x:hidden;max-width:100%;}
+body{background:var(--li);color:var(--dk);font-family:'Open Sans', sans-serif;overflow-x:hidden;max-width:100%;position:relative;}
 
 
 /* ══ TOPBAR ══ */
@@ -206,7 +206,10 @@ nav{
   transform: translateX(100%);
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-y: auto;
-  display: block; 
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+  display: block;
 }
 .mob-overlay.open {
   transform: translateX(0);
@@ -259,7 +262,7 @@ nav{
 
 /* ══ PAGE LAYOUT ══ */
 .page{max-width:1280px;margin:0 auto;padding:0 2rem;}
-.page-full{width:100%;}
+.page-full{width:100%;max-width:100%;overflow-x:hidden;}
 
 /* Breadcrumb */
 .breadcrumb{background:var(--cr);border-bottom:1px solid var(--cr2);padding:.6rem 2rem;font-size:.75rem;color:var(--md);display:flex;gap:.5rem;align-items:center;}
@@ -272,7 +275,7 @@ nav{
   background:var(--fo);color:var(--cr);
   padding:3.5rem 2rem;
   background-image:linear-gradient(135deg,var(--fo2) 0%,var(--fo) 60%,#4A3114 100%);
-  position:relative;overflow:hidden;
+  position:relative;overflow:hidden;width:100%;max-width:100%;
 }
 .page-banner::before{
   content:'';position:absolute;inset:0;
@@ -904,7 +907,8 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
 .info-link-card .arrow{color:var(--tr);font-size:1.2rem;}
 
 /* ══ GROUPE SCOLAIRE PAGE ══ */
-.cycle-tabs{display:flex;gap:0;border-bottom:2px solid var(--cr3);margin-top:3rem;}
+.cycle-tabs{display:flex;gap:0;border-bottom:2px solid var(--cr3);margin-top:3rem;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap;}
+.cycle-tabs::-webkit-scrollbar{display:none;}
 .cycle-tab{padding:1rem 2.5rem;font-size:.9rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:none;background:transparent;font-family:'Open Sans', sans-serif;border-bottom:3px solid transparent;transition:.2s;color:var(--md); margin-bottom:-2px;}
 .cycle-tab.active{color:var(--fo);border-bottom-color:var(--fo);background:rgba(92,61,26,.05);}
 .cycle-content{padding:4rem 0;}
@@ -912,7 +916,8 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
 .cycle-panel.active{display:block;}
 .cycle-hero{display:grid;grid-template-columns:1.2fr 1fr;gap:4rem;align-items:center;margin-bottom:4rem;}
 .cycle-hero img{width:100%;height:auto;max-height:450px;object-fit:contain;border-radius:var(--rad); box-shadow:0 8px 24px rgba(42,28,17,.08); background:var(--wh); padding: 12px; border: 1px solid var(--cr2);}
-.levels-table{width:100%;border-collapse:collapse;margin-top:2rem; background:var(--wh); border-radius:var(--rad); overflow:hidden; box-shadow:0 4px 12px rgba(42,28,17,.04);}
+.levels-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;border-radius:var(--rad);box-shadow:0 4px 12px rgba(42,28,17,.04);margin-top:2rem;}
+.levels-table{width:100%;border-collapse:collapse; background:var(--wh);min-width:400px;}
 .levels-table th{background:var(--fo);color:var(--wh);padding:1.2rem 1.5rem;text-align:left;font-size:.85rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
 .levels-table td{padding:1.2rem 1.5rem;border-bottom:1px solid var(--cr2);font-size:1rem;color:var(--dk); font-weight:500;}
 .levels-table tr:nth-child(even) td{background:var(--cr);}
@@ -1204,9 +1209,19 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
 
   /* Groupe Scolaire tabs */
   .cycle-tabs { margin-top: 1rem; }
-  .cycle-tab { padding: .7rem 1rem; font-size: .78rem; }
+  .cycle-tab { padding: .7rem 1rem; font-size: .78rem; white-space:nowrap; }
   .cycle-content { padding: 1.5rem 0; }
   .cycle-hero { grid-template-columns: 1fr; gap: 1.5rem; }
+
+  /* Page banner */
+  .page-banner { padding: 2rem 1.2rem; }
+  .page-banner h1 { font-size: 1.9rem; }
+  .page-banner .inner { padding: 0 1.2rem; }
+
+  /* Grids à 1 colonne */
+  .admin-grid { gap: 1.5rem; padding: 2rem 0; }
+  .parents-grid { gap: 1.5rem; padding: 2rem 0; }
+  .contacts-layout { gap: 1.5rem; padding: 2rem 0; }
 
 }
 </style>
@@ -2061,14 +2076,14 @@ function pageGroupe(sub) {
         </div>
         <img src="${IMG.maternelle_vrai}" alt="Maternelle Le Miri">
       </div>
-      <table class="levels-table">
+      <div class="levels-table-wrap"><table class="levels-table">
         <thead><tr><th>Classe</th><th>Âge indicatif</th><th>Objectifs principaux</th></tr></thead>
         <tbody>
           <tr><td>Petite Section (PS)</td><td>3 ans</td><td>Socialisation, langage oral, motricité</td></tr>
           <tr><td>Moyenne Section (MS)</td><td>4 ans</td><td>Enrichissement du langage, pré-lecture, numération</td></tr>
           <tr><td>Grande Section (GS)</td><td>5 ans</td><td>Préparation CP, écriture, calcul, autonomie</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>` : ''}
 
     ${activeSub==='primaire' ? `
@@ -2088,7 +2103,7 @@ function pageGroupe(sub) {
         </div>
         <img src="${IMG.primaire_vrai}" alt="Primaire Le Miri">
       </div>
-      <table class="levels-table">
+      <div class="levels-table-wrap"><table class="levels-table">
         <thead><tr><th>Classe</th><th>Niveau</th><th>Examen</th></tr></thead>
         <tbody>
           <tr><td>CP (Cours Préparatoire)</td><td>1ère année</td><td>—</td></tr>
@@ -2097,7 +2112,7 @@ function pageGroupe(sub) {
           <tr><td>CM1 (Cours Moyen 1)</td><td>4ème année</td><td>—</td></tr>
           <tr><td>CM2 (Cours Moyen 2)</td><td>5ème année</td><td> CEPE</td></tr>
         </tbody>
-      </table>
+      </table></div>
       
       <!-- PALMARES CEPE -->
       ${ (() => { const p = (CMS['palmares']||{}).cepe||{}; return `
