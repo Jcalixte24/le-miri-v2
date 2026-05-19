@@ -120,7 +120,7 @@ const CMS_DEFAULTS = {
     address: 'Bingerville, Abidjan 01',
     year: '2026-2027',
     logo: 'https://static.wixstatic.com/media/568692_f9b4440e8b2e4586bd61ffab50a3f1d2~mv2.jpg',
-    s1: 542, s2: 105, s3: 77, s4: 78,
+    s1: 542, s2: 105, s3: 77, s4: 78, s5: 95,
     dname: 'M. LAWSON Silvere',
     dtitle: 'Directeur des Études',
     dphoto: 'https://static.wixstatic.com/media/568692_3e5e5748f7054e3bb0d5a3576f283e20~mv2.jpeg',

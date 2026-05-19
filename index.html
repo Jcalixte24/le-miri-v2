@@ -2073,7 +2073,7 @@ function pageGroupe(sub) {
         <div>
           <div class="s-tag">Préscolaire</div>
           <h2 class="s-h2 mb2">La <em>Maternelle</em> du Miri</h2>
-          <p class="text-md mb2">La maternelle du Groupe Scolaire Le Miri offre un environnement chaleureux, ludique et sécurisé pour les tout-petits. Notre équipe pédagogique spécialisée accompagne chaque enfant dans ses premiers apprentissages en favorisant l'éveil, la curiosité et la confiance en soi.</p>
+          <p class="text-md mb2">${(CMS["pages"]||{}).maternelle?.content || "La maternelle du Groupe Scolaire Le Miri offre un environnement chaleureux, ludique et sécurisé pour les tout-petits. Notre équipe pédagogique spécialisée accompagne chaque enfant dans ses premiers apprentissages en favorisant l'éveil, la curiosité et la confiance en soi."}</p>
           <ul class="feature-list">
             <li>Petite section, Moyenne section, Grande section</li>
             <li>Effectifs réduits pour un suivi individualisé</li>
@@ -2082,7 +2082,7 @@ function pageGroupe(sub) {
             <li>Cantine et garderie disponibles</li>
           </ul>
         </div>
-        <img src="${IMG.maternelle_vrai}" alt="Maternelle Le Miri">
+        <img src="${(CMS["pages"]||{}).maternelle?.img || IMG.maternelle_vrai}" alt="Maternelle Le Miri">
       </div>
       <div class="levels-table-wrap"><table class="levels-table">
         <thead><tr><th>Classe</th><th>Âge indicatif</th><th>Objectifs principaux</th></tr></thead>
@@ -2100,7 +2100,7 @@ function pageGroupe(sub) {
         <div>
           <div class="s-tag">École Primaire</div>
           <h2 class="s-h2 mb2">Le <em>Primaire</em> du Miri</h2>
-          <p class="text-md mb2">Le cycle primaire du Groupe Scolaire Le Miri construit des bases académiques solides en lecture, écriture, mathématiques et langues. Nos enseignants qualifiés accompagnent chaque élève du CP au CM2 avec méthode et bienveillance.</p>
+          <p class="text-md mb2">${(CMS["pages"]||{}).primaire?.content || "Le cycle primaire du Groupe Scolaire Le Miri construit des bases académiques solides en lecture, écriture, mathématiques et langues. Nos enseignants qualifiés accompagnent chaque élève du CP au CM2 avec méthode et bienveillance."}</p>
           <ul class="feature-list">
             <li>Classes de CP, CE1, CE2, CM1, CM2</li>
             <li>Programme officiel ivoirien conforme aux directives du MENA</li>
@@ -2109,7 +2109,7 @@ function pageGroupe(sub) {
             <li>Activités sportives et culturelles intégrées</li>
           </ul>
         </div>
-        <img src="${IMG.primaire_vrai}" alt="Primaire Le Miri">
+        <img src="${(CMS["pages"]||{}).primaire?.img || IMG.primaire_vrai}" alt="Primaire Le Miri">
       </div>
       <div class="levels-table-wrap"><table class="levels-table">
         <thead><tr><th>Classe</th><th>Niveau</th><th>Examen</th></tr></thead>
@@ -2145,7 +2145,7 @@ function pageGroupe(sub) {
         <div>
           <div class="s-tag">Secondaire & Lycée</div>
           <h2 class="s-h2 mb2">Le <em>Secondaire</em> du Miri</h2>
-          <p class="text-md mb2">Du collège jusqu'au Baccalauréat, nos équipes pédagogiques accompagnent chaque lycéen vers l'excellence. Des résultats remarquables : <strong>92% au BEPC 2024</strong> et <strong>95% au BAC 2024</strong> témoignent de notre engagement.</p>
+          <p class="text-md mb2">${(CMS["pages"]||{}).secondaire?.content || ("Du collège jusqu'au Baccalauréat, nos équipes pédagogiques accompagnent chaque lycéen vers l'excellence. Des résultats remarquables : <strong>" + (((CMS["palmares"]||{}).bepc||{}).rate||"82%") + " au BEPC</strong> et <strong>" + (((CMS["palmares"]||{}).bac||{}).rate||"95%") + " au BAC</strong> témoignent de notre engagement.")}</p>
           <ul class="feature-list">
             <li>Collège : 6ème, 5ème, 4ème, 3ème — préparation au BEPC</li>
             <li>Lycée : 2nde, 1ère, Terminale — séries A, C, D disponibles</li>
@@ -2154,7 +2154,7 @@ function pageGroupe(sub) {
             <li>Concours nationaux : anglais, mathématiques, sciences</li>
           </ul>
         </div>
-        <img src="${IMG.lycee_vrai}" alt="Secondaire Le Miri">
+        <img src="${(CMS["pages"]||{}).secondaire?.img || IMG.lycee_vrai}" alt="Secondaire Le Miri">
       </div>
       
       <!-- PALMARES BEPC -->

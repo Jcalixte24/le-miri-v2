@@ -1386,17 +1386,29 @@ async function openPageEd(key,label){
   curPageKey=key;
   document.getElementById('page-mt').textContent='Modifier : '+label;
   const pages=await gd('site:pages');
-  const page=pages[key]||{title:'',content:'',pdf:''};
+  const page=pages[key]||{title:'',content:'',pdf:'',img:''};
   const pdfField = key==='reglement' ? `<div class="fg"><label>PDF du règlement intérieur (URL)</label><input type="text" id="ped-pdf" value="${h(page.pdf||'')}" placeholder="https://...pdf"></div>` : '';
-  document.getElementById('page-body').innerHTML=`<div class="fg"><label>Titre de la section</label><input type="text" id="ped-title" value="${h(page.title)}"></div><div class="fg"><label>Contenu (texte)</label><textarea id="ped-content" rows="10">${h(page.content)}</textarea></div>${pdfField}`;
+  const gsKeys = ['maternelle','primaire','secondaire'];
+  const imgField = gsKeys.includes(key) ? `
+    <div class="ig" style="margin-top:.4rem;">
+      <label>Image de la section</label>
+      <div class="ig-tabs"><button class="ig-tab active" onclick="swImg('ped-img','url')">URL</button><button class="ig-tab" onclick="swImg('ped-img','file')">Fichier</button></div>
+      <div class="ig-url show" id="ped-img-url"><input type="text" id="ped-img-v" placeholder="https://..." value="${h(page.img||'')}" oninput="prevImg('ped-img-p',this.value)"></div>
+      <div class="ig-file" id="ped-img-file"><input type="file" accept="image/*" onchange="fileImg(this,'ped-img-v','ped-img-p')"></div>
+      <img id="ped-img-p" class="ig-prev" src="" alt="">
+    </div>` : '';
+  document.getElementById('page-body').innerHTML=`<div class="fg"><label>Titre de la section</label><input type="text" id="ped-title" value="${h(page.title)}"></div><div class="fg"><label>Description (texte d'introduction)</label><textarea id="ped-content" rows="6">${h(page.content)}</textarea></div>${imgField}${pdfField}`;
+  if(gsKeys.includes(key) && page.img) prevImg('ped-img-p', page.img);
   openMod('mod-page');
 }
 async function savePage(){
   showLoader();
   const pages=await gd('site:pages');
   const pdfEl=document.getElementById('ped-pdf');
+  const imgEl=document.getElementById('ped-img-v');
   pages[curPageKey]={title:document.getElementById('ped-title').value,content:document.getElementById('ped-content').value};
   if(pdfEl) pages[curPageKey].pdf=pdfEl.value;
+  if(imgEl) pages[curPageKey].img=imgEl.value;
   await sSet('site:pages',pages);closeMod('mod-page');
   hideLoader(); toast('Page mise à jour');
 }
