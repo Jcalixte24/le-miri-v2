@@ -283,6 +283,7 @@ async function loadAllCMS() {
     'site:teachers','site:principals','site:surveillance','site:visites',
     'site:pages','site:ens_infos',
     'site:activites','site:conseils_ens','site:surveillance_pdf',
+    'site:pageVisibility',
   ];
   const results = await Promise.all(keys.map(k => cmsGet(k)));
   keys.forEach((k, i) => {

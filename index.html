@@ -911,6 +911,7 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
 .cycle-tabs::-webkit-scrollbar{display:none;}
 .cycle-tab{padding:1rem 2.5rem;font-size:.9rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:none;background:transparent;font-family:'Open Sans', sans-serif;border-bottom:3px solid transparent;transition:.2s;color:var(--md); margin-bottom:-2px;}
 .cycle-tab.active{color:var(--fo);border-bottom-color:var(--fo);background:rgba(92,61,26,.05);}
+.vis-hidden{display:none!important;}
 .cycle-content{padding:4rem 0;}
 .cycle-panel{display:none;}
 .cycle-panel.active{display:block;}
@@ -1670,6 +1671,13 @@ function go(page, sub) {
 }
 
 /* Re-render hCaptcha via Web3Forms auto-init (data-captcha="true") */
+
+/* ═══ VISIBILITY HELPER ═══ */
+function visOk(key){
+  const vis = CMS.pageVisibility || {};
+  return vis[key] !== false;
+}
+
 function renderCaptcha() {
   const widgets = document.querySelectorAll('.h-captcha[data-captcha="true"]');
   if (!widgets.length) return;
@@ -1773,9 +1781,9 @@ function pageAccueil() {
   const s1 = cfg.s1 || 542;
   const s2 = cfg.s2 || 105;
   const pal  = CMS.palmares || {};
-  const cepe = (pal.cepe && pal.cepe.rate) ? pal.cepe.rate : ((cfg.s3||77)+'%');
-  const bepc = (pal.bepc && pal.bepc.rate) ? pal.bepc.rate : ((cfg.s4||78)+'%');
-  const bac  = (pal.bac  && pal.bac.rate)  ? pal.bac.rate  : '95%';
+  const cepe = (pal.cepe && pal.cepe.rate) ? pal.cepe.rate : ((cfg.s3||100)+'%');
+  const bepc = (pal.bepc && pal.bepc.rate) ? pal.bepc.rate : ((cfg.s4||82)+'%');
+  const bac  = (pal.bac  && pal.bac.rate)  ? pal.bac.rate  : ((cfg.s5||95)+'%');
   const year = cfg.year || "2026-2027";
   const dname = cfg.dname || "M. LAWSON Silvere";
   const dtitle = cfg.dtitle || "Directeur des Études";
@@ -2054,9 +2062,9 @@ function pageGroupe(sub) {
   ${pageBanner('Groupe Scolaire', 'Du préscolaire au Baccalauréat — Un parcours d\'excellence complet')}
   <div class="page">
     <div class="cycle-tabs">
-      <button class="cycle-tab ${activeSub==='maternelle'?'active':''}" onclick="go('groupe','maternelle')"> Maternelle</button>
-      <button class="cycle-tab ${activeSub==='primaire'?'active':''}" onclick="go('groupe','primaire')"> Primaire</button>
-      <button class="cycle-tab ${activeSub==='secondaire'?'active':''}" onclick="go('groupe','secondaire')"> Secondaire & Lycée</button>
+      ${visOk('gs_maternelle')?`<button class="cycle-tab ${activeSub==='maternelle'?'active':''}" onclick="go('groupe','maternelle')"> Maternelle</button>`:''}
+      ${visOk('gs_primaire')?`<button class="cycle-tab ${activeSub==='primaire'?'active':''}" onclick="go('groupe','primaire')"> Primaire</button>`:''}
+      ${visOk('gs_secondaire')?`<button class="cycle-tab ${activeSub==='secondaire'?'active':''}" onclick="go('groupe','secondaire')"> Secondaire & Lycée</button>`:''}
     </div>
 
     ${activeSub==='maternelle' ? `
@@ -2190,15 +2198,15 @@ function pageGroupe(sub) {
 function pageEnseignants(sub) {
   const activeSub = sub || 'infos';
   const tabs = [
-    {id:'infos',label:'Infos enseignants'},
-    {id:'activites',label:'Activités fin de trimestre'},
-    {id:'liste',label:'Liste 2026-2027'},
-    {id:'principaux',label:'Professeurs principaux'},
-    {id:'surveillance',label:'Surveillance'},
-    {id:'conseils',label:"Conseils d'enseignements"},
-    {id:'notes',label:'Saisie des notes'},
-    {id:'visites',label:'Visites de classe'},
-  ];
+    {id:'infos',     label:'Infos enseignants',         visKey:'ens_infos'},
+    {id:'activites', label:'Activités fin de trimestre', visKey:'ens_activites'},
+    {id:'liste',     label:'Liste 2026-2027',            visKey:'ens_liste'},
+    {id:'principaux',label:'Professeurs principaux',     visKey:null},
+    {id:'surveillance',label:'Surveillance',             visKey:'ens_surveillance'},
+    {id:'conseils',  label:"Conseils d'enseignements",   visKey:'ens_conseils'},
+    {id:'notes',     label:'Saisie des notes',           visKey:null},
+    {id:'visites',   label:'Visites de classe',          visKey:'ens_visites'},
+  ].filter(t => !t.visKey || visOk(t.visKey));
   return `
   ${breadcrumb([{label:'Accueil',page:'accueil'},{label:'Enseignants'}])}
   ${pageBanner('Espace Enseignants', 'Ressources, informations et outils pour le corps enseignant du MIRI')}
@@ -2378,11 +2386,11 @@ function pageEnseignants(sub) {
 function pageParents(sub) {
   const activeSub = sub || 'infos';
   const tabs = [
-    {id:'infos',label:'Informations'},
-    {id:'horaires',label:'Horaires des cours'},
-    {id:'examens',label:'Examens blancs'},
-    {id:'notes',label:'Consultations notes'},
-  ];
+    {id:'infos',    label:'Informations',       visKey:'parents_infos'},
+    {id:'horaires', label:'Horaires des cours',  visKey:'parents_horaires'},
+    {id:'examens',  label:'Examens blancs',      visKey:'parents_examens'},
+    {id:'notes',    label:'Consultations notes', visKey:'parents_notes_consult'},
+  ].filter(t => !t.visKey || visOk(t.visKey));
   return `
   ${breadcrumb([{label:'Accueil',page:'accueil'},{label:'Parents d\'Élèves'}])}
   ${pageBanner('Espace <em>Parents d\'Élèves</em>', 'Toutes les informations pour suivre la scolarité de votre enfant')}
