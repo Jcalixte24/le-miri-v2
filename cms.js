@@ -267,6 +267,7 @@ const CMS_DEFAULTS = {
     user: 'admin',
     passHash: '38a1fc99e044d13532611498ea8048e5839374e6b194176a95933f77e78c03ed'
   },
+  'site:pageVisibility': {},
 };
 
 /* ════════════════════════════════════════════
@@ -293,10 +294,11 @@ async function loadAllCMS() {
       : CMS_DEFAULTS[k];
   });
   // Alias pratiques
-  CMS.config = CMS['config'] || CMS_DEFAULTS['site:config'];
-  CMS.slides = CMS['slides'] || CMS_DEFAULTS['site:slides'];
-  CMS.events = CMS['events'] || CMS_DEFAULTS['site:events'];
-  CMS.ticker = CMS['ticker'] || CMS_DEFAULTS['site:ticker'];
+  CMS.config         = CMS['config']         || CMS_DEFAULTS['site:config'];
+  CMS.slides         = CMS['slides']         || CMS_DEFAULTS['site:slides'];
+  CMS.events         = CMS['events']         || CMS_DEFAULTS['site:events'];
+  CMS.ticker         = CMS['ticker']         || CMS_DEFAULTS['site:ticker'];
+  CMS.pageVisibility = CMS['pageVisibility'] || CMS_DEFAULTS['site:pageVisibility'] || {};
 }
 
 // Exposer globalement
