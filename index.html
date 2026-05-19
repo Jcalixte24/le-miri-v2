@@ -1204,10 +1204,10 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
   .stats-strip{grid-template-columns:repeat(3,1fr);}
   .stat-cell--wide{grid-column:1 / -1;border-bottom:1px solid rgba(255,255,255,.1);}
   .stat-cell:nth-child(2){border-left:none;}
-  .stat-n{font-size:2.2rem;}
-  .stat-txt{font-size:1.6rem;}
-  .stat-cell{padding:1.5rem .6rem;}
-  .stat-l{font-size:.65rem;}
+  .stat-n{font-size:1.9rem;}
+  .stat-txt{font-size:1.35rem;}
+  .stat-cell{padding:1rem .4rem;}
+  .stat-l{font-size:.6rem;letter-spacing:.03em;}
 
   .page{padding:0 1.2rem;}
   .f-row{grid-template-columns:1fr;}
@@ -1843,9 +1843,9 @@ function pageAccueil() {
   <!-- STATS -->
   <div class="stats-strip">
     <div class="stat-cell stat-cell--wide"><div class="stat-n" data-target="${s1}" data-suffix="">0</div><div class="stat-l">Élèves inscrits</div></div>
-    <div class="stat-cell"><div class="stat-n stat-txt">${cepe}</div><div class="stat-l">Taux de réussite au CEPE</div></div>
-    <div class="stat-cell"><div class="stat-n stat-txt">${bepc}</div><div class="stat-l">Taux de réussite au BEPC</div></div>
-    <div class="stat-cell"><div class="stat-n stat-txt">${bac}</div><div class="stat-l">Taux de réussite au BAC</div></div>
+    <div class="stat-cell"><div class="stat-n stat-txt">${cepe}</div><div class="stat-l">Réussite CEPE</div></div>
+    <div class="stat-cell"><div class="stat-n stat-txt">${bepc}</div><div class="stat-l">Réussite BEPC</div></div>
+    <div class="stat-cell"><div class="stat-n stat-txt">${bac}</div><div class="stat-l">Réussite BAC</div></div>
   </div>
 
   <!-- INTRO & CARTE DU DIRECTEUR -->
