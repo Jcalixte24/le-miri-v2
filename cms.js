@@ -120,7 +120,7 @@ const CMS_DEFAULTS = {
     address: 'Bingerville, Abidjan 01',
     year: '2026-2027',
     logo: 'https://static.wixstatic.com/media/568692_f9b4440e8b2e4586bd61ffab50a3f1d2~mv2.jpg',
-    s1: 542, s2: 105, s3: 77, s4: 78,
+    s1: 542, s2: 105, s3: 77, s4: 78, s5: 95,
     dname: 'M. LAWSON Silvere',
     dtitle: 'Directeur des Études',
     dphoto: 'https://static.wixstatic.com/media/568692_3e5e5748f7054e3bb0d5a3576f283e20~mv2.jpeg',
@@ -267,6 +267,7 @@ const CMS_DEFAULTS = {
     user: 'admin',
     passHash: '38a1fc99e044d13532611498ea8048e5839374e6b194176a95933f77e78c03ed'
   },
+  'site:pageVisibility': {},
 };
 
 /* ════════════════════════════════════════════
@@ -283,6 +284,7 @@ async function loadAllCMS() {
     'site:teachers','site:principals','site:surveillance','site:visites',
     'site:pages','site:ens_infos',
     'site:activites','site:conseils_ens','site:surveillance_pdf',
+    'site:pageVisibility',
   ];
   const results = await Promise.all(keys.map(k => cmsGet(k)));
   keys.forEach((k, i) => {
@@ -292,10 +294,11 @@ async function loadAllCMS() {
       : CMS_DEFAULTS[k];
   });
   // Alias pratiques
-  CMS.config = CMS['config'] || CMS_DEFAULTS['site:config'];
-  CMS.slides = CMS['slides'] || CMS_DEFAULTS['site:slides'];
-  CMS.events = CMS['events'] || CMS_DEFAULTS['site:events'];
-  CMS.ticker = CMS['ticker'] || CMS_DEFAULTS['site:ticker'];
+  CMS.config         = CMS['config']         || CMS_DEFAULTS['site:config'];
+  CMS.slides         = CMS['slides']         || CMS_DEFAULTS['site:slides'];
+  CMS.events         = CMS['events']         || CMS_DEFAULTS['site:events'];
+  CMS.ticker         = CMS['ticker']         || CMS_DEFAULTS['site:ticker'];
+  CMS.pageVisibility = CMS['pageVisibility'] || CMS_DEFAULTS['site:pageVisibility'] || {};
 }
 
 // Exposer globalement

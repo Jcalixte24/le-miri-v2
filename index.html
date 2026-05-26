@@ -911,6 +911,7 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
 .cycle-tabs::-webkit-scrollbar{display:none;}
 .cycle-tab{padding:1rem 2.5rem;font-size:.9rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:none;background:transparent;font-family:'Open Sans', sans-serif;border-bottom:3px solid transparent;transition:.2s;color:var(--md); margin-bottom:-2px;}
 .cycle-tab.active{color:var(--fo);border-bottom-color:var(--fo);background:rgba(92,61,26,.05);}
+.vis-hidden{display:none!important;}
 .cycle-content{padding:4rem 0;}
 .cycle-panel{display:none;}
 .cycle-panel.active{display:block;}
@@ -1224,12 +1225,56 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
   .contacts-layout { gap: 1.5rem; padding: 2rem 0; }
 
 }
+
+/* ══ PAGE LOADER ══ */
+#pageLoader {
+  position: fixed; inset: 0; z-index: 999999;
+  background: var(--wh);
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
+}
+#pageLoader.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-logo {
+  width: 140px; height: auto;
+  animation: pulseLoader 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+}
+@keyframes pulseLoader {
+  0%   { transform: scale(0.9); opacity: 0.8; }
+  100% { transform: scale(1.05); opacity: 1; }
+}
+
+/* ══ MODAL SÉLECTION CYCLE FICHE ══ */
+#ficheModal .fiche-cycle-btn {
+  width: 100%; padding: 1rem 1.5rem;
+  display: flex; align-items: center; gap: 1rem;
+  background: var(--cr); border: 2px solid var(--cr2);
+  border-radius: var(--rad); cursor: pointer;
+  font-family: 'Open Sans', sans-serif; font-size: .95rem; font-weight: 700;
+  color: var(--fo); text-align: left;
+  transition: background .2s, border-color .2s, transform .15s;
+}
+#ficheModal .fiche-cycle-btn:hover {
+  background: var(--go); border-color: var(--tr); transform: translateX(4px);
+}
+#ficheModal .fiche-cycle-icon {
+  font-size: 1.6rem; line-height: 1; flex-shrink: 0;
+}
+#ficheModal .fiche-cycle-label { flex: 1; }
+#ficheModal .fiche-cycle-label strong { display: block; font-size: 1rem; margin-bottom: .1rem; }
+#ficheModal .fiche-cycle-label span { font-size: .78rem; font-weight: 400; color: var(--md); }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js" defer></script>
 <!-- Web3Forms chargé dynamiquement par renderCaptcha() après chaque navigation -->
 </head>
 <body>
+
+<!-- LOADER -->
+<div id="pageLoader">
+  <img src="https://static.wixstatic.com/media/568692_f9b4440e8b2e4586bd61ffab50a3f1d2~mv2.jpg"
+       alt="Logo Le Miri" class="loader-logo cms-logo">
+</div>
+
 
 <!-- TOPBAR -->
 <div class="topbar">
@@ -1394,6 +1439,49 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
 </div>
 
 <!-- MODAL: RIB / Mode de paiement -->
+<!-- MODAL: SÉLECTION DU CYCLE — FICHE DE RENSEIGNEMENT -->
+<div id="ficheModal" class="modal-overlay" onclick="closeFicheModal(event)" style="z-index:9999;">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:460px;width:95vw;border-radius:16px;overflow:hidden;">
+    <div style="background:linear-gradient(135deg,var(--fo2),var(--fo));padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--go2);margin-bottom:.3rem;">Document officiel</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;">Fiche de renseignement</div>
+      </div>
+      <button class="modal-close-btn" onclick="closeFicheModal(event)" style="position:static;background:rgba(255,255,255,.15);">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div style="padding:1.8rem 2rem;background:var(--li);">
+      <p style="font-family:'Open Sans',sans-serif;font-size:.9rem;color:var(--md);margin-bottom:1.5rem;">Sélectionnez votre cycle pour obtenir la fiche adaptée :</p>
+      <div style="display:flex;flex-direction:column;gap:.75rem;">
+        <button class="fiche-cycle-btn" onclick="openFicheForCycle('prescolaire')">
+          <span class="fiche-cycle-label">
+            <strong>Préscolaire</strong>
+            <span>Maternelle — Petite, Moyenne et Grande Section</span>
+          </span>
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--tr);"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+        <button class="fiche-cycle-btn" onclick="openFicheForCycle('primaire')">
+          <span class="fiche-cycle-label">
+            <strong>Primaire</strong>
+            <span>CP, CE1, CE2, CM1, CM2</span>
+          </span>
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--tr);"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+        <button class="fiche-cycle-btn" onclick="openFicheForCycle('lycee')">
+          <span class="fiche-cycle-label">
+            <strong>Collège / Lycée</strong>
+            <span>6ème → Terminale · Baccalauréat</span>
+          </span>
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--tr);"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="ribModal" class="modal-overlay" onclick="closeRibModal(event)" style="z-index:9999;">
   <div class="modal-box" onclick="event.stopPropagation()" style="max-width:860px;width:95vw;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;max-height:92vh;">
     <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;background:var(--fo);flex-shrink:0;">
@@ -1442,7 +1530,7 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
       <ul class="foot-links">
         <li><a href="https://www.expertpro.ci/accueilpreinscription.php" target="_blank">Nouvel élève 2026-2027</a></li>
         <li><a href="https://www.expertpro.ci/accueilpreinscription.php" target="_blank">Réinscription</a></li>
-        <li><a href="javascript:void(0)" onclick="openPdfModal((CMS.config||{}).fichesPdf||'','Fiche de renseignement 2026-2027')">Fiche de renseignement</a></li>
+        <li><a href="javascript:void(0)" onclick="openFicheModal()">Fiche de renseignement</a></li>
         <li><a href="javascript:void(0)" onclick="openPdfModal((CMS.config||{}).paiementPdf||'','Mode de paiement')">Mode de paiement</a></li>
       </ul>
     </div>
@@ -1670,6 +1758,13 @@ function go(page, sub) {
 }
 
 /* Re-render hCaptcha via Web3Forms auto-init (data-captcha="true") */
+
+/* ═══ VISIBILITY HELPER ═══ */
+function visOk(key){
+  const vis = CMS.pageVisibility || {};
+  return vis[key] !== false;
+}
+
 function renderCaptcha() {
   const widgets = document.querySelectorAll('.h-captcha[data-captcha="true"]');
   if (!widgets.length) return;
@@ -1773,9 +1868,9 @@ function pageAccueil() {
   const s1 = cfg.s1 || 542;
   const s2 = cfg.s2 || 105;
   const pal  = CMS.palmares || {};
-  const cepe = (pal.cepe && pal.cepe.rate) ? pal.cepe.rate : ((cfg.s3||77)+'%');
-  const bepc = (pal.bepc && pal.bepc.rate) ? pal.bepc.rate : ((cfg.s4||78)+'%');
-  const bac  = (pal.bac  && pal.bac.rate)  ? pal.bac.rate  : '95%';
+  const cepe = (pal.cepe && pal.cepe.rate) ? pal.cepe.rate : ((cfg.s3||100)+'%');
+  const bepc = (pal.bepc && pal.bepc.rate) ? pal.bepc.rate : ((cfg.s4||82)+'%');
+  const bac  = (pal.bac  && pal.bac.rate)  ? pal.bac.rate  : ((cfg.s5||95)+'%');
   const year = cfg.year || "2026-2027";
   const dname = cfg.dname || "M. LAWSON Silvere";
   const dtitle = cfg.dtitle || "Directeur des Études";
@@ -1792,7 +1887,7 @@ function pageAccueil() {
       <div class="hero-actions">
         <a href="${heroBtn}" target="_blank" class="btn btn-tr">Inscription ${year.split('-')[0]}-${year.split('-')[1]||year}</a>
         <button class="btn btn-outline" onclick="go('groupe')">Découvrir l'école</button>
-        <a href="javascript:void(0)" onclick="openPdfModal((CMS.config||{}).fichesPdf||'','Fiche de renseignement 2026-2027')" class="btn btn-outline" style="border-color:var(--tr);color:var(--tr);">Fiche de renseignement</a>
+        <a href="javascript:void(0)" onclick="openFicheModal()" class="btn btn-outline" style="border-color:var(--tr);color:var(--tr);">Fiche de renseignement</a>
       </div>
     </div>
 
@@ -1880,7 +1975,7 @@ function pageAccueil() {
       <div class="cta-btns">
         <a href="https://www.expertpro.ci/accueilpreinscription.php" target="_blank" class="btn" style="background:#fff;color:var(--fo);text-align:center;">Inscription — Nouvel élève</a>
         <a href="https://www.expertpro.ci/accueilpreinscription.php" target="_blank" class="btn" style="background:rgba(255,255,255,.15);color:var(--dk);border:2px solid rgba(42,28,17,.4);text-align:center;">Réinscription — Ancien élève</a>
-        <a href="javascript:void(0)" onclick="openPdfModal((CMS.config||{}).fichesPdf||'','Fiche de renseignement 2026-2027')" class="btn" style="background:rgba(255,255,255,.05);color:var(--dk);border:2px solid rgba(42,28,17,.2);text-align:center;">Fiche de renseignement</a>
+        <a href="javascript:void(0)" onclick="openFicheModal()" class="btn" style="background:rgba(255,255,255,.05);color:var(--dk);border:2px solid rgba(42,28,17,.2);text-align:center;">Fiche de renseignement</a>
         <button onclick="openRibModal()" class="btn" style="background:rgba(255,255,255,.05);color:var(--dk);border:2px solid rgba(42,28,17,.2);text-align:center;">Mode de paiement</button>
       </div>
 
@@ -2054,9 +2149,9 @@ function pageGroupe(sub) {
   ${pageBanner('Groupe Scolaire', 'Du préscolaire au Baccalauréat — Un parcours d\'excellence complet')}
   <div class="page">
     <div class="cycle-tabs">
-      <button class="cycle-tab ${activeSub==='maternelle'?'active':''}" onclick="go('groupe','maternelle')"> Maternelle</button>
-      <button class="cycle-tab ${activeSub==='primaire'?'active':''}" onclick="go('groupe','primaire')"> Primaire</button>
-      <button class="cycle-tab ${activeSub==='secondaire'?'active':''}" onclick="go('groupe','secondaire')"> Secondaire & Lycée</button>
+      ${visOk('gs_maternelle')?`<button class="cycle-tab ${activeSub==='maternelle'?'active':''}" onclick="go('groupe','maternelle')"> Maternelle</button>`:''}
+      ${visOk('gs_primaire')?`<button class="cycle-tab ${activeSub==='primaire'?'active':''}" onclick="go('groupe','primaire')"> Primaire</button>`:''}
+      ${visOk('gs_secondaire')?`<button class="cycle-tab ${activeSub==='secondaire'?'active':''}" onclick="go('groupe','secondaire')"> Secondaire & Lycée</button>`:''}
     </div>
 
     ${activeSub==='maternelle' ? `
@@ -2065,7 +2160,7 @@ function pageGroupe(sub) {
         <div>
           <div class="s-tag">Préscolaire</div>
           <h2 class="s-h2 mb2">La <em>Maternelle</em> du Miri</h2>
-          <p class="text-md mb2">La maternelle du Groupe Scolaire Le Miri offre un environnement chaleureux, ludique et sécurisé pour les tout-petits. Notre équipe pédagogique spécialisée accompagne chaque enfant dans ses premiers apprentissages en favorisant l'éveil, la curiosité et la confiance en soi.</p>
+          <p class="text-md mb2">${(CMS["pages"]||{}).maternelle?.content || "La maternelle du Groupe Scolaire Le Miri offre un environnement chaleureux, ludique et sécurisé pour les tout-petits. Notre équipe pédagogique spécialisée accompagne chaque enfant dans ses premiers apprentissages en favorisant l'éveil, la curiosité et la confiance en soi."}</p>
           <ul class="feature-list">
             <li>Petite section, Moyenne section, Grande section</li>
             <li>Effectifs réduits pour un suivi individualisé</li>
@@ -2074,7 +2169,7 @@ function pageGroupe(sub) {
             <li>Cantine et garderie disponibles</li>
           </ul>
         </div>
-        <img src="${IMG.maternelle_vrai}" alt="Maternelle Le Miri">
+        <img src="${(CMS["pages"]||{}).maternelle?.img || IMG.maternelle_vrai}" alt="Maternelle Le Miri">
       </div>
       <div class="levels-table-wrap"><table class="levels-table">
         <thead><tr><th>Classe</th><th>Âge indicatif</th><th>Objectifs principaux</th></tr></thead>
@@ -2092,7 +2187,7 @@ function pageGroupe(sub) {
         <div>
           <div class="s-tag">École Primaire</div>
           <h2 class="s-h2 mb2">Le <em>Primaire</em> du Miri</h2>
-          <p class="text-md mb2">Le cycle primaire du Groupe Scolaire Le Miri construit des bases académiques solides en lecture, écriture, mathématiques et langues. Nos enseignants qualifiés accompagnent chaque élève du CP au CM2 avec méthode et bienveillance.</p>
+          <p class="text-md mb2">${(CMS["pages"]||{}).primaire?.content || "Le cycle primaire du Groupe Scolaire Le Miri construit des bases académiques solides en lecture, écriture, mathématiques et langues. Nos enseignants qualifiés accompagnent chaque élève du CP au CM2 avec méthode et bienveillance."}</p>
           <ul class="feature-list">
             <li>Classes de CP, CE1, CE2, CM1, CM2</li>
             <li>Programme officiel ivoirien conforme aux directives du MENA</li>
@@ -2101,7 +2196,7 @@ function pageGroupe(sub) {
             <li>Activités sportives et culturelles intégrées</li>
           </ul>
         </div>
-        <img src="${IMG.primaire_vrai}" alt="Primaire Le Miri">
+        <img src="${(CMS["pages"]||{}).primaire?.img || IMG.primaire_vrai}" alt="Primaire Le Miri">
       </div>
       <div class="levels-table-wrap"><table class="levels-table">
         <thead><tr><th>Classe</th><th>Niveau</th><th>Examen</th></tr></thead>
@@ -2137,7 +2232,7 @@ function pageGroupe(sub) {
         <div>
           <div class="s-tag">Secondaire & Lycée</div>
           <h2 class="s-h2 mb2">Le <em>Secondaire</em> du Miri</h2>
-          <p class="text-md mb2">Du collège jusqu'au Baccalauréat, nos équipes pédagogiques accompagnent chaque lycéen vers l'excellence. Des résultats remarquables : <strong>92% au BEPC 2024</strong> et <strong>95% au BAC 2024</strong> témoignent de notre engagement.</p>
+          <p class="text-md mb2">${(CMS["pages"]||{}).secondaire?.content || ("Du collège jusqu'au Baccalauréat, nos équipes pédagogiques accompagnent chaque lycéen vers l'excellence. Des résultats remarquables : <strong>" + (((CMS["palmares"]||{}).bepc||{}).rate||"82%") + " au BEPC</strong> et <strong>" + (((CMS["palmares"]||{}).bac||{}).rate||"95%") + " au BAC</strong> témoignent de notre engagement.")}</p>
           <ul class="feature-list">
             <li>Collège : 6ème, 5ème, 4ème, 3ème — préparation au BEPC</li>
             <li>Lycée : 2nde, 1ère, Terminale — séries A, C, D disponibles</li>
@@ -2146,7 +2241,7 @@ function pageGroupe(sub) {
             <li>Concours nationaux : anglais, mathématiques, sciences</li>
           </ul>
         </div>
-        <img src="${IMG.lycee_vrai}" alt="Secondaire Le Miri">
+        <img src="${(CMS["pages"]||{}).secondaire?.img || IMG.lycee_vrai}" alt="Secondaire Le Miri">
       </div>
       
       <!-- PALMARES BEPC -->
@@ -2190,15 +2285,15 @@ function pageGroupe(sub) {
 function pageEnseignants(sub) {
   const activeSub = sub || 'infos';
   const tabs = [
-    {id:'infos',label:'Infos enseignants'},
-    {id:'activites',label:'Activités fin de trimestre'},
-    {id:'liste',label:'Liste 2026-2027'},
-    {id:'principaux',label:'Professeurs principaux'},
-    {id:'surveillance',label:'Surveillance'},
-    {id:'conseils',label:"Conseils d'enseignements"},
-    {id:'notes',label:'Saisie des notes'},
-    {id:'visites',label:'Visites de classe'},
-  ];
+    {id:'infos',     label:'Infos enseignants',         visKey:'ens_infos'},
+    {id:'activites', label:'Activités fin de trimestre', visKey:'ens_activites'},
+    {id:'liste',     label:'Liste 2026-2027',            visKey:'ens_liste'},
+    {id:'principaux',label:'Professeurs principaux',     visKey:null},
+    {id:'surveillance',label:'Surveillance',             visKey:'ens_surveillance'},
+    {id:'conseils',  label:"Conseils d'enseignements",   visKey:'ens_conseils'},
+    {id:'notes',     label:'Saisie des notes',           visKey:null},
+    {id:'visites',   label:'Visites de classe',          visKey:'ens_visites'},
+  ].filter(t => !t.visKey || visOk(t.visKey));
   return `
   ${breadcrumb([{label:'Accueil',page:'accueil'},{label:'Enseignants'}])}
   ${pageBanner('Espace Enseignants', 'Ressources, informations et outils pour le corps enseignant du MIRI')}
@@ -2378,11 +2473,11 @@ function pageEnseignants(sub) {
 function pageParents(sub) {
   const activeSub = sub || 'infos';
   const tabs = [
-    {id:'infos',label:'Informations'},
-    {id:'horaires',label:'Horaires des cours'},
-    {id:'examens',label:'Examens blancs'},
-    {id:'notes',label:'Consultations notes'},
-  ];
+    {id:'infos',    label:'Informations',       visKey:'parents_infos'},
+    {id:'horaires', label:'Horaires des cours',  visKey:'parents_horaires'},
+    {id:'examens',  label:'Examens blancs',      visKey:'parents_examens'},
+    {id:'notes',    label:'Consultations notes', visKey:'parents_notes_consult'},
+  ].filter(t => !t.visKey || visOk(t.visKey));
   return `
   ${breadcrumb([{label:'Accueil',page:'accueil'},{label:'Parents d\'Élèves'}])}
   ${pageBanner('Espace <em>Parents d\'Élèves</em>', 'Toutes les informations pour suivre la scolarité de votre enfant')}
@@ -2416,9 +2511,7 @@ function pageParents(sub) {
               <div style="font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:800;color:#fff;">Fiche de renseignement ${(CMS.config||{}).year||'2026-2027'}</div>
               <div style="font-size:.85rem;color:rgba(255,255,255,.75);margin-top:.3rem;">
             </div>
-            ${(CMS.config||{}).fichesPdf
-              ? `<button onclick="openPdfModal('${(CMS.config||{}).fichesPdf}','Fiche de renseignement ${(CMS.config||{}).year||'2026-2027'}')" style="background:var(--go2);color:var(--fo2);border:none;padding:.75rem 1.5rem;font-family:'Open Sans',sans-serif;font-size:.82rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:2px;cursor:pointer;white-space:nowrap;transition:opacity .2s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Ouvrir la fiche →</button>`
-              : `<span style="font-size:.8rem;color:rgba(255,255,255,.5);font-style:italic;">Document bientôt disponible</span>`}
+            <button onclick="openFicheModal()" style="background:var(--go2);color:var(--fo2);border:none;padding:.75rem 1.5rem;font-family:'Open Sans',sans-serif;font-size:.82rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:2px;cursor:pointer;white-space:nowrap;transition:opacity .2s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Choisir ma fiche →</button>
           </div>
 
           <!-- NOTES D'INFORMATION -->
@@ -2882,6 +2975,9 @@ window.updateGalleryModal = function() {
 
   // Mettre à jour les metas selon la page initiale
   updateMeta(currentPage, currentSub);
+
+  // Masquer le splash screen une fois tout le contenu CMS chargé et rendu
+  hideSplash();
 })();
 
 /* ══════════════════════════════════════
@@ -2931,6 +3027,43 @@ function closeRibModal(e) {
     document.getElementById('ribModal').classList.remove('open');
     document.body.style.overflow = '';
   }
+}
+
+/* ══════════════════════════════════════
+   MODAL: SÉLECTION DU CYCLE — FICHE
+══════════════════════════════════════ */
+function openFicheModal() {
+  document.getElementById('ficheModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeFicheModal(e) {
+  if (!e || e.target === document.getElementById('ficheModal') || e.currentTarget.classList.contains('modal-close-btn')) {
+    document.getElementById('ficheModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+function openFicheForCycle(cycle) {
+  closeFicheModal(null);
+  const year = (CMS.config || {}).year || '2026-2027';
+  if (cycle === 'lycee') {
+    openPdfModal('docs/renseignemnt.pdf', 'Fiche de renseignement — Collège/Lycée ' + year);
+  } else {
+    const label = cycle === 'prescolaire' ? 'Préscolaire' : 'Primaire';
+    openPdfModal(
+      'docs/FICHE%20DE%20RENSEIGNEMENT%2C%20PRESCOLAIRE%20PRIMAIRE%20NUMERIQUE.pdf',
+      'Fiche de renseignement — ' + label + ' ' + year
+    );
+  }
+}
+
+/* ══════════════════════════════════════
+   PAGE LOADER — masquage
+══════════════════════════════════════ */
+function hideSplash() {
+  const loader = document.getElementById('pageLoader');
+  if (!loader) return;
+  loader.classList.add('hide');
+  setTimeout(() => { if (loader.parentNode) loader.parentNode.removeChild(loader); }, 650);
 }
 
 /* ══════════════════════════════════════

@@ -6,6 +6,8 @@
 <title>Administration — Groupe Scolaire Le Miri</title>
 <link rel="icon" sizes="192x192" href="https://static.wixstatic.com/media/568692_d208ed65917a482280a345ef2a14eba6%7Emv2.jpg/v1/fill/w_192%2Ch_192%2Clg_1%2Cusm_0.66_1.00_0.01/568692_d208ed65917a482280a345ef2a14eba6%7Emv2.jpg" type="image/jpeg"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="https://static.wixstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <!-- SCRIPTS FIREBASE AUTH -->
@@ -198,6 +200,23 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
 .ticker-row input{flex:1;border:1px solid var(--cr2);border-radius:4px;padding:.5rem .8rem;font-family:'Open Sans',sans-serif;font-size:.85rem;background:var(--bg2);color:var(--dk);outline:none; transition:border-color .2s;}
 .ticker-row input:focus{border-color:var(--fo); background:var(--wh);}
 
+/* TOGGLE SWITCH */
+.toggle{position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;position:absolute;}
+.toggle-slider{position:absolute;inset:0;background:var(--cr2);border-radius:12px;transition:.3s;cursor:pointer;}
+.toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:var(--wh);border-radius:50%;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.toggle input:checked+.toggle-slider{background:var(--fo);}
+.toggle input:checked+.toggle-slider:before{transform:translateX(20px);}
+
+/* VISIBILITY PANEL */
+.vis-group{margin-bottom:1.5rem;}
+.vis-group-title{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--lt);padding:.6rem 1.2rem;background:var(--bg);border-bottom:1px solid var(--cr);}
+.vis-row{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.2rem;border-bottom:1px solid var(--cr);gap:1rem;}
+.vis-row:last-child{border-bottom:none;}
+.vis-row-info{flex:1;}
+.vis-row-info strong{font-size:.88rem;font-weight:700;color:var(--dk);display:block;margin-bottom:.1rem;}
+.vis-row-info small{font-size:.72rem;color:var(--lt);}
+
 @media(max-width:900px){
   .a-sidebar{transform:translateX(-100%);transition:transform .3s;}
   .a-main{margin-left:0; padding:1.5rem;}
@@ -342,6 +361,12 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
         Clubs et vie scolaire
       </button>
 
+      <div class="sb-section">Visibilité</div>
+      <button class="sb-btn" onclick="showPanel('visibility')" data-panel="visibility">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        Visibilité des pages
+      </button>
+
       <div class="sb-section">Sécurité</div>
       <button class="sb-btn" onclick="showPanel('security')" data-panel="security">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -413,9 +438,10 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
             <div class="fg"><label>Élèves inscrits</label><input id="cfg-s1" type="number"></div>
             <div class="fg"><label>Préscolaire-Primaire</label><input id="cfg-s2" type="number"></div>
           </div>
-          <div class="fr">
-            <div class="fg"><label>Réussite CEPE</label><input id="cfg-s3" type="number"></div>
-            <div class="fg"><label>Réussite BEPC</label><input id="cfg-s4" type="number"></div>
+          <div class="fr3">
+            <div class="fg"><label>Réussite CEPE (%)</label><input id="cfg-s3" type="number" placeholder="100"></div>
+            <div class="fg"><label>Réussite BEPC (%)</label><input id="cfg-s4" type="number" placeholder="82"></div>
+            <div class="fg"><label>Réussite BAC (%)</label><input id="cfg-s5" type="number" placeholder="95"></div>
           </div>
         </div>
         <div class="ac"><h3>Directeur des études</h3>
@@ -538,6 +564,16 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
             <div class="fg"><label>Année</label><input id="p-bac-y" type="text" placeholder="2024"></div>
           </div>
           <div class="fg"><label>Texte descriptif</label><textarea id="p-bac-t" rows="3"></textarea></div>
+          <div class="ig">
+            <label>Image palmarès BAC</label>
+            <div class="ig-tabs">
+              <button class="ig-tab active" onclick="swImg('bac','url')">URL</button>
+              <button class="ig-tab" onclick="swImg('bac','file')">Fichier</button>
+            </div>
+            <div class="ig-url show" id="bac-url"><input type="text" id="p-bac-i" placeholder="https://..." oninput="prevImg('bac-p',this.value)"></div>
+            <div class="ig-file" id="bac-file"><input type="file" accept="image/*" onchange="fileImg(this,'p-bac-i','bac-p')"></div>
+            <img id="bac-p" class="ig-prev" src="" alt="">
+          </div>
         </div>
         <button class="bp" onclick="savePalmares()">Enregistrer les palmarès</button>
       </div>
@@ -666,6 +702,13 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
         <div class="panel-hd"><h2>Examens blancs</h2><p>Calendriers et sujets des examens blancs — PDF</p></div>
         <button class="ba" onclick="openPdfDocMod('examens',null)" style="margin-bottom:1.5rem;">Ajouter un document examens PDF</button>
         <div class="ilist" id="examensList"></div>
+      </div>
+
+      <!-- VISIBILITE -->
+      <div class="panel" id="panel-visibility">
+        <div class="panel-hd"><h2>Visibilité des pages</h2><p>Activez ou désactivez l'affichage de chaque section du site public</p></div>
+        <div id="visibilityPanelContent"></div>
+        <div style="margin-top:1.5rem;"><button class="bp" onclick="saveVisibility()">Enregistrer la visibilité</button></div>
       </div>
 
       <!-- SECURITE -->
@@ -937,24 +980,27 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
 function showLoader() { document.getElementById('appLoader').classList.add('active'); }
 function hideLoader() { document.getElementById('appLoader').classList.remove('active'); }
 
-/* ═══ STORAGE (cms.js) ═══ */
+/* ═══ STORAGE (cms.js) + CACHE ═══ */
+const _gdCache = new Map();
 async function sGet(k){ return await cmsGet(k); }
-async function sSet(k,v){ return await cmsSet(k,v); }
+async function sSet(k,val){ _gdCache.set(k,val); return await cmsSet(k,val); }
 
 /* ═══ DEFAULTS ═══ */
 const D = CMS_DEFAULTS || {
-  'site:config':{name:'Groupe Scolaire Le Miri',code:'041604',tel:'+225 27 22 52 79 00',email:'lemiri2015ac@gmail.com',address:'01 BP 8051, Abidjan 01 \u2014 Bingerville',year:'2026-2027',s1:542,s2:105,s3:77,s4:78,dname:'M. LAWSON Silvere',dtitle:'Directeur des Etudes',dphoto:'https://static.wixstatic.com/media/568692_3e5e5748f7054e3bb0d5a3576f283e20~mv2.jpeg',dmsg:"Chers parents, chers eleves,\n\nC'est avec une immense fierte que je vous souhaite la bienvenue au Groupe Scolaire Le Miri..."},
+  'site:config':{name:'Groupe Scolaire Le Miri',code:'041604',tel:'+225 27 22 52 79 00',email:'lemiri2015ac@gmail.com',address:'01 BP 8051, Abidjan 01 \u2014 Bingerville',year:'2026-2027',s1:542,s2:105,s3:100,s4:82,s5:95,dname:'M. LAWSON Silvere',dtitle:'Directeur des Etudes',dphoto:'https://static.wixstatic.com/media/568692_3e5e5748f7054e3bb0d5a3576f283e20~mv2.jpeg',dmsg:"Chers parents, chers eleves,\n\nC'est avec une immense fierte que je vous souhaite la bienvenue au Groupe Scolaire Le Miri..."},
   'site:slides':[], 'site:events':[], 'site:ticker':[], 'site:notes_service':[], 'site:notes_parents':[],
   'site:palmares':{cepe:{},bepc:{},bac:{}}, 'site:teachers':[], 'site:principals':[], 'site:surveillance':[],
   'site:visites':[], 'site:gallery2':[], 'site:conseil':{text:''}, 'site:pages':{},
-  'site:eleves':[], 'site:ens_infos':[], 'site:horaires':[], 'site:examens':[], 'site:clubs':[]
+  'site:eleves':[], 'site:ens_infos':[], 'site:horaires':[], 'site:examens':[], 'site:clubs':[],
+  'site:pageVisibility':{}
 };
 
 async function gd(k){
-  const v=await sGet(k);
-  if(v!==null) return v;
-  if(CMS_DEFAULTS && CMS_DEFAULTS[k]!==undefined) return CMS_DEFAULTS[k];
-  return D[k] || [];
+  if(_gdCache.has(k)) return _gdCache.get(k);
+  const val=await sGet(k);
+  const result = val!==null ? val : ((CMS_DEFAULTS&&CMS_DEFAULTS[k]!==undefined) ? CMS_DEFAULTS[k] : (D[k]!==undefined ? D[k] : []));
+  _gdCache.set(k,result);
+  return result;
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -1046,7 +1092,7 @@ async function loadPanel(name){
     parents_examens:()=>loadPdfDocs('examens'), liste_eleves:()=>loadPdfDocs('eleves'),
     ens_infos:()=>loadPdfDocs('ens_infos'), activites:()=>loadPdfDocs('activites'),
     conseils_ens:()=>loadPdfDocs('conseils_ens'), palmares:loadPalmares, enseignants:loadEns,
-    pages:loadPagesGrid, galerie:loadGallery, clubs:loadClubs, security:()=>{}
+    pages:loadPagesGrid, galerie:loadGallery, clubs:loadClubs, visibility:loadVisibility, security:()=>{}
   };
   if(map[name]) await map[name]();
   hideLoader();
@@ -1087,7 +1133,7 @@ async function loadConfig(){
   const set=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val||'';};
   set('cfg-name',c.name);set('cfg-code',c.code);set('cfg-tel',c.tel);set('cfg-email',c.email);
   set('cfg-address',c.address);set('cfg-year',c.year);
-  set('cfg-s1',c.s1);set('cfg-s2',c.s2);set('cfg-s3',c.s3);set('cfg-s4',c.s4);
+  set('cfg-s1',c.s1);set('cfg-s2',c.s2);set('cfg-s3',c.s3);set('cfg-s4',c.s4);set('cfg-s5',c.s5||95);
   set('cfg-dname',c.dname);set('cfg-dtitle',c.dtitle);set('cfg-dphoto',c.dphoto);set('cfg-dmsg',c.dmsg);
   set('cfg-fichesPdf',c.fichesPdf||'');set('cfg-paiementPdf',c.paiementPdf||'');set('cfg-reglementPdf',c.reglementPdf||'');
   set('cfg-hero-t1',c.heroT1);set('cfg-hero-t2',c.heroT2);set('cfg-hero-desc',c.heroDesc);set('cfg-hero-btn',c.heroBtn);
@@ -1097,7 +1143,7 @@ async function loadConfig(){
 }
 async function saveConfig(){
   showLoader();
-  const c={name:v('cfg-name'),code:v('cfg-code'),tel:v('cfg-tel'),email:v('cfg-email'),address:v('cfg-address'),year:v('cfg-year'),s1:+v('cfg-s1')||0,s2:+v('cfg-s2')||0,s3:+v('cfg-s3')||0,s4:+v('cfg-s4')||0,dname:v('cfg-dname'),dtitle:v('cfg-dtitle'),dphoto:v('cfg-dphoto'),dmsg:v('cfg-dmsg'),fichesPdf:v('cfg-fichesPdf'),paiementPdf:v('cfg-paiementPdf'),reglementPdf:v('cfg-reglementPdf'),heroT1:v('cfg-hero-t1'),heroT2:v('cfg-hero-t2'),heroDesc:v('cfg-hero-desc'),heroBtn:v('cfg-hero-btn'),logo:v('cfg-logo-v')};
+  const c={name:v('cfg-name'),code:v('cfg-code'),tel:v('cfg-tel'),email:v('cfg-email'),address:v('cfg-address'),year:v('cfg-year'),s1:+v('cfg-s1')||0,s2:+v('cfg-s2')||0,s3:+v('cfg-s3')||0,s4:+v('cfg-s4')||0,s5:+v('cfg-s5')||95,dname:v('cfg-dname'),dtitle:v('cfg-dtitle'),dphoto:v('cfg-dphoto'),dmsg:v('cfg-dmsg'),fichesPdf:v('cfg-fichesPdf'),paiementPdf:v('cfg-paiementPdf'),reglementPdf:v('cfg-reglementPdf'),heroT1:v('cfg-hero-t1'),heroT2:v('cfg-hero-t2'),heroDesc:v('cfg-hero-desc'),heroBtn:v('cfg-hero-btn'),logo:v('cfg-logo-v')};
   await sSet('site:config',c);
   hideLoader();
   toast('Paramètres enregistrés');
@@ -1196,7 +1242,7 @@ async function loadNotes(type){
   if (document.getElementById(listId)) listsToFill.push(document.getElementById(listId));
   if (type==='parents' && document.getElementById('parentsNotesListRedondant')) listsToFill.push(document.getElementById('parentsNotesListRedondant'));
 
-  const html = notes.length?notes.map((n,i)=>`<div class="irow ni"><div class="iinfo"><h4>${h(n.title)}</h4><p>${h(n.date)}${n.pdf?` — <a href="${n.pdf}" target="_blank" style="color:var(--tr);font-weight:700;">Voir PDF</a>`:''}</p></div><div class="iacts"><button class="be" onclick="openNoteMod('${type}',${i})">Modifier</button><button class="bd" onclick="delItem('${key}',${i},()=>loadNotes('${type}'))">Supprimer</button></div></div>`).join(''):'<p style="color:var(--md);font-size:.88rem;">Aucune note.</p>';
+  const html = notes.length?notes.map((n,i)=>`<div class="irow ni"><div class="iinfo"><h4>${h(n.title)}</h4><p>${h(n.date)}${n.pdf?` — <a href="${h(n.pdf)}" target="_blank" style="color:var(--tr);font-weight:700;">Voir PDF</a>`:''}</p></div><div class="iacts"><button class="be" onclick="openNoteMod('${type}',${i})">Modifier</button><button class="bd" onclick="delItem('${key}',${i},()=>loadNotes('${type}'))">Supprimer</button></div></div>`).join(''):'<p style="color:var(--md);font-size:.88rem;">Aucune note.</p>';
   
   listsToFill.forEach(l => l.innerHTML = html);
 }
@@ -1235,7 +1281,7 @@ async function loadPalmares(){
 }
 async function savePalmares(){
   showLoader();
-  const pal={cepe:{rate:v('p-cepe-r'),year:v('p-cepe-y'),text:v('p-cepe-t'),img:v('p-cepe-i')},bepc:{rate:v('p-bepc-r'),year:v('p-bepc-y'),text:v('p-bepc-t'),img:v('p-bepc-i')},bac:{rate:v('p-bac-r'),year:v('p-bac-y'),text:v('p-bac-t'),img:''}};
+  const pal={cepe:{rate:v('p-cepe-r'),year:v('p-cepe-y'),text:v('p-cepe-t'),img:v('p-cepe-i')},bepc:{rate:v('p-bepc-r'),year:v('p-bepc-y'),text:v('p-bepc-t'),img:v('p-bepc-i')},bac:{rate:v('p-bac-r'),year:v('p-bac-y'),text:v('p-bac-t'),img:v('p-bac-i')||''}};
   await sSet('site:palmares',pal);
   hideLoader(); toast('Palmarès enregistré');
 }
@@ -1340,17 +1386,29 @@ async function openPageEd(key,label){
   curPageKey=key;
   document.getElementById('page-mt').textContent='Modifier : '+label;
   const pages=await gd('site:pages');
-  const page=pages[key]||{title:'',content:'',pdf:''};
+  const page=pages[key]||{title:'',content:'',pdf:'',img:''};
   const pdfField = key==='reglement' ? `<div class="fg"><label>PDF du règlement intérieur (URL)</label><input type="text" id="ped-pdf" value="${h(page.pdf||'')}" placeholder="https://...pdf"></div>` : '';
-  document.getElementById('page-body').innerHTML=`<div class="fg"><label>Titre de la section</label><input type="text" id="ped-title" value="${h(page.title)}"></div><div class="fg"><label>Contenu (texte)</label><textarea id="ped-content" rows="10">${h(page.content)}</textarea></div>${pdfField}`;
+  const gsKeys = ['maternelle','primaire','secondaire'];
+  const imgField = gsKeys.includes(key) ? `
+    <div class="ig" style="margin-top:.4rem;">
+      <label>Image de la section</label>
+      <div class="ig-tabs"><button class="ig-tab active" onclick="swImg('ped-img','url')">URL</button><button class="ig-tab" onclick="swImg('ped-img','file')">Fichier</button></div>
+      <div class="ig-url show" id="ped-img-url"><input type="text" id="ped-img-v" placeholder="https://..." value="${h(page.img||'')}" oninput="prevImg('ped-img-p',this.value)"></div>
+      <div class="ig-file" id="ped-img-file"><input type="file" accept="image/*" onchange="fileImg(this,'ped-img-v','ped-img-p')"></div>
+      <img id="ped-img-p" class="ig-prev" src="" alt="">
+    </div>` : '';
+  document.getElementById('page-body').innerHTML=`<div class="fg"><label>Titre de la section</label><input type="text" id="ped-title" value="${h(page.title)}"></div><div class="fg"><label>Description (texte d'introduction)</label><textarea id="ped-content" rows="6">${h(page.content)}</textarea></div>${imgField}${pdfField}`;
+  if(gsKeys.includes(key) && page.img) prevImg('ped-img-p', page.img);
   openMod('mod-page');
 }
 async function savePage(){
   showLoader();
   const pages=await gd('site:pages');
   const pdfEl=document.getElementById('ped-pdf');
+  const imgEl=document.getElementById('ped-img-v');
   pages[curPageKey]={title:document.getElementById('ped-title').value,content:document.getElementById('ped-content').value};
   if(pdfEl) pages[curPageKey].pdf=pdfEl.value;
+  if(imgEl) pages[curPageKey].img=imgEl.value;
   await sSet('site:pages',pages);closeMod('mod-page');
   hideLoader(); toast('Page mise à jour');
 }
@@ -1373,7 +1431,7 @@ async function loadClubsList() {
       ${cl.img ? `<img class="ithumb" src="${cl.img}" onerror="this.style.background='var(--cr)'">` : `<div class="ithumb" style="background:var(--fo);display:flex;align-items:center;justify-content:center;color:var(--wh);font-size:.7rem;font-weight:700;text-align:center;padding:.2rem;">${h(cl.name.substring(0,8))}</div>`}
       <div class="iinfo">
         <h4>${h(cl.name)}</h4>
-        <p>${h(cl.resp||'')}${cl.members?' · '+cl.members+' membres':''}${cl.pdf?' · <a href="'+cl.pdf+'" target="_blank" style="color:var(--tr);font-weight:700;">Voir PDF</a>':''}</p>
+        <p>${h(cl.resp||'')}${cl.members?' · '+cl.members+' membres':''}${cl.pdf?' · <a href="'+h(cl.pdf)+'" target="_blank" style="color:var(--tr);font-weight:700;">Voir PDF</a>':''}</p>
       </div>
       <div class="iacts">
         <button class="be" onclick="openClubMod(${i})">Modifier</button>
@@ -1492,6 +1550,69 @@ function v(id){const el=document.getElementById(id);return el?el.value.trim():''
 function h(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function toast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='show'+(type==='error'?' error':'');setTimeout(()=>t.className='',3500);}
 
+
+/* ═══ VISIBILITE DES PAGES ═══ */
+const PAGE_VISIBILITY = [
+  {group:'Groupe Scolaire', items:[
+    {key:'gs_maternelle', label:'Maternelle', desc:'Onglet section maternelle'},
+    {key:'gs_primaire', label:'Primaire', desc:'Onglet section primaire'},
+    {key:'gs_secondaire', label:'Secondaire & Lycée', desc:'Onglet secondaire et lycée'},
+  ]},
+  {group:'Espace Parents', items:[
+    {key:'parents_infos', label:"Notes d'information", desc:'Notes et circulaires pour les parents'},
+    {key:'parents_horaires', label:'Horaires des cours', desc:'Emplois du temps par classe'},
+    {key:'parents_examens', label:'Examens blancs', desc:'Calendriers et sujets des examens'},
+    {key:'parents_notes_consult', label:'Consultations notes', desc:'Accès aux résultats des élèves'},
+  ]},
+  {group:'Espace Enseignants', items:[
+    {key:'ens_infos', label:'Infos enseignants', desc:'Documents pour le corps enseignant'},
+    {key:'ens_activites', label:'Activités fin de trimestre', desc:'Activités pédagogiques'},
+    {key:'ens_conseils', label:"Conseils d'enseignements", desc:'Comptes rendus des conseils'},
+    {key:'ens_liste', label:'Corps enseignant', desc:'Liste et annuaire des enseignants'},
+    {key:'ens_surveillance', label:'Surveillance', desc:'Calendrier de surveillance'},
+    {key:'ens_visites', label:'Visites de classe', desc:'Planning des visites pédagogiques'},
+  ]},
+];
+
+async function loadVisibility(){
+  const vis = await gd('site:pageVisibility');
+  renderVisibilityPanel(vis);
+}
+
+function renderVisibilityPanel(vis){
+  const container = document.getElementById('visibilityPanelContent');
+  if(!container) return;
+  container.innerHTML = PAGE_VISIBILITY.map(group => `
+    <div class="ac vis-group" style="padding:0;overflow:hidden;">
+      <div class="vis-group-title">${h(group.group)}</div>
+      ${group.items.map(item => `
+        <div class="vis-row">
+          <div class="vis-row-info">
+            <strong>${h(item.label)}</strong>
+            <small>${h(item.desc)}</small>
+          </div>
+          <label class="toggle" title="${h(item.label)}">
+            <input type="checkbox" id="vis-${item.key}" ${vis[item.key]===false ? '' : 'checked'}>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+async function saveVisibility(){
+  showLoader();
+  const vis = {};
+  PAGE_VISIBILITY.forEach(group => {
+    group.items.forEach(item => {
+      const el = document.getElementById('vis-'+item.key);
+      vis[item.key] = el ? el.checked : true;
+    });
+  });
+  await sSet('site:pageVisibility', vis);
+  hideLoader();
+  toast('Visibilité enregistrée');
+}
+
 /* ═══ INIT ═══ */
 async function initAdmin(){
   // Initialise uniquement les clés "site:" — les clés "admin:" (credentials) ne sont jamais
@@ -1528,7 +1649,7 @@ async function loadPdfDocs(cat) {
     <div class="irow ni">
       <div class="iinfo">
         <h4>${h(d.title)}</h4>
-        <p>${h(d.date)}${d.desc?' — '+h(d.desc):''}${d.pdf?' — <a href="'+d.pdf+'" target="_blank" style="color:var(--tr);font-weight:700;">Voir PDF</a>':' — <span style="color:var(--lt);">Pas de PDF</span>'}</p>
+        <p>${h(d.date)}${d.desc?' — '+h(d.desc):''}${d.pdf?' — <a href="'+h(d.pdf)+'" target="_blank" style="color:var(--tr);font-weight:700;">Voir PDF</a>':' — <span style="color:var(--lt);">Pas de PDF</span>'}</p>
       </div>
       <div class="iacts">
         <button class="be" onclick="openPdfDocMod('${cat}',${i})">Modifier</button>
