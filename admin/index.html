@@ -1250,23 +1250,41 @@ function anRenderList(el, counts){
       <div class="an-row-val">${v}</div>
     </div>`).join('');
 }
+function anLastDays(n){
+  // Fenêtre calendaire réelle (aujourd'hui inclus, n-1 jours avant) — ne dépend
+  // pas des clés présentes dans Firebase, donc immunisé contre une clé
+  // corrompue ou un test manuel qui traînerait dans la base.
+  const out=[];
+  const base = new Date();
+  for(let i=n-1;i>=0;i--){
+    const d = new Date(base);
+    d.setDate(base.getDate()-i);
+    out.push(d.toISOString().slice(0,10));
+  }
+  return out;
+}
 async function loadAnalytics(){
-  const daily = await fetchAnalyticsDaily();
-  const days = Object.keys(daily).sort();
+  const rawDaily = await fetchAnalyticsDaily();
+  // Ne garde que des clés au format YYYY-MM-DD valide — ignore toute clé
+  // corrompue ou de test qui aurait pu être écrite par erreur.
+  const dayKeyRe = /^\d{4}-\d{2}-\d{2}$/;
+  const daily = {};
+  Object.keys(rawDaily||{}).forEach(k=>{ if(dayKeyRe.test(k)) daily[k]=rawDaily[k]; });
+
   const todayKey = new Date().toISOString().slice(0,10);
-  const last = (n)=> days.slice(-n);
   const sum = (keys, field)=> keys.reduce((s,d)=> s+((daily[d]&&daily[d][field])||0),0);
 
   const setSafe=(id,val)=>{const e=document.getElementById(id); if(e) e.textContent=val;};
   setSafe('an-today', (daily[todayKey]&&daily[todayKey].visits)||0);
-  setSafe('an-7d', sum(last(7),'visits'));
-  setSafe('an-30d', sum(last(30),'visits'));
-  setSafe('an-uniq', sum(last(30),'uniques'));
+  setSafe('an-7d', sum(anLastDays(7),'visits'));
+  setSafe('an-30d', sum(anLastDays(30),'visits'));
+  setSafe('an-uniq', sum(anLastDays(30),'uniques'));
 
-  const chartDays = last(14);
+  const chartDays = anLastDays(14);
   const chartEl = document.getElementById('an-chart');
   if(chartEl){
-    if(!chartDays.length){
+    const anyData = chartDays.some(d=> (daily[d]&&daily[d].visits)>0);
+    if(!anyData){
       chartEl.innerHTML = '<div class="an-empty">Aucune visite enregistrée pour le moment.</div>';
     } else {
       const maxV = Math.max(1, ...chartDays.map(d=> (daily[d]&&daily[d].visits)||0));
@@ -1278,7 +1296,7 @@ async function loadAnalytics(){
     }
   }
 
-  const days30 = last(30);
+  const days30 = anLastDays(30);
   const mergeCounts = (field)=>{
     const out={};
     days30.forEach(d=>{
