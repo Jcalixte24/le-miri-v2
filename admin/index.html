@@ -151,6 +151,20 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
 .ds-cell.gold .ds-n{color:var(--go);}
 .ds-l{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--md);}
 
+/* PERFORMANCES / ANALYTICS */
+.an-chart{display:flex;align-items:flex-end;gap:.5rem;height:170px;padding-top:1rem;}
+.an-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:.4rem;height:100%;justify-content:flex-end;}
+.an-bar{width:100%;max-width:28px;background:var(--tr);border-radius:3px 3px 0 0;min-height:2px;}
+.an-bar-val{font-size:.65rem;font-weight:700;color:var(--fo);min-height:1em;}
+.an-bar-day{font-size:.62rem;color:var(--md);text-transform:uppercase;letter-spacing:.03em;}
+.an-list{display:flex;flex-direction:column;gap:.7rem;}
+.an-row{display:flex;align-items:center;gap:.8rem;font-size:.82rem;}
+.an-row-label{flex-shrink:0;width:110px;color:var(--dk);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.an-row-bar-bg{flex:1;background:var(--cr);border-radius:4px;height:10px;overflow:hidden;}
+.an-row-bar{height:100%;background:var(--go2);border-radius:4px;}
+.an-row-val{flex-shrink:0;width:40px;text-align:right;font-weight:700;color:var(--fo);font-size:.78rem;}
+.an-empty{color:var(--md);font-size:.85rem;font-style:italic;}
+
 /* ITEMS LIST */
 .ilist{display:flex;flex-direction:column;gap:.8rem;margin-top:1rem;}
 .irow{background:var(--wh);border:1px solid var(--cr);border-radius:var(--rad);padding:1rem 1.2rem;display:grid;align-items:center;gap:1rem; box-shadow:0 2px 8px rgba(0,0,0,.02); transition:border-color .2s, box-shadow .2s;}
@@ -294,6 +308,10 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
         Tableau de bord
       </button>
+      <button class="sb-btn" onclick="showPanel('analytics')" data-panel="analytics">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Performances du site
+      </button>
 
       <div class="sb-section">Contenu du site</div>
       <button class="sb-btn" onclick="showPanel('config')" data-panel="config">
@@ -427,6 +445,42 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
         </div>
         
         <div class="ac"><h3>Informations de l'établissement</h3><div id="dashInfo" style="font-size:.9rem;line-height:2.2;color:var(--md);"></div></div>
+      </div>
+
+      <!-- PERFORMANCES / ANALYTICS -->
+      <div class="panel" id="panel-analytics">
+        <div class="panel-hd"><h2>Performances du site</h2><p>Audience anonyme — visites, appareils, pages populaires</p></div>
+
+        <div class="ds-grid">
+          <div class="ds-cell"><div class="ds-n" id="an-today">-</div><div class="ds-l">Visites aujourd'hui</div></div>
+          <div class="ds-cell orange"><div class="ds-n" id="an-7d">-</div><div class="ds-l">Visites (7 jours)</div></div>
+          <div class="ds-cell gold"><div class="ds-n" id="an-30d">-</div><div class="ds-l">Visites (30 jours)</div></div>
+          <div class="ds-cell"><div class="ds-n" id="an-uniq">-</div><div class="ds-l">Visiteurs uniques (30j)</div></div>
+        </div>
+
+        <div class="ac">
+          <h3>Visites — 14 derniers jours</h3>
+          <div id="an-chart" class="an-chart"></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+          <div class="ac">
+            <h3>Pages les plus visitées (30j)</h3>
+            <div id="an-pages" class="an-list"></div>
+          </div>
+          <div class="ac">
+            <h3>Provenance du trafic (30j)</h3>
+            <div id="an-referrers" class="an-list"></div>
+          </div>
+          <div class="ac">
+            <h3>Appareils (30j)</h3>
+            <div id="an-devices" class="an-list"></div>
+          </div>
+          <div class="ac">
+            <h3>Navigateurs (30j)</h3>
+            <div id="an-browsers" class="an-list"></div>
+          </div>
+        </div>
       </div>
 
       <!-- PARAMETRES -->
@@ -1123,7 +1177,7 @@ function showPanel(name){
 async function loadPanel(name){
   showLoader();
   const map={
-    dashboard:loadDash, config:loadConfig, hero:loadSlides, actualites:loadEvents,
+    dashboard:loadDash, analytics:loadAnalytics, config:loadConfig, hero:loadSlides, actualites:loadEvents,
     ticker:loadTicker, notes:()=>loadNotes('service'), notes_parents:()=>loadNotes('parents'),
     parents_notes:()=>loadNotes('parents'), parents_horaires:()=>loadPdfDocs('horaires'),
     parents_examens:()=>loadPdfDocs('examens'), liste_eleves:()=>loadPdfDocs('eleves'),
@@ -1162,6 +1216,81 @@ async function loadDash(){
   if (dInfo && cfg) {
     dInfo.innerHTML=`<div><strong>Établissement :</strong> ${cfg.name}</div><div><strong>Code :</strong> ${cfg.code}</div><div><strong>Téléphone :</strong> ${cfg.tel}</div><div><strong>Email :</strong> ${cfg.email}</div><div><strong>Adresse :</strong> ${cfg.address}</div><div><strong>Année académique :</strong> ${cfg.year}</div>`;
   }
+}
+
+/* ═══ PERFORMANCES / ANALYTICS ═══
+   Lit analytics/daily (écrit anonymement par /analytics.js sur les pages
+   publiques). Lecture réservée aux admins connectés (règle Firebase
+   analytics/.read = "auth != null"). */
+async function fetchAnalyticsDaily(){
+  try{
+    const token = window.FIREBASE_ID_TOKEN;
+    const res = await fetch(`${FIREBASE_URL}/analytics/daily.json?auth=${token}`);
+    if(!res.ok) return {};
+    return (await res.json()) || {};
+  }catch(e){ return {}; }
+}
+function anFmtDay(d){
+  const dt = new Date(d+'T00:00:00');
+  return dt.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'});
+}
+function anLabel(key){
+  const labels = {accueil:'Accueil', direct:'Accès direct', mobile:'Mobile', tablet:'Tablette', desktop:'Ordinateur', chrome:'Chrome', safari:'Safari', firefox:'Firefox', edge:'Edge', autre:'Autre'};
+  return labels[key] || key.replace(/_/g,'.');
+}
+function anRenderList(el, counts){
+  if(!el) return;
+  const entries = Object.entries(counts||{}).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  if(!entries.length){ el.innerHTML = '<div class="an-empty">Aucune donnée pour le moment.</div>'; return; }
+  const max = entries[0][1] || 1;
+  el.innerHTML = entries.map(([k,v])=>`
+    <div class="an-row">
+      <div class="an-row-label" title="${anLabel(k)}">${anLabel(k)}</div>
+      <div class="an-row-bar-bg"><div class="an-row-bar" style="width:${Math.max(4,(v/max)*100)}%"></div></div>
+      <div class="an-row-val">${v}</div>
+    </div>`).join('');
+}
+async function loadAnalytics(){
+  const daily = await fetchAnalyticsDaily();
+  const days = Object.keys(daily).sort();
+  const todayKey = new Date().toISOString().slice(0,10);
+  const last = (n)=> days.slice(-n);
+  const sum = (keys, field)=> keys.reduce((s,d)=> s+((daily[d]&&daily[d][field])||0),0);
+
+  const setSafe=(id,val)=>{const e=document.getElementById(id); if(e) e.textContent=val;};
+  setSafe('an-today', (daily[todayKey]&&daily[todayKey].visits)||0);
+  setSafe('an-7d', sum(last(7),'visits'));
+  setSafe('an-30d', sum(last(30),'visits'));
+  setSafe('an-uniq', sum(last(30),'uniques'));
+
+  const chartDays = last(14);
+  const chartEl = document.getElementById('an-chart');
+  if(chartEl){
+    if(!chartDays.length){
+      chartEl.innerHTML = '<div class="an-empty">Aucune visite enregistrée pour le moment.</div>';
+    } else {
+      const maxV = Math.max(1, ...chartDays.map(d=> (daily[d]&&daily[d].visits)||0));
+      chartEl.innerHTML = chartDays.map(d=>{
+        const v = (daily[d]&&daily[d].visits)||0;
+        const h = Math.max(2, Math.round((v/maxV)*130));
+        return `<div class="an-bar-wrap"><div class="an-bar-val">${v||''}</div><div class="an-bar" style="height:${h}px"></div><div class="an-bar-day">${anFmtDay(d)}</div></div>`;
+      }).join('');
+    }
+  }
+
+  const days30 = last(30);
+  const mergeCounts = (field)=>{
+    const out={};
+    days30.forEach(d=>{
+      const obj = daily[d] && daily[d][field];
+      if(obj) Object.keys(obj).forEach(k=> out[k]=(out[k]||0)+obj[k]);
+    });
+    return out;
+  };
+  anRenderList(document.getElementById('an-pages'), mergeCounts('pages'));
+  anRenderList(document.getElementById('an-referrers'), mergeCounts('referrers'));
+  anRenderList(document.getElementById('an-devices'), mergeCounts('devices'));
+  anRenderList(document.getElementById('an-browsers'), mergeCounts('browsers'));
 }
 
 /* ═══ CONFIG ═══ */
