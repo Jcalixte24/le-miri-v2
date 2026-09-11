@@ -58,7 +58,10 @@
   if (location.pathname.indexOf('/admin') === 0) return;
 
   var visitor = getOrSet(window.localStorage, 'lm_vid');
-  var day = new Date().toISOString().slice(0, 10);
+  var now = new Date();
+  var day = now.toISOString().slice(0, 10);
+  var hour = now.getHours();       // heure locale du visiteur (0-23)
+  var dow = now.getDay();          // jour local du visiteur (0=dimanche..6=samedi)
   var page = pageKey();
   var device = deviceCategory();
   var browser = browserCategory();
@@ -72,6 +75,8 @@
   updates['daily/' + day + '/devices/' + device] = { '.sv': { increment: 1 } };
   updates['daily/' + day + '/browsers/' + browser] = { '.sv': { increment: 1 } };
   updates['daily/' + day + '/referrers/' + ref] = { '.sv': { increment: 1 } };
+  updates['daily/' + day + '/hours/' + hour] = { '.sv': { increment: 1 } };
+  updates['daily/' + day + '/dow/' + dow] = { '.sv': { increment: 1 } };
   if (visitor.isNew) updates['daily/' + day + '/uniques'] = { '.sv': { increment: 1 } };
 
   fetch(FIREBASE_URL + '/analytics/.json', {

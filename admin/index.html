@@ -164,6 +164,9 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
 .an-row-bar{height:100%;background:var(--go2);border-radius:4px;}
 .an-row-val{flex-shrink:0;width:40px;text-align:right;font-weight:700;color:var(--fo);font-size:.78rem;}
 .an-empty{color:var(--md);font-size:.85rem;font-style:italic;}
+.an-chart.hours{gap:.2rem;}
+.an-chart.hours .an-bar{max-width:14px;}
+.an-chart.hours .an-bar-day{font-size:.55rem;}
 
 /* ITEMS LIST */
 .ilist{display:flex;flex-direction:column;gap:.8rem;margin-top:1rem;}
@@ -461,6 +464,17 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
         <div class="ac">
           <h3>Visites — 14 derniers jours</h3>
           <div id="an-chart" class="an-chart"></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:1.5rem;">
+          <div class="ac">
+            <h3>Heures de visite (30j) — heure locale du visiteur</h3>
+            <div id="an-hours" class="an-chart hours"></div>
+          </div>
+          <div class="ac">
+            <h3>Jour de la semaine (30j)</h3>
+            <div id="an-dow" class="an-chart"></div>
+          </div>
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
@@ -1238,6 +1252,19 @@ function anLabel(key){
   const labels = {accueil:'Accueil', direct:'Accès direct', mobile:'Mobile', tablet:'Tablette', desktop:'Ordinateur', chrome:'Chrome', safari:'Safari', firefox:'Firefox', edge:'Edge', autre:'Autre'};
   return labels[key] || key.replace(/_/g,'.');
 }
+function anRenderSeries(el, counts, order, labelFn, compact){
+  if(!el) return;
+  const vals = order.map(k => (counts&&counts[k]) || 0);
+  const total = vals.reduce((a,b)=>a+b,0);
+  if(!total){ el.innerHTML = '<div class="an-empty">Aucune donnée pour le moment.</div>'; return; }
+  const maxV = Math.max(1, ...vals);
+  el.innerHTML = order.map((k,i)=>{
+    const v = vals[i];
+    const h = Math.max(2, Math.round((v/maxV)*130));
+    const lbl = labelFn(k);
+    return `<div class="an-bar-wrap" title="${lbl||k} : ${v} visite(s)">${compact?'':`<div class="an-bar-val">${v||''}</div>`}<div class="an-bar" style="height:${h}px"></div><div class="an-bar-day">${lbl}</div></div>`;
+  }).join('');
+}
 function anRenderList(el, counts){
   if(!el) return;
   const entries = Object.entries(counts||{}).sort((a,b)=>b[1]-a[1]).slice(0,8);
@@ -1309,6 +1336,12 @@ async function loadAnalytics(){
   anRenderList(document.getElementById('an-referrers'), mergeCounts('referrers'));
   anRenderList(document.getElementById('an-devices'), mergeCounts('devices'));
   anRenderList(document.getElementById('an-browsers'), mergeCounts('browsers'));
+
+  const hoursOrder = Array.from({length:24},(_,i)=>i);
+  anRenderSeries(document.getElementById('an-hours'), mergeCounts('hours'), hoursOrder, h=> (h%3===0 ? h+'h' : ''), true);
+  const dowOrder = [1,2,3,4,5,6,0]; // Lundi -> Dimanche
+  const dowLabel = {0:'Dim',1:'Lun',2:'Mar',3:'Mer',4:'Jeu',5:'Ven',6:'Sam'};
+  anRenderSeries(document.getElementById('an-dow'), mergeCounts('dow'), dowOrder, d=> dowLabel[d], false);
 }
 
 /* ═══ CONFIG ═══ */
