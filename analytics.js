@@ -58,6 +58,12 @@
   if (location.pathname.indexOf('/admin') === 0) return;
 
   var visitor = getOrSet(window.localStorage, 'lm_vid');
+  var session = getOrSet(window.sessionStorage, 'lm_sid');
+  var pageCount = 1;
+  try {
+    pageCount = (parseInt(sessionStorage.getItem('lm_spc') || '0', 10) || 0) + 1;
+    sessionStorage.setItem('lm_spc', String(pageCount));
+  } catch (e) {}
   var now = new Date();
   var day = now.toISOString().slice(0, 10);
   var hour = now.getHours();       // heure locale du visiteur (0-23)
@@ -78,6 +84,17 @@
   updates['daily/' + day + '/hours/' + hour] = { '.sv': { increment: 1 } };
   updates['daily/' + day + '/dow/' + dow] = { '.sv': { increment: 1 } };
   if (visitor.isNew) updates['daily/' + day + '/uniques'] = { '.sv': { increment: 1 } };
+
+  // Sessions / taux de rebond : une session commence à la 1ère page (on la
+  // compte provisoirement comme un rebond), et dès qu'une 2e page est vue
+  // dans la même session (même onglet), on retire ce rebond. Résultat :
+  // bounces = sessions restées à une seule page vue.
+  if (session.isNew) {
+    updates['daily/' + day + '/sessions'] = { '.sv': { increment: 1 } };
+    updates['daily/' + day + '/bounces'] = { '.sv': { increment: 1 } };
+  } else if (pageCount === 2) {
+    updates['daily/' + day + '/bounces'] = { '.sv': { increment: -1 } };
+  }
 
   fetch(FIREBASE_URL + '/analytics/.json', {
     method: 'PATCH',

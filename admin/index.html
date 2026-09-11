@@ -167,6 +167,10 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
 .an-chart.hours{gap:.2rem;}
 .an-chart.hours .an-bar{max-width:14px;}
 .an-chart.hours .an-bar-day{font-size:.55rem;}
+.an-delta{display:inline-block;font-size:.68rem;font-weight:800;margin-left:.3rem;padding:.1rem .4rem;border-radius:4px;letter-spacing:0;text-transform:none;vertical-align:middle;}
+.an-delta.an-up{color:#16A34A;background:rgba(22,163,74,.12);}
+.an-delta.an-down{color:#DC2626;background:rgba(220,38,38,.12);}
+.an-delta.an-flat{color:var(--md);background:rgba(0,0,0,.05);}
 
 /* ITEMS LIST */
 .ilist{display:flex;flex-direction:column;gap:.8rem;margin-top:1rem;}
@@ -452,13 +456,21 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
 
       <!-- PERFORMANCES / ANALYTICS -->
       <div class="panel" id="panel-analytics">
-        <div class="panel-hd"><h2>Performances du site</h2><p>Audience anonyme — visites, appareils, pages populaires</p></div>
+        <div class="panel-hd" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+          <div><h2>Performances du site</h2><p>Audience anonyme — visites, appareils, pages populaires</p></div>
+          <button class="ba" onclick="anExportCSV()">⬇ Exporter en CSV</button>
+        </div>
 
         <div class="ds-grid">
-          <div class="ds-cell"><div class="ds-n" id="an-today">-</div><div class="ds-l">Visites aujourd'hui</div></div>
-          <div class="ds-cell orange"><div class="ds-n" id="an-7d">-</div><div class="ds-l">Visites (7 jours)</div></div>
-          <div class="ds-cell gold"><div class="ds-n" id="an-30d">-</div><div class="ds-l">Visites (30 jours)</div></div>
-          <div class="ds-cell"><div class="ds-n" id="an-uniq">-</div><div class="ds-l">Visiteurs uniques (30j)</div></div>
+          <div class="ds-cell"><div class="ds-n" id="an-today">-</div><div class="ds-l">Visites aujourd'hui <span id="an-today-delta"></span></div></div>
+          <div class="ds-cell orange"><div class="ds-n" id="an-7d">-</div><div class="ds-l">Visites (7 jours) <span id="an-7d-delta"></span></div></div>
+          <div class="ds-cell gold"><div class="ds-n" id="an-30d">-</div><div class="ds-l">Visites (30 jours) <span id="an-30d-delta"></span></div></div>
+          <div class="ds-cell"><div class="ds-n" id="an-uniq">-</div><div class="ds-l">Visiteurs uniques (30j) <span id="an-uniq-delta"></span></div></div>
+        </div>
+
+        <div class="ds-grid">
+          <div class="ds-cell orange"><div class="ds-n" id="an-perv">-</div><div class="ds-l">Pages / visite (30j)</div></div>
+          <div class="ds-cell"><div class="ds-n" id="an-bounce">-</div><div class="ds-l">Taux de rebond (30j)</div></div>
         </div>
 
         <div class="ac">
@@ -1281,31 +1293,79 @@ function anLastDays(n){
   // Fenêtre calendaire réelle (aujourd'hui inclus, n-1 jours avant) — ne dépend
   // pas des clés présentes dans Firebase, donc immunisé contre une clé
   // corrompue ou un test manuel qui traînerait dans la base.
+  return anRangeDays(0, n);
+}
+function anRangeDays(endOffsetExclusive, count){
+  // `count` jours calendaires se terminant `endOffsetExclusive` jours avant
+  // aujourd'hui (exclu). anRangeDays(0,7) = les 7 derniers jours (dont aujourd'hui).
+  // anRangeDays(7,7) = les 7 jours immédiatement avant ça (période de comparaison).
   const out=[];
   const base = new Date();
-  for(let i=n-1;i>=0;i--){
+  for(let i=0;i<count;i++){
     const d = new Date(base);
-    d.setDate(base.getDate()-i);
+    d.setDate(base.getDate()-endOffsetExclusive-i);
     out.push(d.toISOString().slice(0,10));
   }
-  return out;
+  return out.reverse();
 }
-async function loadAnalytics(){
+async function anGetDaily(){
   const rawDaily = await fetchAnalyticsDaily();
   // Ne garde que des clés au format YYYY-MM-DD valide — ignore toute clé
   // corrompue ou de test qui aurait pu être écrite par erreur.
   const dayKeyRe = /^\d{4}-\d{2}-\d{2}$/;
   const daily = {};
   Object.keys(rawDaily||{}).forEach(k=>{ if(dayKeyRe.test(k)) daily[k]=rawDaily[k]; });
-
+  return daily;
+}
+function anMergeCounts(daily, days, field){
+  const out={};
+  days.forEach(d=>{
+    const obj = daily[d] && daily[d][field];
+    if(obj) Object.keys(obj).forEach(k=> out[k]=(out[k]||0)+obj[k]);
+  });
+  return out;
+}
+function anDelta(curr, prev){
+  if(!prev) return null; // pas de base de comparaison fiable (période précédente vide)
+  return Math.round(((curr-prev)/prev)*1000)/10;
+}
+function anDeltaHtml(pct){
+  if(pct===null || !isFinite(pct)) return '';
+  const sign = pct>0?'+':'';
+  const cls = pct>0?'an-up':(pct<0?'an-down':'an-flat');
+  return `<span class="an-delta ${cls}">${sign}${pct}% vs période précédente</span>`;
+}
+async function loadAnalytics(){
+  const daily = await anGetDaily();
   const todayKey = new Date().toISOString().slice(0,10);
   const sum = (keys, field)=> keys.reduce((s,d)=> s+((daily[d]&&daily[d][field])||0),0);
 
   const setSafe=(id,val)=>{const e=document.getElementById(id); if(e) e.textContent=val;};
-  setSafe('an-today', (daily[todayKey]&&daily[todayKey].visits)||0);
-  setSafe('an-7d', sum(anLastDays(7),'visits'));
-  setSafe('an-30d', sum(anLastDays(30),'visits'));
-  setSafe('an-uniq', sum(anLastDays(30),'uniques'));
+  const setHtml=(id,html)=>{const e=document.getElementById(id); if(e) e.innerHTML=html;};
+
+  const yestKey = anLastDays(2)[0];
+  const visitsToday = (daily[todayKey]&&daily[todayKey].visits)||0;
+  const visits7 = sum(anLastDays(7),'visits');
+  const visits30 = sum(anLastDays(30),'visits');
+  const uniq30 = sum(anLastDays(30),'uniques');
+
+  setSafe('an-today', visitsToday);
+  setSafe('an-7d', visits7);
+  setSafe('an-30d', visits30);
+  setSafe('an-uniq', uniq30);
+
+  // Comparaison vs période précédente de même durée (non chevauchante)
+  setHtml('an-today-delta', anDeltaHtml(anDelta(visitsToday, (daily[yestKey]&&daily[yestKey].visits)||0)));
+  setHtml('an-7d-delta', anDeltaHtml(anDelta(visits7, sum(anRangeDays(7,7),'visits'))));
+  setHtml('an-30d-delta', anDeltaHtml(anDelta(visits30, sum(anRangeDays(30,30),'visits'))));
+  setHtml('an-uniq-delta', anDeltaHtml(anDelta(uniq30, sum(anRangeDays(30,30),'uniques'))));
+
+  // Engagement : pages/visite et taux de rebond, estimés via sessions/bounces
+  // (sessions = navigations démarrées, bounces = restées à 1 seule page vue).
+  const sessions30 = sum(anLastDays(30),'sessions');
+  const bounces30 = sum(anLastDays(30),'bounces');
+  setSafe('an-perv', sessions30 ? (Math.round((visits30/sessions30)*100)/100) : '-');
+  setSafe('an-bounce', sessions30 ? (Math.round((bounces30/sessions30)*1000)/10)+'%' : '-');
 
   const chartDays = anLastDays(14);
   const chartEl = document.getElementById('an-chart');
@@ -1324,14 +1384,7 @@ async function loadAnalytics(){
   }
 
   const days30 = anLastDays(30);
-  const mergeCounts = (field)=>{
-    const out={};
-    days30.forEach(d=>{
-      const obj = daily[d] && daily[d][field];
-      if(obj) Object.keys(obj).forEach(k=> out[k]=(out[k]||0)+obj[k]);
-    });
-    return out;
-  };
+  const mergeCounts = (field)=> anMergeCounts(daily, days30, field);
   anRenderList(document.getElementById('an-pages'), mergeCounts('pages'));
   anRenderList(document.getElementById('an-referrers'), mergeCounts('referrers'));
   anRenderList(document.getElementById('an-devices'), mergeCounts('devices'));
@@ -1342,6 +1395,65 @@ async function loadAnalytics(){
   const dowOrder = [1,2,3,4,5,6,0]; // Lundi -> Dimanche
   const dowLabel = {0:'Dim',1:'Lun',2:'Mar',3:'Mer',4:'Jeu',5:'Ven',6:'Sam'};
   anRenderSeries(document.getElementById('an-dow'), mergeCounts('dow'), dowOrder, d=> dowLabel[d], false);
+}
+
+/* ═══ EXPORT CSV ═══ */
+function anCsvEscape(v){
+  const s = (v===undefined||v===null) ? '' : String(v);
+  if (/[",\n;]/.test(s)) return '"'+s.replace(/"/g,'""')+'"';
+  return s;
+}
+async function anExportCSV(){
+  showLoader();
+  try{
+    const daily = await anGetDaily();
+    const days = Object.keys(daily).sort();
+    const rows = [];
+
+    rows.push(['Rapport de performances — Groupe Scolaire Le Miri']);
+    rows.push(['Généré le', new Date().toLocaleString('fr-FR')]);
+    rows.push([]);
+    rows.push(['Date','Visites','Visiteurs uniques','Sessions','Taux de rebond (%)','Pages / visite']);
+    if(!days.length){
+      rows.push(['Aucune donnée disponible']);
+    }
+    days.forEach(d=>{
+      const o = daily[d]||{};
+      const visits = o.visits||0, uniques = o.uniques||0, sessions = o.sessions||0, bounces = o.bounces||0;
+      const bounceRate = sessions ? Math.round((bounces/sessions)*1000)/10 : '';
+      const perVisit = sessions ? Math.round((visits/sessions)*100)/100 : '';
+      rows.push([d, visits, uniques, sessions, bounceRate, perVisit]);
+    });
+
+    const days30 = anLastDays(30);
+    const addSection = (title, field)=>{
+      rows.push([]);
+      rows.push([title]);
+      rows.push(['Élément','Visites']);
+      const counts = anMergeCounts(daily, days30, field);
+      const entries = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+      if(!entries.length){ rows.push(['Aucune donnée']); return; }
+      entries.forEach(([k,v])=> rows.push([anLabel(k), v]));
+    };
+    addSection('Pages les plus visitées (30 derniers jours)', 'pages');
+    addSection('Provenance du trafic (30 derniers jours)', 'referrers');
+    addSection('Appareils (30 derniers jours)', 'devices');
+    addSection('Navigateurs (30 derniers jours)', 'browsers');
+
+    const csv = rows.map(r=> r.map(anCsvEscape).join(';')).join('\n');
+    const bom = String.fromCharCode(0xFEFF);
+    const blob = new Blob([bom+csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `performances-le-miri-${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } finally {
+    hideLoader();
+  }
 }
 
 /* ═══ CONFIG ═══ */
