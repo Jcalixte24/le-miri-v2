@@ -2314,6 +2314,7 @@ function pageEnseignants(sub) {
     {id:'surveillance',label:'Surveillance',             visKey:'ens_surveillance'},
     {id:'conseils',  label:"Conseils d'enseignements",   visKey:'ens_conseils'},
     {id:'notes',     label:'Saisie des notes',           visKey:null},
+    {id:'appel',     label:'Appel électronique',         visKey:null},
     {id:'visites',   label:'Visites de classe',          visKey:'ens_visites'},
   ].filter(t => !t.visKey || visOk(t.visKey));
   return `
@@ -2464,6 +2465,12 @@ function pageEnseignants(sub) {
           <p>L'interface de saisie des notes permet aux enseignants d'enregistrer les résultats des évaluations de leurs élèves. Accès sécurisé réservé au personnel enseignant habilité.</p>
           <div class="info-link-card mt2" onclick="window.open('https://www.expertpro.ci/index.php?adr=index.connexion.etab.inc&esp=ETAB','_blank')">
             <span>Accéder à la saisie des notes (espace sécurisé)</span><span class="arrow">→</span>
+          </div>` : ''}
+        ${activeSub==='appel' ? `
+          <h2>Appel Électronique</h2>
+          <p>La plateforme d'appel électronique permet aux enseignants d'effectuer l'appel de leurs classes directement en ligne. Accès sécurisé réservé au personnel enseignant habilité.</p>
+          <div class="info-link-card mt2" onclick="window.open('https://api.194.163.188.237.nip.io/emargement/appel/','_blank')">
+            <span>Accéder à l'appel électronique</span><span class="arrow">→</span>
           </div>` : ''}
         ${activeSub==='visites' ? `
           <h2>Visites de Classe</h2>
