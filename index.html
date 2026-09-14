@@ -2065,6 +2065,7 @@ function pageAdmin(sub) {
     {id:'notes-service', label:'Notes de service'},
     {id:'liste-eleves', label:'Liste des élèves'},
     {id:'nos-professeurs', label:'Nos professeurs'},
+    {id:'gestion-ecole', label:"Gestion d'école"},
   ];
   const activeSub = sub || 'historique';
   const pages = CMS['pages'] || {};
@@ -2138,6 +2139,13 @@ function pageAdmin(sub) {
       <p>Dans le cadre de notre démarche qualité, les parents d'élèves et la direction évaluent les professeurs en fin de chaque trimestre. Vos retours nous permettent d'améliorer continuellement la qualité de l'enseignement au Groupe Scolaire Le Miri.</p>
       <div class="info-link-card mt2" onclick="window.open('https://tole.snsenon.com/question/index.php','_blank')" style="cursor:pointer;">
         <span>Formulaire du profil des professeurs</span>
+        <span class="arrow">→</span>
+      </div>`,
+    'gestion-ecole': `
+      <h2>Connexion</h2>
+      <p>Accès direct au logiciel de gestion de l'école pour les administrateurs de l'établissement. Accès sécurisé réservé au personnel habilité.</p>
+      <div class="info-link-card mt2" onclick="window.open('https://www.expertpro.ci/index.php?adr=index.connexion.etab.inc&esp=ETAB','_blank')" style="cursor:pointer;">
+        <span>Se connecter au logiciel de gestion</span>
         <span class="arrow">→</span>
       </div>`,
   };
