@@ -2514,6 +2514,7 @@ function pageParents(sub) {
     {id:'horaires', label:'Horaires des cours',  visKey:'parents_horaires'},
     {id:'examens',  label:'Examens blancs',      visKey:'parents_examens'},
     {id:'notes',    label:'Consultations notes', visKey:'parents_notes_consult'},
+    {id:'exercices',label:'Exercices de maison', visKey:null},
   ].filter(t => !t.visKey || visOk(t.visKey));
   return `
   ${breadcrumb([{label:'Accueil',page:'accueil'},{label:'Parents d\'Élèves'}])}
@@ -2605,6 +2606,12 @@ function pageParents(sub) {
           <p>Les parents et élèves peuvent consulter les notes et résultats en ligne via le portail sécurisé de l'établissement. Une connexion avec vos identifiants personnels est requise.</p>
           <div class="info-link-card mt2" onclick="window.open('https://www.expertpro.ci/index.php?adr=index.connexion.etab.inc&esp=PELV','_blank')" style="cursor:pointer;">
             <span>Accéder à la consultation des notes</span><span class="arrow">→</span>
+          </div>` : ''}
+        ${activeSub==='exercices' ? `
+          <h2>Exercices de Maison</h2>
+          <p>Retrouvez les exercices de maison donnés par les enseignants pour votre enfant. Une connexion avec vos identifiants personnels est requise.</p>
+          <div class="info-link-card mt2" onclick="window.open('https://api.194.163.188.237.nip.io/emargement/parent/','_blank')" style="cursor:pointer;">
+            <span>Accéder aux exercices de maison</span><span class="arrow">→</span>
           </div>` : ''}
       </div>
     </div>
