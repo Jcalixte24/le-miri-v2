@@ -177,6 +177,9 @@ const CMS_DEFAULTS = {
     { date: '05 Octobre 2025',   title: 'Nouvelle tenue du lundi', pdf: '' },
     { date: '05 Mars 2026',      title: 'Compte rendu de réunion', pdf: '' },
   ],
+  // Notes d'information dédiées aux élèves — distinctes de site:notes_parents,
+  // vide par défaut (à alimenter depuis l'admin quand ce panneau sera ajouté).
+  'site:notes_eleves': [],
   'site:horaires': [
     { title: 'Horaire Maternelle 2026-2027',  date: 'Année 2026-2027', desc: 'Emploi du temps Maternelle',  img: '', pdf: '' },
     { title: 'Horaire Primaire 2026-2027',    date: 'Année 2026-2027', desc: 'Emploi du temps Primaire',    img: 'https://static.wixstatic.com/media/568692_ec9b0fbdfae54281af849d06ec158f78~mv2.jpg', pdf: '' },
@@ -284,7 +287,7 @@ async function loadAllCMS() {
     'site:teachers','site:principals','site:surveillance','site:visites',
     'site:pages','site:ens_infos',
     'site:activites','site:conseils_ens','site:surveillance_pdf',
-    'site:pageVisibility',
+    'site:pageVisibility','site:notes_eleves',
   ];
   const results = await Promise.all(keys.map(k => cmsGet(k)));
   keys.forEach((k, i) => {

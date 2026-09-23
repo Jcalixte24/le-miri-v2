@@ -2647,12 +2647,30 @@ function parentsElevesContentBox(activeSub) {
 function pageEleve(sub) {
   const activeSub = sub || 'infos';
   const tabs = [
-    {id:'infos',    label:'Informations',       visKey:'parents_infos'},
+    {id:'infos',    label:'Informations',       visKey:null},
     {id:'horaires', label:'Horaires des cours',  visKey:'parents_horaires'},
     {id:'examens',  label:'Examens blancs',      visKey:'parents_examens'},
     {id:'notes',    label:'Consultations notes', visKey:'parents_notes_consult'},
     {id:'exercices',label:'Exercices de maison', visKey:null},
   ].filter(t => !t.visKey || visOk(t.visKey));
+  // Contenu propre aux élèves (source CMS site:notes_eleves, distincte de
+  // site:notes_parents) — vide pour le moment, à alimenter plus tard depuis l'admin.
+  const infosContent = `
+    <h2>Notes d'Information — Élèves</h2>
+    <p>Retrouvez ici les notes d'information publiées par la direction à destination des élèves.</p>
+    <div class="note-list mt2">
+      ${(CMS['notes_eleves']||[]).length ? (CMS['notes_eleves']||[]).map(n => `
+        <div class="note-item" onclick="${n.pdf ? `window.open('${n.pdf}','_blank')` : ''}">
+          <div class="note-item-left">
+            <div class="note-dot"></div>
+            <div>
+              <div style="font-size:0.75rem;color:var(--md);margin-bottom:0.3rem;font-weight:600;text-transform:uppercase;">${n.date}</div>
+              <div class="note-title">${n.title}</div>
+            </div>
+          </div>
+          ${n.pdf ? '<div class="note-arr">→</div>' : ''}
+        </div>`).join('') : '<p style="color:var(--md);">Aucune information pour le moment.</p>'}
+    </div>`;
   return `
   ${breadcrumb([{label:'Accueil',page:'accueil'},{label:'Élève'}])}
   ${pageBanner('Espace <em>Élève</em>', 'Toutes les informations pour suivre ta scolarité')}
@@ -2665,7 +2683,7 @@ function pageEleve(sub) {
         </ul>
       </div>
       <div class="content-box">
-        ${parentsElevesContentBox(activeSub)}
+        ${activeSub==='infos' ? infosContent : parentsElevesContentBox(activeSub)}
       </div>
     </div>
   </div>
