@@ -1331,6 +1331,9 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
         <button class="nav-link" onclick="go('parents')">Parents d'Élèves</button>
       </li>
       <li class="nav-item">
+        <button class="nav-link" onclick="go('eleve')">Élève</button>
+      </li>
+      <li class="nav-item">
         <button class="nav-link" onclick="go('vie')">Vie Scolaire</button>
       </li>
       <li class="nav-item">
@@ -1371,6 +1374,8 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
     <a class="mob-nav-link" onclick="go('enseignants'); closeMob()">Enseignants</a>
 
     <a class="mob-nav-link" onclick="go('parents'); closeMob()">Parents d'Élèves</a>
+
+    <a class="mob-nav-link" onclick="go('eleve'); closeMob()">Élève</a>
 
     <a class="mob-nav-link" onclick="go('vie'); closeMob()">Vie Scolaire</a>
 
@@ -1531,6 +1536,7 @@ footer{background:var(--fo2);color:rgba(253,252,248,.7);}
         <li><button onclick="go('groupe')">Groupe Scolaire</button></li>
         <li><button onclick="go('enseignants')">Enseignants</button></li>
         <li><button onclick="go('parents')">Parents d'Élèves</button></li>
+        <li><button onclick="go('eleve')">Élève</button></li>
         <li><button onclick="go('vie')">Vie Scolaire</button></li>
         <li><button onclick="go('blog')">Événements</button></li>
         <li><button onclick="go('contact')">Contact</button></li>
@@ -1808,6 +1814,7 @@ function render() {
     case 'groupe':     root.innerHTML = pageGroupe(currentSub); break;
     case 'enseignants':root.innerHTML = pageEnseignants(currentSub); break;
     case 'parents':    root.innerHTML = pageParents(currentSub); break;
+    case 'eleve':      root.innerHTML = pageEleve(currentSub); break;
     case 'vie':        root.innerHTML = pageVie(currentSub); break;
     case 'blog':       root.innerHTML = pageBlog(); break;
     case 'contact':    root.innerHTML = pageContact(); break;
@@ -2536,6 +2543,15 @@ function pageParents(sub) {
         </ul>
       </div>
       <div class="content-box">
+        ${parentsElevesContentBox(activeSub)}
+      </div>
+    </div>
+  </div>
+  ${footer_cta()}`;
+}
+
+function parentsElevesContentBox(activeSub) {
+  return `
         ${activeSub==='infos' ? `
           <h2>Notes d'Information — Parents &amp; Élèves</h2>
           <p>Retrouvez ici toutes les notes d'information publiées par la direction à destination des parents et des élèves pour l'année 2026-2027.</p>
@@ -2621,6 +2637,35 @@ function pageParents(sub) {
           <div class="info-link-card mt2" onclick="window.open('https://api.194.163.188.237.nip.io/emargement/parent/','_blank')" style="cursor:pointer;">
             <span>Accéder aux exercices de maison</span><span class="arrow">→</span>
           </div>` : ''}
+  `;
+}
+
+/* ══════════════════════════════════════
+   PAGE: ÉLÈVE (mêmes interfaces/liens que Parents d'Élèves,
+   pour que les élèves aient leur propre point d'entrée)
+══════════════════════════════════════ */
+function pageEleve(sub) {
+  const activeSub = sub || 'infos';
+  const tabs = [
+    {id:'infos',    label:'Informations',       visKey:'parents_infos'},
+    {id:'horaires', label:'Horaires des cours',  visKey:'parents_horaires'},
+    {id:'examens',  label:'Examens blancs',      visKey:'parents_examens'},
+    {id:'notes',    label:'Consultations notes', visKey:'parents_notes_consult'},
+    {id:'exercices',label:'Exercices de maison', visKey:null},
+  ].filter(t => !t.visKey || visOk(t.visKey));
+  return `
+  ${breadcrumb([{label:'Accueil',page:'accueil'},{label:'Élève'}])}
+  ${pageBanner('Espace <em>Élève</em>', 'Toutes les informations pour suivre ta scolarité')}
+  <div class="page">
+    <div class="admin-grid">
+      <div class="sidebar">
+        <h3>Menu élève</h3>
+        <ul class="sidebar-links">
+          ${tabs.map(t=>`<li><button class="${activeSub===t.id?'active':''}" onclick="go('eleve','${t.id}')">${t.label}</button></li>`).join('')}
+        </ul>
+      </div>
+      <div class="content-box">
+        ${parentsElevesContentBox(activeSub)}
       </div>
     </div>
   </div>
