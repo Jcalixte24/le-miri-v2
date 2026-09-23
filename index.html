@@ -2529,7 +2529,6 @@ function pageParents(sub) {
     {id:'horaires', label:'Horaires des cours',  visKey:'parents_horaires'},
     {id:'examens',  label:'Examens blancs',      visKey:'parents_examens'},
     {id:'notes',    label:'Consultations notes', visKey:'parents_notes_consult'},
-    {id:'exercices',label:'Exercices de maison', visKey:null},
   ].filter(t => !t.visKey || visOk(t.visKey));
   return `
   ${breadcrumb([{label:'Accueil',page:'accueil'},{label:'Parents d\'Élèves'}])}
