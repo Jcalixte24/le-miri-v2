@@ -181,15 +181,10 @@ const CMS_DEFAULTS = {
   // vide par défaut (à alimenter depuis l'admin quand ce panneau sera ajouté).
   'site:notes_eleves': [],
   'site:horaires': [
-    { title: 'Horaire Maternelle 2026-2027',  date: 'Année 2026-2027', desc: 'Emploi du temps Maternelle',  img: '', pdf: '' },
-    { title: 'Horaire Primaire 2026-2027',    date: 'Année 2026-2027', desc: 'Emploi du temps Primaire',    img: 'https://static.wixstatic.com/media/568692_ec9b0fbdfae54281af849d06ec158f78~mv2.jpg', pdf: '' },
-    { title: 'Horaire Secondaire 2026-2027',  date: 'Année 2026-2027', desc: 'Emploi du temps Collège',     img: '', pdf: '' },
-    { title: 'Horaire Lycée 2026-2027',       date: 'Année 2026-2027', desc: 'Emploi du temps Lycée',       img: '', pdf: '' },
+    { title: 'Emploi du temps 2026-2027', date: 'Année 2026-2027', desc: 'Toutes classes — 6ème à Terminale', img: '', pdf: '/docs/emploi-du-temps-2026-2027.pdf' },
   ],
   'site:examens': [
-    { title: 'Calendrier examens blancs BEPC 2026', date: 'Mars 2026',     desc: 'Programme et salles BEPC', pdf: '' },
-    { title: 'Calendrier examens blancs BAC 2026',  date: 'Mars 2026',     desc: 'Programme et salles BAC',  pdf: '' },
-    { title: 'Sujets composés 1er trimestre',       date: 'Novembre 2025', desc: 'Énoncés des compositions', pdf: '' },
+    { title: 'Devoirs de niveau — 1er trimestre 2026-2027', date: '1er trimestre 2026-2027', desc: 'Programme des devoirs par niveau', pdf: '/docs/devoirs-niveau-1er-trimestre-2026-2027.pdf' },
   ],
   'site:palmares': {
     cepe: { rate: '100%',   year: '2025', text: "Félicitations à tous nos élèves pour ce taux de réussite exceptionnel au CEPE 2025.", img: 'https://static.wixstatic.com/media/568692_ec3af11afc7a40a488d0ff31d17b873e~mv2.jpeg' },

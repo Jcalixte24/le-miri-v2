@@ -2526,8 +2526,8 @@ function pageParents(sub) {
   const activeSub = sub || 'infos';
   const tabs = [
     {id:'infos',    label:'Informations',       visKey:'parents_infos'},
-    {id:'horaires', label:'Horaires des cours',  visKey:'parents_horaires'},
-    {id:'examens',  label:'Examens blancs',      visKey:'parents_examens'},
+    {id:'horaires', label:'Emploi du temps',     visKey:'parents_horaires'},
+    {id:'examens',  label:'Devoirs de niveau',   visKey:'parents_examens'},
     {id:'notes',    label:'Consultations notes', visKey:'parents_notes_consult'},
     {id:'exercices',label:'Exercices de maison', visKey:null},
   ].filter(t => !t.visKey || visOk(t.visKey));
@@ -2591,7 +2591,7 @@ function parentsElevesContentBox(activeSub) {
               </div>`).join('')}
           </div>` : ''}
         ${activeSub==='horaires' ? `
-          <h2>Horaires des Cours</h2>
+          <h2>Emploi du Temps</h2>
           <p>Les emplois du temps par classe pour l'année académique ${(CMS.config||{}).year||'2026-2027'}. Consultez régulièrement cette rubrique pour les mises à jour.</p>
           <div class="note-list mt2">
             ${(CMS['horaires']||[]).map(h => `
@@ -2609,8 +2609,8 @@ function parentsElevesContentBox(activeSub) {
               ${h.img ? `<div class="mt2" style="margin-bottom:1rem;"><img src="${h.img}" alt="${h.title}" style="width:100%;max-width:500px;height:auto;display:block;border-radius:var(--rad);box-shadow:0 4px 16px rgba(42,28,17,.08);border:1px solid var(--cr2);"></div>` : ''}`).join('')}
           </div>` : ''}
         ${activeSub==='examens' ? `
-          <h2>Calendrier des Examens Blancs</h2>
-          <p>Les examens blancs sont organisés régulièrement tout au long de l'année pour préparer les élèves aux examens officiels (BEPC, BAC).</p>
+          <h2>Devoirs de Niveau</h2>
+          <p>Les programmes et calendriers des devoirs à la maison, organisés par niveau, pour l'année académique ${(CMS.config||{}).year||'2026-2027'}.</p>
           <div class="note-list mt2">
             ${(CMS['examens']||[]).map(e => `
               <div class="note-item" onclick="${e.pdf ? `window.open('${e.pdf}','_blank')` : ''}">
@@ -2648,8 +2648,8 @@ function pageEleve(sub) {
   const activeSub = sub || 'infos';
   const tabs = [
     {id:'infos',    label:'Informations',       visKey:null},
-    {id:'horaires', label:'Horaires des cours',  visKey:'parents_horaires'},
-    {id:'examens',  label:'Examens blancs',      visKey:'parents_examens'},
+    {id:'horaires', label:'Emploi du temps',     visKey:'parents_horaires'},
+    {id:'examens',  label:'Devoirs de niveau',   visKey:'parents_examens'},
     {id:'notes',    label:'Consultations notes', visKey:'parents_notes_consult'},
     {id:'exercices',label:'Exercices de maison', visKey:null},
   ].filter(t => !t.visKey || visOk(t.visKey));
