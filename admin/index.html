@@ -344,6 +344,12 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
         Listes des élèves
       </button>
 
+      <div class="sb-section">Élèves</div>
+      <button class="sb-btn" onclick="showPanel('notes_eleves')" data-panel="notes_eleves">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Informations élèves
+      </button>
+
       <div class="sb-section">Parents d'élèves</div>
       <button class="sb-btn" onclick="showPanel('parents_notes')" data-panel="parents_notes">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -636,6 +642,13 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
         <div class="panel-hd"><h2>Notes d'information parents</h2><p>Notes et circulaires destinées aux parents d'élèves</p></div>
         <button class="ba" onclick="openNoteMod('parents',null)" style="margin-bottom:1.5rem;">Ajouter une note</button>
         <div class="ilist" id="parentsNotesListRedondant"></div>
+      </div>
+
+      <!-- NOTES ÉLÈVES -->
+      <div class="panel" id="panel-notes_eleves">
+        <div class="panel-hd"><h2>Informations élèves</h2><p>Notes d'information affichées dans l'onglet "Informations" de l'espace Élève</p></div>
+        <button class="ba" onclick="openNoteMod('eleves',null)" style="margin-bottom:1.5rem;">Ajouter une note</button>
+        <div class="ilist" id="notesElevesList"></div>
       </div>
 
       <!-- PALMARES -->
@@ -1105,7 +1118,7 @@ async function sSet(k,val){ _gdCache.set(k,val); return await cmsSet(k,val); }
 /* ═══ DEFAULTS ═══ */
 const D = CMS_DEFAULTS || {
   'site:config':{name:'Groupe Scolaire Le Miri',code:'041604',tel:'+225 27 22 52 79 00',email:'lemiri2015ac@gmail.com',address:'01 BP 8051, Abidjan 01 \u2014 Bingerville',year:'2026-2027',s1:542,s2:105,s3:100,s4:82,s5:95,dname:'M. LAWSON Silvere',dtitle:'Directeur des Etudes',dphoto:'https://static.wixstatic.com/media/568692_3e5e5748f7054e3bb0d5a3576f283e20~mv2.jpeg',dmsg:"Chers parents, chers eleves,\n\nC'est avec une immense fierte que je vous souhaite la bienvenue au Groupe Scolaire Le Miri..."},
-  'site:slides':[], 'site:events':[], 'site:ticker':[], 'site:notes_service':[], 'site:notes_parents':[],
+  'site:slides':[], 'site:events':[], 'site:ticker':[], 'site:notes_service':[], 'site:notes_parents':[], 'site:notes_eleves':[],
   'site:palmares':{cepe:{},bepc:{},bac:{}}, 'site:teachers':[], 'site:principals':[], 'site:surveillance':[],
   'site:visites':[], 'site:gallery2':[], 'site:conseil':{text:''}, 'site:pages':{},
   'site:eleves':[], 'site:ens_infos':[], 'site:horaires':[], 'site:examens':[], 'site:clubs':[],
@@ -1205,6 +1218,7 @@ async function loadPanel(name){
   const map={
     dashboard:loadDash, analytics:loadAnalytics, config:loadConfig, hero:loadSlides, actualites:loadEvents,
     ticker:loadTicker, notes:()=>loadNotes('service'), notes_parents:()=>loadNotes('parents'),
+    notes_eleves:()=>loadNotes('eleves'),
     parents_notes:()=>loadNotes('parents'), parents_horaires:()=>loadPdfDocs('horaires'),
     parents_examens:()=>loadPdfDocs('examens'), liste_eleves:()=>loadPdfDocs('eleves'),
     ens_infos:()=>loadPdfDocs('ens_infos'), activites:()=>loadPdfDocs('activites'),
@@ -1565,21 +1579,26 @@ async function delTicker(idx){const items=await gd('site:ticker');items.splice(i
 async function saveTicker(){showLoader(); const c=document.querySelectorAll('[id^="tk-"]').length;const items=[];for(let i=0;i<c;i++){const el=document.getElementById('tk-'+i);if(el)items.push(el.value);}await sSet('site:ticker',items);hideLoader(); toast('Bandeau enregistré');}
 
 /* ═══ NOTES ═══ */
+function noteKeyFor(type){
+  if(type==='service')return 'site:notes_service';
+  if(type==='eleves')return 'site:notes_eleves';
+  return 'site:notes_parents';
+}
 async function loadNotes(type){
-  const key=type==='service'?'site:notes_service':'site:notes_parents';
-  const listId=type==='service'?'notesList':'notesParentsList';
+  const key=noteKeyFor(type);
+  const listId=type==='service'?'notesList':(type==='eleves'?'notesElevesList':'notesParentsList');
   const notes=await gd(key);
-  
+
   const listsToFill = [];
   if (document.getElementById(listId)) listsToFill.push(document.getElementById(listId));
   if (type==='parents' && document.getElementById('parentsNotesListRedondant')) listsToFill.push(document.getElementById('parentsNotesListRedondant'));
 
   const html = notes.length?notes.map((n,i)=>`<div class="irow ni"><div class="iinfo"><h4>${h(n.title)}</h4><p>${h(n.date)}${n.pdf?` — <a href="${h(n.pdf)}" target="_blank" style="color:var(--tr);font-weight:700;">Voir PDF</a>`:''}</p></div><div class="iacts"><button class="be" onclick="openNoteMod('${type}',${i})">Modifier</button><button class="bd" onclick="delItem('${key}',${i},()=>loadNotes('${type}'))">Supprimer</button></div></div>`).join(''):'<p style="color:var(--md);font-size:.88rem;">Aucune note.</p>';
-  
+
   listsToFill.forEach(l => l.innerHTML = html);
 }
 function openNoteMod(type,idx){
-  const key=type==='service'?'site:notes_service':'site:notes_parents';
+  const key=noteKeyFor(type);
   document.getElementById('note-mt').textContent=idx===null?'Nouvelle note':'Modifier la note';
   document.getElementById('note-type-v').value=type;
   document.getElementById('note-idx').value=idx===null?'':idx;
@@ -1590,7 +1609,7 @@ function openNoteMod(type,idx){
 async function saveNote(){
   const type=document.getElementById('note-type-v').value;
   const idx=document.getElementById('note-idx').value;
-  const key=type==='service'?'site:notes_service':'site:notes_parents';
+  const key=noteKeyFor(type);
   const item={date:v('note-date'),title:v('note-title'),pdf:v('note-pdf-v')};
   if(!item.title){toast('Titre requis','error');return;}
   showLoader();
