@@ -2332,10 +2332,9 @@ function pageEnseignants(sub) {
   const tabs = [
     {id:'infos',     label:'Infos enseignants',         visKey:'ens_infos'},
     {id:'activites', label:'Activités fin de trimestre', visKey:'ens_activites'},
-    {id:'liste',     label:'Liste 2026-2027',            visKey:'ens_liste'},
-    {id:'principaux',label:'Professeurs principaux',     visKey:null},
-    {id:'surveillance',label:'Surveillance',             visKey:'ens_surveillance'},
-    {id:'conseils',  label:"Conseils d'enseignements",   visKey:'ens_conseils'},
+    {id:'emploi-temps', label:'Emploi du temps',         visKey:null},
+    {id:'devoirs',   label:'Programme des devoirs',      visKey:null},
+    {id:'mutuelle',  label:'Mutuelle',                   visKey:null},
     {id:'notes',     label:'Saisie des notes',           visKey:null},
     {id:'appel',     label:'Appel électronique',         visKey:null},
     {id:'visites',   label:'Visites de classe',          visKey:'ens_visites'},
@@ -2406,9 +2405,43 @@ function pageEnseignants(sub) {
               </div>`).join('')
               : '<p style="color:var(--md);">Documents à venir — consultez régulièrement cette rubrique.</p>'}
           </div>` : ''}
-        ${activeSub==='conseils' ? `
-          <h2>Conseils d'Enseignements</h2>
-          <p>Comptes rendus et documents officiels issus des conseils d'enseignement du Groupe Scolaire Le Miri pour l'année ${(CMS.config||{}).year||'2026-2027'}.</p>
+        ${activeSub==='emploi-temps' ? `
+          <h2>Emploi du Temps</h2>
+          <p>Les emplois du temps par classe pour l'année académique ${(CMS.config||{}).year||'2026-2027'}.</p>
+          <div class="note-list mt2">
+            ${(CMS['horaires']||[]).map(h => `
+              <div class="note-item" onclick="${h.pdf ? `window.open('${h.pdf}','_blank')` : ''}">
+                <div class="note-item-left">
+                  <div class="note-dot"></div>
+                  <div>
+                    <div style="font-size:0.75rem;color:var(--md);margin-bottom:0.3rem;font-weight:600;text-transform:uppercase;">${h.date}</div>
+                    <div class="note-title">${h.title}</div>
+                    ${h.desc ? `<div style="font-size:.8rem;color:var(--md);">${h.desc}</div>` : ''}
+                  </div>
+                </div>
+                ${h.pdf ? '<div class="note-arr">→ PDF</div>' : ''}
+              </div>`).join('')}
+          </div>` : ''}
+        ${activeSub==='devoirs' ? `
+          <h2>Programme des Devoirs</h2>
+          <p>Les programmes et calendriers des devoirs à la maison, organisés par niveau, pour l'année académique ${(CMS.config||{}).year||'2026-2027'}.</p>
+          <div class="note-list mt2">
+            ${(CMS['examens']||[]).map(e => `
+              <div class="note-item" onclick="${e.pdf ? `window.open('${e.pdf}','_blank')` : ''}">
+                <div class="note-item-left">
+                  <div class="note-dot"></div>
+                  <div>
+                    <div style="font-size:0.75rem;color:var(--md);margin-bottom:0.3rem;font-weight:600;text-transform:uppercase;">${e.date}</div>
+                    <div class="note-title">${e.title}</div>
+                    ${e.desc ? `<div style="font-size:.8rem;color:var(--md);">${e.desc}</div>` : ''}
+                  </div>
+                </div>
+                ${e.pdf ? '<div class="note-arr">→</div>' : ''}
+              </div>`).join('')}
+          </div>` : ''}
+        ${activeSub==='mutuelle' ? `
+          <h2>Mutuelle</h2>
+          <p>Informations et documents relatifs à la mutuelle du personnel du Groupe Scolaire Le Miri.</p>
           <div class="note-list mt2">
             ${(CMS['conseils_ens']||[]).length > 0
               ? (CMS['conseils_ens']||[]).map(d => `
@@ -2423,65 +2456,7 @@ function pageEnseignants(sub) {
                 </div>
                 ${d.pdf ? '<div class="note-arr">→</div>' : ''}
               </div>`).join('')
-              : '<p style="color:var(--md);">Documents à venir — consultez régulièrement cette rubrique.</p>'}
-          </div>` : ''}
-        ${activeSub==='liste' ? `
-          <h2>Liste des Enseignants ${(CMS.config||{}).year||'2026-2027'}</h2>
-          <p>L'équipe pédagogique du Groupe Scolaire Le Miri pour l'année académique en cours.</p>
-          <div class="note-list mt2">
-            ${(CMS['teachers']||[]).length > 0
-              ? (CMS['teachers']||[]).map(t => `
-              <div class="note-item">
-                <div class="note-item-left">
-                  <div class="note-dot"></div>
-                  <div>
-                    <div class="note-title">${t.name}</div>
-                    <div style="font-size:.8rem;color:var(--md);">${t.subj} — ${t.cycle}</div>
-                  </div>
-                </div>
-              </div>`).join('')
-              : '<p style="color:var(--md);">Liste disponible auprès de l\'administration.</p>'}
-          </div>
-          <div class="info-link-card mt2" onclick="window.open('https://static.wixstatic.com/media/568692_924c31c6bb8b44d8b9930b79fa6b9970~mv2.jpg/v1/crop/x_21,y_98,w_2290,h_3137/fill/w_1285,h_1760,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/LISTE.jpg','_blank')">
-            <span>Accéder à la liste officielle des enseignants</span><span class="arrow">→</span>
-          </div>` : ''}
-        ${activeSub==='principaux' ? `
-          <h2>Professeurs Principaux</h2>
-          <p>Les professeurs principaux assurent le suivi et la coordination pédagogique de leur classe. Ils sont l'interlocuteur privilégié des élèves et de leurs familles.</p>
-          <div class="note-list mt2">
-            ${(CMS['principals']||[]).length > 0
-              ? (CMS['principals']||[]).map(p => `
-              <div class="note-item">
-                <div class="note-item-left">
-                  <div class="note-dot"></div>
-                  <div>
-                    <div class="note-title">Classe ${p.classe} — ${p.name}</div>
-                    <div style="font-size:.8rem;color:var(--md);">Contact : ${p.contact}</div>
-                  </div>
-                </div>
-              </div>`).join('')
-              : '<p style="color:var(--md);">Liste disponible auprès de l\'administration.</p>'}
-          </div>` : ''}
-        ${activeSub==='surveillance' ? `
-          <h2>Calendrier de Surveillance</h2>
-          <p>Le calendrier de surveillance des examens blancs et épreuves officielles. Consultez vos affectations de salle.</p>
-          <div class="note-list mt2">
-            ${(CMS['surveillance']||[]).length > 0
-              ? (CMS['surveillance']||[]).map(s => `
-              <div class="note-item">
-                <div class="note-item-left">
-                  <div class="note-dot"></div>
-                  <div>
-                    <div style="font-size:0.75rem;color:var(--md);margin-bottom:0.3rem;font-weight:600;text-transform:uppercase;">${s.date}</div>
-                    <div class="note-title">${s.exam}</div>
-                    <div style="font-size:.8rem;color:var(--md);">📍 ${s.room}</div>
-                  </div>
-                </div>
-              </div>`).join('')
-              : '<p style="color:var(--md);">Calendrier à venir.</p>'}
-          </div>
-          <div class="info-link-card mt2" onclick="openPdfModal((CMS['surveillance_pdf'])||(CMS.config||{}).surveillancePdf||'','Calendrier de Surveillance Complet')" style="cursor:pointer;">
-            <span>Voir le calendrier complet</span><span class="arrow">→</span>
+              : '<p style="color:var(--md);">Aucune information pour le moment.</p>'}
           </div>` : ''}
         ${activeSub==='notes' ? `
           <h2>Saisie des Notes</h2>

@@ -382,7 +382,7 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
       </button>
       <button class="sb-btn" onclick="showPanel('conseils_ens')" data-panel="conseils_ens">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        Conseils d'enseignements
+        Mutuelle
       </button>
       <button class="sb-btn" onclick="showPanel('enseignants')" data-panel="enseignants">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -800,9 +800,9 @@ body{background:var(--bg);color:var(--dk);font-family:'Open Sans',sans-serif;min
         <div class="ilist" id="activitesList"></div>
       </div>
 
-      <!-- CONSEILS D'ENSEIGNEMENTS -->
+      <!-- MUTUELLE (anciennement Conseils d'enseignements) -->
       <div class="panel" id="panel-conseils_ens">
-        <div class="panel-hd"><h2>Conseils d'Enseignements</h2><p>Comptes rendus et documents des conseils d'enseignement — PDF</p></div>
+        <div class="panel-hd"><h2>Mutuelle</h2><p>Informations et documents relatifs à la mutuelle du personnel — PDF</p></div>
         <button class="ba" onclick="openPdfDocMod('conseils_ens',null)" style="margin-bottom:1.5rem;">Ajouter un document PDF</button>
         <div class="ilist" id="conseilsEnsList"></div>
       </div>
@@ -1899,9 +1899,6 @@ const PAGE_VISIBILITY = [
   {group:'Espace Enseignants', items:[
     {key:'ens_infos', label:'Infos enseignants', desc:'Documents pour le corps enseignant'},
     {key:'ens_activites', label:'Activités fin de trimestre', desc:'Activités pédagogiques'},
-    {key:'ens_conseils', label:"Conseils d'enseignements", desc:'Comptes rendus des conseils'},
-    {key:'ens_liste', label:'Corps enseignant', desc:'Liste et annuaire des enseignants'},
-    {key:'ens_surveillance', label:'Surveillance', desc:'Calendrier de surveillance'},
     {key:'ens_visites', label:'Visites de classe', desc:'Planning des visites pédagogiques'},
   ]},
 ];
@@ -1970,7 +1967,7 @@ const PDF_CAT_MAP = {
   horaires: {key:'site:horaires', listId:'horairesList', label:'Horaire'},
   examens: {key:'site:examens', listId:'examensList', label:'Examen blanc'},
   activites: {key:'site:activites', listId:'activitesList', label:'Activité'},
-  conseils_ens: {key:'site:conseils_ens', listId:'conseilsEnsList', label:'Conseil enseignement'}
+  conseils_ens: {key:'site:conseils_ens', listId:'conseilsEnsList', label:'Mutuelle'}
 };
 
 async function loadPdfDocs(cat) {
