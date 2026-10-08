@@ -2375,15 +2375,20 @@ function pageEnseignants(sub) {
               <div class="info-card-title">Activités de fin de trimestre</div>
               <div class="info-card-desc">Calendrier et organisation des activités pédagogiques en fin de période.</div>
             </div>
-            <div class="info-card" onclick="go('enseignants','surveillance')">
+            <div class="info-card" onclick="go('enseignants','emploi-temps')">
               <div class="info-card-icon"></div>
-              <div class="info-card-title">Calendrier de surveillance</div>
-              <div class="info-card-desc">Planning de surveillance des examens et épreuves de l'année.</div>
+              <div class="info-card-title">Emploi du temps</div>
+              <div class="info-card-desc">Emplois du temps par classe pour l'année académique en cours.</div>
             </div>
-            <div class="info-card" onclick="go('enseignants','conseils')">
+            <div class="info-card" onclick="go('enseignants','devoirs')">
               <div class="info-card-icon"></div>
-              <div class="info-card-title">Conseils d'Enseignements</div>
-              <div class="info-card-desc">Comptes rendus et documents des conseils d'enseignement.</div>
+              <div class="info-card-title">Programme des devoirs</div>
+              <div class="info-card-desc">Programmes et calendriers des devoirs à la maison, par niveau.</div>
+            </div>
+            <div class="info-card" onclick="go('enseignants','mutuelle')">
+              <div class="info-card-icon"></div>
+              <div class="info-card-title">Mutuelle</div>
+              <div class="info-card-desc">Informations et documents relatifs à la mutuelle du personnel.</div>
             </div>
           </div>` : ''}
         ${activeSub==='activites' ? `
