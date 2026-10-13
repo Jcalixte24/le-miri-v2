@@ -2632,6 +2632,7 @@ function pageEleve(sub) {
     {id:'examens',  label:'Devoirs de niveau',   visKey:'parents_examens'},
     {id:'notes',    label:'Consultations notes', visKey:'parents_notes_consult'},
     {id:'exercices',label:'Exercices de maison', visKey:null},
+    {id:'evaluation',label:'Évaluation des enseignants', visKey:null},
   ].filter(t => !t.visKey || visOk(t.visKey));
   // Contenu propre aux élèves (source CMS site:notes_eleves, distincte de
   // site:notes_parents) — vide pour le moment, à alimenter plus tard depuis l'admin.
@@ -2651,6 +2652,13 @@ function pageEleve(sub) {
           ${n.pdf ? '<div class="note-arr">→</div>' : ''}
         </div>`).join('') : '<p style="color:var(--md);">Aucune information pour le moment.</p>'}
     </div>`;
+  const evaluationContent = `
+    <h2>Évaluation des Enseignants</h2>
+    <p>Dans le cadre de notre démarche qualité, les élèves peuvent donner leur avis sur leurs professeurs en fin de chaque trimestre. Vos retours nous permettent d'améliorer continuellement la qualité de l'enseignement au Groupe Scolaire Le Miri.</p>
+    <div class="info-link-card mt2" onclick="window.open('https://tole.snsenon.com/question/index.php','_blank')" style="cursor:pointer;">
+      <span>Accéder au formulaire d'évaluation</span>
+      <span class="arrow">→</span>
+    </div>`;
   return `
   ${breadcrumb([{label:'Accueil',page:'accueil'},{label:'Élève'}])}
   ${pageBanner('Espace <em>Élève</em>', 'Toutes les informations pour suivre ta scolarité')}
@@ -2663,7 +2671,7 @@ function pageEleve(sub) {
         </ul>
       </div>
       <div class="content-box">
-        ${activeSub==='infos' ? infosContent : parentsElevesContentBox(activeSub)}
+        ${activeSub==='infos' ? infosContent : activeSub==='evaluation' ? evaluationContent : parentsElevesContentBox(activeSub)}
       </div>
     </div>
   </div>
