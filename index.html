@@ -1774,6 +1774,16 @@ function go(page, sub) {
   if (el) el.classList.add('active');
 }
 
+/* ═══ GESTION D'ÉCOLE : bascule ExpertPro / E-Miri ═══ */
+function swGestionApp(app) {
+  ['expertpro','emiri'].forEach(a => {
+    const panel = document.getElementById('ga-panel-' + a);
+    const tab = document.getElementById('ga-tab-' + a);
+    if (panel) panel.style.display = (a === app) ? '' : 'none';
+    if (tab) tab.classList.toggle('active', a === app);
+  });
+}
+
 /* Re-render hCaptcha via Web3Forms auto-init (data-captcha="true") */
 
 /* ═══ VISIBILITY HELPER ═══ */
@@ -2151,10 +2161,25 @@ function pageAdmin(sub) {
       </div>`,
     'gestion-ecole': `
       <h2>Connexion</h2>
-      <p>Accès direct au logiciel de gestion de l'école pour les administrateurs de l'établissement. Accès sécurisé réservé au personnel habilité.</p>
-      <div class="info-link-card mt2" onclick="window.open('https://www.expertpro.ci/index.php?adr=index.connexion.etab.inc&esp=ETAB','_blank')" style="cursor:pointer;">
-        <span>Se connecter au logiciel de gestion</span>
-        <span class="arrow">→</span>
+      <p>Accès direct aux logiciels de gestion de l'école pour les administrateurs de l'établissement. Accès sécurisé réservé au personnel habilité.</p>
+      <div class="s-tag mt3">Applications</div>
+      <div class="cycle-tabs" style="margin-top:1rem;">
+        <button class="cycle-tab active" id="ga-tab-expertpro" onclick="swGestionApp('expertpro')" style="padding:.8rem 1.8rem;">ExpertPro</button>
+        <button class="cycle-tab" id="ga-tab-emiri" onclick="swGestionApp('emiri')" style="padding:.8rem 1.8rem;">E-Miri</button>
+      </div>
+      <div id="ga-panel-expertpro" class="mt2">
+        <p style="font-size:.85rem;color:var(--md);margin-bottom:.8rem;">Application historique de gestion de l'école.</p>
+        <div class="info-link-card" onclick="window.open('https://www.expertpro.ci/index.php?adr=index.connexion.etab.inc&esp=ETAB','_blank')" style="cursor:pointer;">
+          <span>Se connecter à ExpertPro</span>
+          <span class="arrow">→</span>
+        </div>
+      </div>
+      <div id="ga-panel-emiri" class="mt2" style="display:none;">
+        <p style="font-size:.85rem;color:var(--md);margin-bottom:.8rem;">Nouvelle application de gestion de l'école.</p>
+        <div class="info-link-card" onclick="window.open('https://miri.snsenon.com/miri/','_blank')" style="cursor:pointer;">
+          <span>Se connecter à E-Miri</span>
+          <span class="arrow">→</span>
+        </div>
       </div>`,
     'emargement': `
       <h2>Émargement</h2>
