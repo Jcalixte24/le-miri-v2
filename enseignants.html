@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script defer src="/analytics.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" sizes="192x192" href="https://static.wixstatic.com/media/568692_d208ed65917a482280a345ef2a14eba6%7Emv2.jpg/v1/fill/w_192%2Ch_192%2Clg_1%2Cusm_0.66_1.00_0.01/568692_d208ed65917a482280a345ef2a14eba6%7Emv2.jpg" type="image/jpeg"/>
@@ -43,6 +44,7 @@
       <li class="nav-item"><a class="nav-link" href="/groupe-scolaire">Groupe Scolaire</a></li>
       <li class="nav-item"><a class="nav-link active" href="/enseignants">Enseignants</a></li>
       <li class="nav-item"><a class="nav-link" href="/parents">Parents d'Élèves</a></li>
+      <li class="nav-item"><a class="nav-link" href="/eleve">Élève</a></li>
       <li class="nav-item"><a class="nav-link" href="/vie-scolaire">Vie Scolaire</a></li>
       <li class="nav-item"><a class="nav-link" href="/evenements">Événements</a></li>
       <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
@@ -59,6 +61,7 @@
     <a class="mob-nav-link" href="/groupe-scolaire">Groupe Scolaire</a>
     <a class="mob-nav-link" href="/enseignants">Enseignants</a>
     <a class="mob-nav-link" href="/parents">Parents d'Élèves</a>
+    <a class="mob-nav-link" href="/eleve">Élève</a>
     <a class="mob-nav-link" href="/vie-scolaire">Vie Scolaire</a>
     <a class="mob-nav-link" href="/evenements">Événements</a>
     <a class="mob-nav-link" href="/contact">Contact</a>
@@ -78,7 +81,7 @@
   <h2 class="s-h2 mb2">Nos <em>enseignants</em>, piliers du succès</h2>
   <p class="text-md mb4">Le corps enseignant du Groupe Scolaire Le Miri est composé de professeurs qualifiés, passionnés et dévoués à la réussite de chaque élève. Retrouvez ici toutes les ressources et informations nécessaires à votre mission.</p>
 
-  <div class="info-cards" id="cms-teachers-list">
+  <div class="info-cards">
     <div class="info-card">
       <div class="info-card-title">Informations générales</div>
       <p class="info-card-desc">Actualités et informations pratiques à destination des enseignants pour l'année 2026-2027.</p>
@@ -88,30 +91,33 @@
       <p class="info-card-desc">Programme des activités pédagogiques et récréatives organisées en fin de trimestre.</p>
     </div>
     <div class="info-card">
-      <div class="info-card-title">Liste des enseignants</div>
-      <p class="info-card-desc">Liste complète du corps enseignant pour l'année scolaire 2026-2027 avec les matières et classes.</p>
+      <div class="info-card-title">Emploi du temps</div>
+      <p class="info-card-desc">Emplois du temps par classe pour l'année académique en cours.</p>
     </div>
     <div class="info-card">
-      <div class="info-card-title">Professeurs principaux</div>
-      <p class="info-card-desc">Répertoire des professeurs principaux par classe et leurs responsabilités.</p>
+      <div class="info-card-title">Programme des devoirs</div>
+      <p class="info-card-desc">Programmes et calendriers des devoirs à la maison, organisés par niveau.</p>
     </div>
     <div class="info-card">
-      <div class="info-card-title">Calendrier de surveillance</div>
-      <p class="info-card-desc">Planning de surveillance des épreuves et examens pour l'année en cours.</p>
+      <div class="info-card-title">Mutuelle</div>
+      <p class="info-card-desc">Informations et documents relatifs à la mutuelle du personnel.</p>
     </div>
-    <div class="info-card">
-      <div class="info-card-title">Conseils d'enseignements</div>
-      <p class="info-card-desc">Dates, comptes-rendus et documents des conseils d'enseignements trimestriels.</p>
-    </div>
-    <div class="info-card">
+    <a href="https://www.expertpro.ci/index.php?adr=index.connexion.etab.inc&esp=ETAB" target="_blank" class="info-card">
       <div class="info-card-title">Saisie des notes</div>
       <p class="info-card-desc">Accès à la plateforme de saisie et de gestion des notes des élèves.</p>
-    </div>
+    </a>
+    <a href="https://api.194.163.188.237.nip.io/emargement/appel/" target="_blank" class="info-card">
+      <div class="info-card-title">Appel électronique</div>
+      <p class="info-card-desc">Accès à la plateforme d'appel électronique pour effectuer l'appel de vos classes.</p>
+    </a>
     <div class="info-card">
       <div class="info-card-title">Visites de classe</div>
       <p class="info-card-desc">Calendrier des visites pédagogiques et inspections de classe pour l'année.</p>
     </div>
   </div>
+
+  <div class="s-tag mt3">Liste des enseignants — Année 2026-2027</div>
+  <div id="cms-teachers-list"></div>
 </div>
 
 <footer>
@@ -129,6 +135,7 @@
         <li><a href="/groupe-scolaire">Groupe Scolaire</a></li>
         <li><a href="/enseignants">Enseignants</a></li>
         <li><a href="/parents">Parents d'Élèves</a></li>
+        <li><a href="/eleve">Élève</a></li>
         <li><a href="/vie-scolaire">Vie Scolaire</a></li>
         <li><a href="/evenements">Événements</a></li>
         <li><a href="/contact">Contact</a></li>
